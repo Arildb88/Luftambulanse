@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "GF2rR3wW41I=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\Gruppe4NLA.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\arild\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.22.1\\microsoft.visualstudio.azure.containers.tools.targets.1.22.1.nupkg.sha512"
+  ],
+  "logs": []
+}
