@@ -1,7 +1,12 @@
+using Gruppe4NLA.DataContext;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
+    new MySqlServerVersion(new Version(11, 8, 3))));
 
 var app = builder.Build();
 
