@@ -23,6 +23,20 @@ namespace Gruppe4NLA.Controllers
             return View();
         }
 
+        public IActionResult FAQ()
+        {
+            return View();
+        }
+
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+        public IActionResult Leaflet()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
