@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj": {}
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {}
   },
   "projects": {
-    "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj": {
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj",
+        "projectUniqueName": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
         "projectName": "Gruppe4NLA",
-        "projectPath": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj",
+        "projectPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
         "packagesPath": "C:\\Users\\einar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\obj\\",
+        "outputPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
