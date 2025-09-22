@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,12 +8,17 @@
     /* --- General page styling --- */
     body {
       font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
       background: #f0f0f0;
       margin: 0;
+    }
+
+    /* --- Login wrapping for better position --- */
+    .login-wrapper {
+        min-height: calc(100vh - 60px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     /* --- Login box --- */
@@ -80,26 +85,28 @@
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <!-- Username input -->
-      <input type="text" placeholder="Username" required>
+    <div class="login-wrapper">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form id="loginForm">
+            @*Username input*@
+            <input type="text" placeholder="Username" required>
       
-      <!-- Password input -->
-      <input type="password" id="password" placeholder="Password" required>
-      
-      <!-- Password conditions -->
-      <ul class="conditions">
-        <li id="length">At least 6 characters</li>
-        <li id="capital">Starts with a capital letter</li>
-        <li id="special">Contains at least one special character </li>
-      </ul>
-      
-      <!-- Login button -->
+            @*Password input*@
+            <input type="password" id="password" placeholder="Password" required>
+
+            @*Password conditions*@
+            <ul class="conditions">
+                <li id="length">At least 6 characters</li>
+                <li id="capital">Starts with a capital letter</li>
+                <li id="special">Contains at least one special character </li>
+            </ul>
+
+      @*Login button*@
       <button type="submit">Login</button>
     </form>
   </div>
+</div>
 
   <script>
     // Grab elements from the DOM
@@ -127,7 +134,7 @@
       }
 
       // Check: at least one special character
-      if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        if (/[!#@@$%^&*(),.?":{}|<>]/.test(password)) {
         specialCondition.classList.add("valid");
       } else {
         specialCondition.classList.remove("valid");
