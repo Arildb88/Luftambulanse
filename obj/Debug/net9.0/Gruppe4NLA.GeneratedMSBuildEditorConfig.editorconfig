@@ -17,57 +17,57 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Gruppe4NLA
 build_property.RootNamespace = Gruppe4NLA
-build_property.ProjectDir = \\elockedSSD\usbshare3\coding\NLA\
+build_property.ProjectDir = C:\Users\einar\OneDrive\Dokumenter\GitHub\Luftambulanse\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = \\elockedSSD\usbshare3\coding\NLA
+build_property.MSBuildProjectDirectory = C:\Users\einar\OneDrive\Dokumenter\GitHub\Luftambulanse
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/FAQ.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/FAQ.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGQVEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/Index.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/Leaflet.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/Leaflet.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMZWFmbGV0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/LogIn.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/LogIn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxMb2dJbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/Privacy.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Home/SignIn.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Home/SignIn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTaWduSW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Shared/Error.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/_ViewImports.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/_ViewStart.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[//elockedSSD/usbshare3/coding/NLA/Views/Shared/_Layout.cshtml]
+[C:/Users/einar/OneDrive/Dokumenter/GitHub/Luftambulanse/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-z0k8pvawi9
