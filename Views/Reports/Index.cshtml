@@ -1,0 +1,42 @@
+@model IEnumerable<Report> <!-- This tells the view it will receive a collection (list) of Report objects -->
+
+@{
+    ViewData["Title"] = "Reports"; <!-- title for the page -->
+}
+
+<h2>Reports</h2>
+<p>List of sent-in danger reports. Click a row to see details.</p>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <!-- Table headers -->
+        <th>Sender</th>
+        <th>Coordinates</th>
+        <th>Danger</th>
+        <th>Date & time</th>
+        <th></th> <!-- Empty header for the "Details" button -->
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var r in Model) <!-- Loop through each report in the model -->
+    {
+    <tr>
+        <!-- Display report values in table rows -->
+        <td>@r.SenderName</td>
+        <td>@r.Coordinates</td>
+        <td>@r.DangerType</td>
+        <td>@r.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+        <td>
+            <!-- Link to details page for this report -->
+            <a asp-controller="Reports" asp-action="Details" asp-route-id="@r.Id">Details</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<p>
+    <!-- Button to go to the Create page (form to add a new report) -->
+    <a class="btn btn-primary" asp-controller="Reports" asp-action="Create">➕ Add Report</a>
+</p>
