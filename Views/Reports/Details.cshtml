@@ -1,0 +1,34 @@
+@model Report <!-- This tells the view it will receive a single Report object -->
+
+@{
+    ViewData["Title"] = "Report details"; <!-- Sets the page title -->
+}
+
+<h2>Report details</h2>
+
+<div class="card" style="padding:1rem;">
+    <dl class="row">
+        <!-- Sender name -->
+        <dt class="col-sm-3">Sender</dt>
+        <dd class="col-sm-9">@Model.SenderName</dd>
+
+        <!-- Coordinates -->
+        <dt class="col-sm-3">Coordinates</dt>
+        <dd class="col-sm-9">@Model.Coordinates</dd>
+
+        <!-- Danger type -->
+        <dt class="col-sm-3">Danger</dt>
+        <dd class="col-sm-9">@Model.DangerType</dd>
+
+        <!-- Date and time -->
+        <dt class="col-sm-3">Date & time</dt>
+        <dd class="col-sm-9">@Model.DateSent.ToString("yyyy-MM-dd HH:mm")</dd>
+
+        <!-- Additional details -->
+        <dt class="col-sm-3">Details</dt>
+        <dd class="col-sm-9">@Model.Details</dd>
+    </dl>
+
+    <!-- Link back to the list of reports -->
+    <a asp-controller="Reports" asp-action="Index">Back to list</a>
+</div>
