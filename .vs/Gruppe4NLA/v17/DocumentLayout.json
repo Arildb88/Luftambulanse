@@ -3,13 +3,25 @@
   "WorkspaceRootPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\leaflet.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\coordinates\\coordinatestest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\leaflet.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\faq.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\models\\coordinatesviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\controllers\\coordinatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\models\\advicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,7 +31,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -54,42 +66,98 @@
               "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Leaflet.cshtml.cs",
-              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml.cs",
-              "RelativeDocumentMoniker": "Views\\Home\\Leaflet.cshtml.cs",
-              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml.cs",
-              "RelativeToolTip": "Views\\Home\\Leaflet.cshtml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-25T12:18:38.051Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Leaflet.cshtml",
-              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Leaflet.cshtml",
-              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml",
-              "RelativeToolTip": "Views\\Home\\Leaflet.cshtml",
-              "ViewState": "AgIAAC0AAAAAAAAAAAAhwDoAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-25T12:13:32.478Z",
+              "DocumentIndex": 1,
+              "Title": "bootstrap.bundle.min.js",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAACaCAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-09-25T16:48:09.106Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "FAQ.cshtml",
-              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\FAQ.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\FAQ.cshtml",
-              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\FAQ.cshtml",
-              "RelativeToolTip": "Views\\Home\\FAQ.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
+              "Title": "bootstrap.bundle.js.map",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAACOlgAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-25T16:48:04.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "bootstrap.bundle.js",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+              "ViewState": "AgIAADQXAAAAAAAAAAAAwD8XAAByAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-09-25T16:47:56.756Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CoordinatesViewModel.cs",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Models\\CoordinatesViewModel.cs",
+              "RelativeDocumentMoniker": "Models\\CoordinatesViewModel.cs",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Models\\CoordinatesViewModel.cs",
+              "RelativeToolTip": "Models\\CoordinatesViewModel.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAA1wBgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-25T14:29:05.815Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CoordinatesTest.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Coordinates\\CoordinatesTest.cshtml",
+              "RelativeDocumentMoniker": "Views\\Coordinates\\CoordinatesTest.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Coordinates\\CoordinatesTest.cshtml",
+              "RelativeToolTip": "Views\\Coordinates\\CoordinatesTest.cshtml",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAAAHoAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-25T11:53:15.669Z",
+              "WhenOpened": "2025-09-25T13:05:33.229Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CoordinatesController.cs",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Controllers\\CoordinatesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CoordinatesController.cs",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Controllers\\CoordinatesController.cs",
+              "RelativeToolTip": "Controllers\\CoordinatesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-25T13:24:53.106Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AdviceDto.cs",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Models\\AdviceDto.cs",
+              "RelativeDocumentMoniker": "Models\\AdviceDto.cs",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Models\\AdviceDto.cs",
+              "RelativeToolTip": "Models\\AdviceDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-25T13:41:05.04Z",
               "EditorCaption": ""
             }
           ]

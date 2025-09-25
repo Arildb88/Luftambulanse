@@ -97,8 +97,8 @@ wwwroot\lib\jquery\LICENSE.txt
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
-\\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+\\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
 \\elockedSSD\usbshare3\coding\NLA\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
