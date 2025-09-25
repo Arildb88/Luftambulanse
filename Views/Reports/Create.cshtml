@@ -1,0 +1,45 @@
+@model Report <!-- This tells the view it will receive and bind to a single Report object -->
+
+@{
+    ViewData["Title"] = "Add Report"; <!-- Sets the page title -->
+}
+
+<h2>Add a new Report</h2>
+
+<!-- Form that posts data to the Create action in ReportsController -->
+<form asp-action="Create" method="post">
+
+    <!-- Sender name input -->
+    <div class="form-group">
+        <label asp-for="SenderName"></label>
+        <input asp-for="SenderName" class="form-control" />
+    </div>
+
+    <!-- Latitude input -->
+    <div class="form-group">
+        <label asp-for="Latitude"></label>
+        <input asp-for="Latitude" class="form-control" />
+    </div>
+
+    <!-- Longitude input -->
+    <div class="form-group">
+        <label asp-for="Longitude"></label>
+        <input asp-for="Longitude" class="form-control" />
+    </div>
+
+    <!-- Danger type input -->
+    <div class="form-group">
+        <label asp-for="DangerType"></label>
+        <input asp-for="DangerType" class="form-control" />
+    </div>
+
+    <!-- Extra details textarea -->
+    <div class="form-group">
+        <label asp-for="Details"></label>
+        <textarea asp-for="Details" class="form-control"></textarea>
+    </div>
+
+    <!-- Save and Cancel buttons -->
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
+</form>
