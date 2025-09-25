@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\Gruppe4NLA.csproj": {}
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {}
   },
   "projects": {
-    "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\Gruppe4NLA.csproj": {
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\Gruppe4NLA.csproj",
+        "projectUniqueName": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
         "projectName": "Gruppe4NLA",
-        "projectPath": "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\Gruppe4NLA.csproj",
-        "packagesPath": "C:\\Users\\arild\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\arild\\source\\repos\\Gruppe4NLA\\obj\\",
+        "projectPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
+        "packagesPath": "C:\\Users\\einar\\.nuget\\packages\\",
+        "outputPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\arild\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\einar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -54,6 +54,12 @@
             "Dapper": {
               "target": "Package",
               "version": "[2.1.66, )"
+            },
+            "Microsoft.CodeAnalysis.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.4, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
