@@ -28,6 +28,10 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
+[//elockedSSD/usbshare3/coding/NLA/Views/Coordinates/CoordinatesTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29vcmRpbmF0ZXNcQ29vcmRpbmF0ZXNUZXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [//elockedSSD/usbshare3/coding/NLA/Views/Home/FAQ.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGQVEuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
