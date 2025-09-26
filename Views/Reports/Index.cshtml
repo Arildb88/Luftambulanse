@@ -1,42 +1,44 @@
-@model IEnumerable<Report> <!-- This tells the view it will receive a collection (list) of Report objects -->
+@model IEnumerable<Report>
+@* This view lists multiple Report objects in a table *@
 
 @{
-    ViewData["Title"] = "Reports"; <!-- title for the page -->
+    ViewData["Title"] = "Reports"; 
+    @* Sets the page title *@
 }
 
 <h2>Reports</h2>
-<p>List of sent-in danger reports. Click a row to see details.</p>
 
-<table class="table table-striped">
+@* Link to create a new report *@
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Report</a>
+</p>
+
+<table class="table">
     <thead>
     <tr>
-        <!-- Table headers -->
         <th>Sender</th>
-        <th>Coordinates</th>
-        <th>Danger</th>
-        <th>Date & time</th>
-        <th></th> <!-- Empty header for the "Details" button -->
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Danger Type</th>
+        <th>Details</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var r in Model) <!-- Loop through each report in the model -->
+    @* Loop through reports and show them as rows *@
+    @foreach (var r in Model)
     {
-    <tr>
-        <!-- Display report values in table rows -->
-        <td>@r.SenderName</td>
-        <td>@r.Coordinates</td>
-        <td>@r.DangerType</td>
-        <td>@r.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
-        <td>
-            <!-- Link to details page for this report -->
-            <a asp-controller="Reports" asp-action="Details" asp-route-id="@r.Id">Details</a>
-        </td>
-    </tr>
+        <tr>
+            <td>@r.SenderName</td>
+            <td>@r.Latitude</td>
+            <td>@r.Longitude</td>
+            <td>@r.DangerType</td>
+            <td>@r.Details</td>
+            <td>
+                @* Link to details page *@
+                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-info btn-sm">Details</a>
+            </td>
+        </tr>
     }
     </tbody>
 </table>
-
-<p>
-    <!-- Button to go to the Create page (form to add a new report) -->
-    <a class="btn btn-primary" asp-controller="Reports" asp-action="Create">➕ Add Report</a>
-</p>

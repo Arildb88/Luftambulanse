@@ -1,34 +1,29 @@
-@model Report <!-- This tells the view it will receive a single Report object -->
+@model Report
+@* This view displays details of a single Report object *@
 
 @{
-    ViewData["Title"] = "Report details"; <!-- Sets the page title -->
+    ViewData["Title"] = "Report Details"; 
+    @* Sets the page title *@
 }
 
-<h2>Report details</h2>
+<h2>Report Details</h2>
 
-<div class="card" style="padding:1rem;">
-    <dl class="row">
-        <!-- Sender name -->
-        <dt class="col-sm-3">Sender</dt>
-        <dd class="col-sm-9">@Model.SenderName</dd>
+<div>
+    @* Display sender name *@
+    <p><strong>Sender:</strong> @Model.SenderName</p>
 
-        <!-- Coordinates -->
-        <dt class="col-sm-3">Coordinates</dt>
-        <dd class="col-sm-9">@Model.Coordinates</dd>
+    @* Display latitude *@
+    <p><strong>Latitude:</strong> @Model.Latitude</p>
 
-        <!-- Danger type -->
-        <dt class="col-sm-3">Danger</dt>
-        <dd class="col-sm-9">@Model.DangerType</dd>
+    @* Display longitude *@
+    <p><strong>Longitude:</strong> @Model.Longitude</p>
 
-        <!-- Date and time -->
-        <dt class="col-sm-3">Date & time</dt>
-        <dd class="col-sm-9">@Model.DateSent.ToString("yyyy-MM-dd HH:mm")</dd>
+    @* Display danger type *@
+    <p><strong>Danger Type:</strong> @Model.DangerType</p>
 
-        <!-- Additional details -->
-        <dt class="col-sm-3">Details</dt>
-        <dd class="col-sm-9">@Model.Details</dd>
-    </dl>
-
-    <!-- Link back to the list of reports -->
-    <a asp-controller="Reports" asp-action="Index">Back to list</a>
+    @* Display extra details *@
+    <p><strong>Details:</strong> @Model.Details</p>
 </div>
+
+@* Back to list link *@
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to Reports</a>
