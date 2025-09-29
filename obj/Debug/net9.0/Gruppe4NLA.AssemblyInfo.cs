@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gruppe4NLA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03ed56335d166a52fa04bbe3dc0815e06ce5f255")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+76e40fa71610fe65127a3e06069e01e1f86f4a9d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gruppe4NLA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gruppe4NLA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
