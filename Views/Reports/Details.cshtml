@@ -25,5 +25,126 @@
     <p><strong>Details:</strong> @Model.Details</p>
 </div>
 
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Link to CSS style sheet-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="map.css">
+
+<!-- Styling the map -->
+<div id="mapModal" style="
+            display:none;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            width:70%;
+            height:80%;
+            background:DarkGreen;
+            border:4px solid black;
+            padding:10px;
+            z-index:1000;
+        ">
+    <div id="map" style="width:100%; height:90%;"></div>
+    <button id="btnCloseMap">Close</button>
+    <button id="btnMoveModal" type="button">Move Map</button>
+</div>
+
+<!-- Button to show coords -->
+<button id="btnShowCoords" type="button">Show coordinates on map</button>
+
+<!-- Script to make map -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <!-- Import map through link (should be downloaded later) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+
+            var map, obstacleMarker, osm;
+            let isDraggable = false;
+            const modal = document.getElementById("mapModal");
+            
+            // Initialize map
+            document.getElementById("btnShowCoords").onclick = function() {
+                document.getElementById("mapModal").style.display = "block";
+
+            // Set view and zoom
+
+            if (!map) {
+                map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
+                
+            obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
+                .bindPopup('TEST').addTo(map);
+                
+            osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            L.control.layers({ 'OSM': osm }, { 'Marker': obstacleMarker }, { collapsed: false }).addTo(map);
+                } else {
+            map.invalidateSize(); // fixes map display if modal was hidden
+
+            }
+
+                L.control.layers(
+                    { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
+                    { 'Marker': obstacleMarker },
+                    { collapsed: false }
+                ).addTo(map);
+
+            };
+
+            document.getElementById("btnCloseMap").onclick = function() {
+                document.getElementById("mapModal").style.display = "none";
+            };
+
+            document.getElementById("btnMoveModal").onclick = function () {
+                isDraggable = !isDraggable;
+                this.textContent = isDraggable ? "Lock Map" : "Move Map";
+            };
+
+            dragElement(modal);
+
+            function dragElement(elmnt) {
+                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+                elmnt.onmousedown = dragMouseDown;
+
+                function dragMouseDown(e) {
+                    if (!isDraggable) return;
+                    e.preventDefault();
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    document.onmousemove = elementDrag;
+
+                }
+
+                function elementDrag(e) {
+                    e.preventDefault();
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
+                    if (map) map.invalidateSize();
+                }
+
+                function closeDragElement() {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+        }
+
+    </script>  
+
+}
 @* Back to list link *@
 <a asp-action="Index" class="btn btn-secondary mt-3">Back to Reports</a>

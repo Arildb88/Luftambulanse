@@ -1,4 +1,4 @@
-﻿
+﻿@*
 <!-- Einar -->
 
 <!DOCTYPE html>
@@ -19,12 +19,15 @@
 }
 
 <!-- Makes form -->
+
 <form asp-action="CoordinatesTest" method="post">
     <div>
         <label>Latitude:</label>
         <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
         <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+        <br><br>
     </div>
+
     <div>
         <label>Longitude:</label>
         <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
@@ -32,6 +35,7 @@
     </div>
     <button type="submit">Submit</button>
 </form>
+
 
 <!-- Makes button -->
 <button id="btnAdd" type="button">Open Map</button>
@@ -127,6 +131,6 @@
             document.getElementById("mapModal").style.display = "none";
         };
     </script>
-}
+} *@
 
 

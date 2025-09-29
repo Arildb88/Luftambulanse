@@ -16,7 +16,31 @@
 }
 
 @* Form that posts data to the Create action in ReportsController *@
+
+<br>
 <form asp-action="Create" method="post">
+    
+    @* Adding spacing and changing the style *@
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 100px;
+            margin-right: 10px;
+            margin-left: 10px;
+            text-align: left;
+        }
+
+        .form-group input {
+            flex: 1; 
+            padding: 5px;
+        }
+
+    </style>
 
     @* Sender name input *@
     <div class="form-group">
@@ -26,14 +50,14 @@
 
     @* Latitude input *@
     <div class="form-group">
-        <label>Latitude:</label>
+        <label asp-for="NewCoordinate.Latitude"></label>
         <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
         <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
-        <label>Longitude:</label>
+        <label asp-for="NewCoordinate.Longitude"></label>
         <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
         <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
     </div>
@@ -56,10 +80,12 @@
 </form>
 
 <!-- Makes button -->
+<br>
 <button id="btnAdd" type="button">Open Map</button>
 
 <!-- Title for submitted coordinates -->
-<h3>Submitted Coordinates</h3>
+
+<h3><br>Submitted Coordinates</h3>
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
