@@ -6389,6 +6389,7 @@
   "projectFileDependencyGroups": {
     "net9.0": [
       "Dapper >= 2.1.66",
+      "Microsoft.CodeAnalysis.Analyzers >= 3.3.4",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.9",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.22.1",
@@ -6403,11 +6404,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj",
+      "projectUniqueName": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
       "projectName": "Gruppe4NLA",
-      "projectPath": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Gruppe4NLA.csproj",
+      "projectPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
       "packagesPath": "C:\\Users\\einar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\obj\\",
+      "outputPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -6450,6 +6451,12 @@
           "Dapper": {
             "target": "Package",
             "version": "[2.1.66, )"
+          },
+          "Microsoft.CodeAnalysis.Analyzers": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[3.3.4, )"
           },
           "Microsoft.EntityFrameworkCore.Design": {
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",

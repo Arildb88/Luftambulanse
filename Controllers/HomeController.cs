@@ -28,6 +28,10 @@ namespace Gruppe4NLA.Controllers
             return View();
         }
 
+        public IActionResult LogIn()
+        {
+            return View();
+        }
         public IActionResult SignIn()
         {
             return View();

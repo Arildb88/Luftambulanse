@@ -1,68 +1,7 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\leaflet.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\leaflet.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\leaflet.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\leaflet.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\models\\advicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:models\\advicedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\signin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\signin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\faq.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\faq.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\migrations\\20250916103557_initialcreation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:migrations\\20250916103557_initialcreation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\source\\repos\\luftambulanse\\datacontext\\aplicationcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:datacontext\\aplicationcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "WorkspaceRootPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\",
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -70,206 +9,39 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Leaflet.cshtml.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Leaflet.cshtml.cs",
-              "RelativeDocumentMoniker": "Views\\Home\\Leaflet.cshtml.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Leaflet.cshtml.cs*",
-              "RelativeToolTip": "Views\\Home\\Leaflet.cshtml.cs*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T11:20:47.899Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Leaflet.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Views\\Home\\Leaflet.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Leaflet.cshtml",
-              "ToolTip": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Views\\Home\\Leaflet.cshtml*",
-              "RelativeToolTip": "Views\\Home\\Leaflet.cshtml*",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T11:07:33.98Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAAIwCEAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-18T10:49:30.89Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T10:21:16.576Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\_Layout.cshtml*",
-              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml*",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAABYAAABNAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:51:51.547Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "AdviceDto.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Models\\AdviceDto.cs",
-              "RelativeDocumentMoniker": "Models\\AdviceDto.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Models\\AdviceDto.cs",
-              "RelativeToolTip": "Models\\AdviceDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T09:57:24.872Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_ValidationScriptsPartial.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
-              "RelativeToolTip": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:42:59.196Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "SignIn.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Views\\Home\\SignIn.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\SignIn.cshtml",
-              "ToolTip": "C:\\Users\\einar\\Source\\Repos\\Luftambulanse\\Views\\Home\\SignIn.cshtml",
-              "RelativeToolTip": "Views\\Home\\SignIn.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:55:43.767Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FAQ.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\FAQ.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\FAQ.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\FAQ.cshtml",
-              "RelativeToolTip": "Views\\Home\\FAQ.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:45:31.985Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-16T10:43:32.696Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABLAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-16T10:25:27.952Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "20250916103557_InitialCreation.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Migrations\\20250916103557_InitialCreation.cs",
-              "RelativeDocumentMoniker": "Migrations\\20250916103557_InitialCreation.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Migrations\\20250916103557_InitialCreation.cs",
-              "RelativeToolTip": "Migrations\\20250916103557_InitialCreation.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T10:35:58.194Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "AplicationContext.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\DataContext\\AplicationContext.cs",
-              "RelativeDocumentMoniker": "DataContext\\AplicationContext.cs",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\DataContext\\AplicationContext.cs",
-              "RelativeToolTip": "DataContext\\AplicationContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-16T10:02:15.439Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Error.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\Error.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\Error.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Shared\\Error.cshtml",
-              "RelativeToolTip": "Views\\Shared\\Error.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:43:00.065Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Privacy.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Privacy.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Privacy.cshtml",
-              "ToolTip": "C:\\Users\\einar\\source\\repos\\Luftambulanse\\Views\\Home\\Privacy.cshtml",
-              "RelativeToolTip": "Views\\Home\\Privacy.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-09-18T10:43:05.231Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             }
           ]
         }

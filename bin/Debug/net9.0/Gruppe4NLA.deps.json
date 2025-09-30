@@ -9,6 +9,7 @@
       "Gruppe4NLA/1.0.0": {
         "dependencies": {
           "Dapper": "2.1.66",
+          "Microsoft.CodeAnalysis.Analyzers": "3.3.4",
           "Microsoft.EntityFrameworkCore.Design": "9.0.9",
           "Microsoft.EntityFrameworkCore.Tools": "9.0.9",
           "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.22.1",
