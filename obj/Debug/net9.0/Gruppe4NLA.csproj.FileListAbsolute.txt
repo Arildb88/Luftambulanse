@@ -728,7 +728,6 @@ C:\Users\einar\Source\Repos\Luftambulanse\bin\Debug\net9.0\zh-Hant\Microsoft.Cod
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\scopedcss\bundle\Gruppe4NLA.styles.css
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\scopedcss\projectbundle\Gruppe4NLA.bundle.scp.css
-\\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\1b8767nsl9-b9sayid5wm.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\acx15blo5s-61n19gt1b8.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\u7p3rccfnx-xtxxf3hu2r.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\lubbfldh50-t1cqhe9u97.gz
@@ -755,7 +754,6 @@ C:\Users\einar\Source\Repos\Luftambulanse\bin\Debug\net9.0\zh-Hant\Microsoft.Cod
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\srotfydzct-j5mq2jizvt.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\vrzpbi0nhm-keugtjm085.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\1rw2l4tnts-nvvlpmu67g.gz
-\\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\5gtbtou35z-zub09dkrxp.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\zu1p625lxy-pj5nd1wqec.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\anfheg51qw-43atpzeawx.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\i217ubibae-v0zj4ognzu.gz
@@ -952,3 +950,5 @@ C:\Users\arild\source\repos\Gruppe4NLA\obj\Debug\net9.0\compressed\updlzp8rfz-jj
 C:\Users\arild\source\repos\Gruppe4NLA\obj\Debug\net9.0\compressed\bpljybr6rw-9vr69e8ynj.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\o8maoim6lc-esi2z746wm.gz
 \\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\b0uiwura5e-jhuvdyz6z4.gz
+\\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\5gtbtou35z-jlpgx6zk36.gz
+\\elockedSSD\usbshare3\coding\NLA\obj\Debug\net9.0\compressed\1b8767nsl9-r9d64kxq6m.gz

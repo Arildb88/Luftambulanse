@@ -29,3 +29,46 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.footer {
+    background-color: ghostwhite;
+    border-top: thin;
+}
+
+@keyframes greenToRed {
+    from {
+        background-color: green;
+    }
+
+    to {
+        background-color: red;
+    }
+}
+
+.btnSimple {
+    background-color: #198754;
+    border: none;
+    color: ghostwhite;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+.btnBack {
+    background-color: lightgrey;
+    border: none;
+    color: black;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 6px;
+}
+.btnBack:hover {
+    background-color: darkgrey;
+}
+
+.bgGreen {
+    background-image: url('/Content/Images/Topographic_green.png');
+    background-size: cover;
+}

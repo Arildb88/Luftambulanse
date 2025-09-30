@@ -8,7 +8,7 @@
 
 <h2>Report Details</h2>
 
-<div>
+<div class="fullPage">
     @* Display sender name *@
     <p><strong>Sender:</strong> @Model.SenderName</p>
 
@@ -48,12 +48,12 @@
             z-index:1000;
         ">
     <div id="map" style="width:100%; height:90%;"></div>
-    <button id="btnCloseMap">Close</button>
-    <button id="btnMoveModal" type="button">Move Map</button>
+    <button id="btnCloseMap" class="btnBack">Close</button>
+    <button id="btnMoveModal" class="btnSimple" type="button">Move Map</button>
 </div>
 
 <!-- Button to show coords -->
-<button id="btnShowCoords" type="button">Show coordinates on map</button>
+<button id="btnShowCoords" class="btnSimple" type="button">Show coordinates on map</button>
 
 <!-- Script to make map -->
 @section Scripts {
@@ -64,20 +64,22 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script>
-
+    
             var map, obstacleMarker, osm;
             let isDraggable = false;
+
+            // "modal" gets "mapModal"
             const modal = document.getElementById("mapModal");
             
-            // Initialize map
+            // Show map when button is clicked
             document.getElementById("btnShowCoords").onclick = function() {
                 document.getElementById("mapModal").style.display = "block";
 
             // Set view and zoom
-
             if (!map) {
                 map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
-                
+            
+            // Makes marker with text "TEST"
             obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
                 .bindPopup('TEST').addTo(map);
                 
@@ -87,7 +89,7 @@
 
             L.control.layers({ 'OSM': osm }, { 'Marker': obstacleMarker }, { collapsed: false }).addTo(map);
                 } else {
-            map.invalidateSize(); // fixes map display if modal was hidden
+            map.invalidateSize(); // Fixes map display if modal was hidden
 
             }
 
@@ -108,6 +110,8 @@
                 this.textContent = isDraggable ? "Lock Map" : "Move Map";
             };
 
+            // Makes a draggable element
+
             dragElement(modal);
 
             function dragElement(elmnt) {
@@ -115,6 +119,7 @@
 
                 elmnt.onmousedown = dragMouseDown;
 
+                // Activates if the mouse button is pushed down
                 function dragMouseDown(e) {
                     if (!isDraggable) return;
                     e.preventDefault();
@@ -125,6 +130,7 @@
 
                 }
 
+                // Lets the user move the element
                 function elementDrag(e) {
                     e.preventDefault();
                     pos1 = pos3 - e.clientX;
@@ -137,6 +143,7 @@
                     if (map) map.invalidateSize();
                 }
 
+                // Clears the moving when mouse is up or not moving
                 function closeDragElement() {
                     document.onmouseup = null;
                     document.onmousemove = null;
@@ -147,4 +154,4 @@
 
 }
 @* Back to list link *@
-<a asp-action="Index" class="btn btn-secondary mt-3">Back to Reports</a>
+<a asp-action="Index" class="btnBack">Back to Reports</a>

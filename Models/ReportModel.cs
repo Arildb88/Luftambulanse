@@ -8,7 +8,7 @@ namespace Gruppe4NLA.Models
     {
         public int Id { get; set; }
 
-        // Required means you must set this when creating a Report object
+        // Some values are nullable using "?"
         public string? SenderName { get; set; }
 
         public string? DangerType { get; set; }
@@ -17,6 +17,7 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
+        // Coordinates are needed
         [Required(ErrorMessage = "Latitude is required")]
         [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
         public double? Latitude { get; set; }
@@ -28,6 +29,7 @@ namespace Gruppe4NLA.Models
         
     
     }
+
     // Wrapper to hold new coordinate and submitted list
 
     public class ReportModelWrapper

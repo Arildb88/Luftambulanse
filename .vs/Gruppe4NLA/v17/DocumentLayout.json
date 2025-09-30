@@ -1,7 +1,47 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\css\\site.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\reports\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\reports\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\content\\images\\topographic_blue.png||{177559E0-D141-11D0-92DF-00A0C9138C45}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\home\\leaflet.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,8 +49,22 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "site.css",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\css\\site.css",
+              "RelativeDocumentMoniker": "wwwroot\\css\\site.css",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\css\\site.css",
+              "RelativeToolTip": "wwwroot\\css\\site.css",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAEoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-30T13:51:56.99Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
@@ -42,6 +96,161 @@
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Index.cshtml*",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T14:06:27.949Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T14:03:51.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Topographic_blue.png -  [English (United Kingdom)] - PNG [4000x4004, 32 bit, PNG]",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\Content\\Images\\Topographic_blue.png",
+              "RelativeDocumentMoniker": "wwwroot\\Content\\Images\\Topographic_blue.png",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\Content\\Images\\Topographic_blue.png -  [English (United Kingdom)] - PNG [4000x4004, 32 bit, PNG]",
+              "RelativeToolTip": "wwwroot\\Content\\Images\\Topographic_blue.png -  [English (United Kingdom)] - PNG [4000x4004, 32 bit, PNG]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001533|",
+              "WhenOpened": "2025-09-30T14:03:23.819Z",
+              "EditorCaption": " -  [English (United Kingdom)] - PNG [4000x4004, 32 bit, PNG]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "bootstrap.rtl.css",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+              "ViewState": "AgIAAAMMAAAAAAAAAAAYwBEMAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-30T13:59:14.61Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "bootstrap.min.css.map",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAD8iAIAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-30T13:59:12.048Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "bootstrap.min.css",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAAAAQAAACo3gAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-30T13:59:09.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "bootstrap.css.map",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAACBsgIAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-30T13:59:04.373Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "bootstrap.css",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+              "RelativeDocumentMoniker": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+              "RelativeToolTip": "wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+              "ViewState": "AgIAABEMAAAAAAAAAAAAABIMAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2025-09-30T13:59:02.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "LogIn.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\LogIn.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\LogIn.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\LogIn.cshtml",
+              "RelativeToolTip": "Views\\Home\\LogIn.cshtml",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T13:52:37.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Leaflet.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Leaflet.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Home\\Leaflet.cshtml",
+              "RelativeToolTip": "Views\\Home\\Leaflet.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T13:52:49.828Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Reports\\Details.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Details.cshtml",
+              "RelativeToolTip": "Views\\Reports\\Details.cshtml",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAswFYAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T13:51:51.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Reports\\Create.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Create.cshtml",
+              "RelativeToolTip": "Views\\Reports\\Create.cshtml",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAJMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T13:51:46.597Z",
+              "EditorCaption": ""
             }
           ]
         }
