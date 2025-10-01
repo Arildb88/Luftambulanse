@@ -46,6 +46,7 @@
     <div class="form-group">
         <label asp-for="NewCoordinate.SenderName"></label>
         <input asp-for="NewCoordinate.SenderName" class="form-control" />
+        <span asp-validation-for="NewCoordinate.SenderName" class="text-danger"></span>
     </div>
 
     @* Latitude input *@

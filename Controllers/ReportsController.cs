@@ -85,6 +85,8 @@ namespace Gruppe4NLA.Controllers
                 return View(model);
             }
 
+            int nextId = _sample.Any() ? _sample.Max(r => r.Id) + 1 : 1;
+
             // Save valid coordinate
             _sample.Add(new ReportModel
             {
@@ -92,7 +94,9 @@ namespace Gruppe4NLA.Controllers
                 Longitude = model.NewCoordinate.Longitude,
                 SenderName = model.NewCoordinate.SenderName,
                 DangerType = model.NewCoordinate.DangerType,
-                Details = model.NewCoordinate.Details
+                Details = model.NewCoordinate.Details,
+                Id = nextId,
+                DateSent = DateTime.Now
             });
 
             model.NewCoordinate = new ReportModel(); // Reset input
