@@ -1,47 +1,91 @@
-﻿@*
-<!-- Einar -->
-
-<!DOCTYPE html>
 
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
-<!-- Page title -->
+@* This tells the view it will receive and bind to a single Report object *@
+
 @{
-    ViewData["Title"] = "Submission of coordinates";
+    ViewData["Title"] = "Add Report"; 
+    @* Sets the page title *@
 }
 
-<!-- Shows page title -->
-<h2>@ViewData["Title"]</h2>
+<h2>Add a new Report</h2>
 
 @if (ViewBag.Message != null)
 {
     <p style="color:green">@ViewBag.Message</p>
 }
 
-<!-- Makes form -->
+@* Form that posts data to the Create action in ReportsController *@
 
-<form asp-action="CoordinatesTest" method="post">
-    <div>
-        <label>Latitude:</label>
-        <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
-        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
-        <br><br>
+<br>
+<form asp-action="Create" method="post">
+    
+    @* Adding spacing and changing the style *@
+    <style>
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 100px;
+            margin-right: 10px;
+            margin-left: 10px;
+            text-align: left;
+        }
+
+        .form-group input {
+            flex: 1; 
+            padding: 5px;
+        }
+
+    </style>
+
+    @* Sender name input *@
+    <div class="form-group">
+        <label asp-for="NewCoordinate.SenderName"></label>
+        <input asp-for="NewCoordinate.SenderName" class="form-control" />
     </div>
 
-    <div>
-        <label>Longitude:</label>
+    @* Latitude input *@
+    <div class="form-group">
+        <label asp-for="NewCoordinate.Latitude"></label>
+        <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
+        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+    </div>
+
+    @* Longitude input *@
+    <div class="form-group">
+        <label asp-for="NewCoordinate.Longitude"></label>
         <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
         <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
     </div>
-    <button type="submit">Submit</button>
+
+    @* Danger type input *@
+    <div class="form-group">
+        <label asp-for="NewCoordinate.DangerType"></label>
+        <input asp-for="NewCoordinate.DangerType" class="form-control" />
+    </div>
+
+    @* Extra details textarea *@
+    <div class="form-group">
+        <label asp-for="NewCoordinate.Details"></label>
+        <textarea asp-for="NewCoordinate.Details" class="form-control"></textarea>
+    </div>
+
+    @* Save and Cancel buttons *@
+    <button type="submit" class="btn btn-success mt-3">Save</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
-
 <!-- Makes button -->
-<button id="btnAdd" type="button">Open Map</button>
+<br>
+<button id="btnAdd" class="btnSimple" type="button">Open Map</button>
 
 <!-- Title for submitted coordinates -->
-<h3>Submitted Coordinates</h3>
+
+<h3><br>Submitted Coordinates</h3>
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
@@ -70,20 +114,20 @@
             z-index:1000;
         ">
     <div id="map" style="width:100%; height:90%;"></div>
-    <button id="btnSaveLocation">Save Location</button>
-    <button id="btnCloseMap">Close</button>
+    <button id="btnSaveLocation" class="btnSimple">Save Location</button>
+    <button id="btnCloseMap" class="btnBack">Close</button>
 </div>
 
 <!-- Script to make map -->
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
-    
+
+
     <!-- Import map through link (should be downloaded later) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
-    
+
 
     <script>
 
@@ -131,6 +175,4 @@
             document.getElementById("mapModal").style.display = "none";
         };
     </script>
-} *@
-
-
+}
