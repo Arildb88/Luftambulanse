@@ -1,4 +1,4 @@
-										Luftambulanse
+										Lufambulanse
 - En ASP.NET Core MVC-applikasjon som demonstrerer grunnlegende web-funksjonalitet for luftambulasnse-domene (sider som Home/Index, Privacy og Error, samtidig struktur
    for å legge til modeller, kontrollere og views. Applikasjonen er å gi brukere en enkel og oversiktlig måte å register, og håndtere informasjon om lufthindringer. 
    Systemet gjør det mulig å samle inn opplysninger¨, vise dem i en strukturtrert form og sikre at de kan oppdatere på en ryddig måte.

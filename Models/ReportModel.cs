@@ -9,7 +9,6 @@ namespace Gruppe4NLA.Models
         public int Id { get; set; }
 
         // Some values are nullable using "?"
-        [Required(ErrorMessage = "Sendername is required")]
         public string? SenderName { get; set; }
 
         public string? DangerType { get; set; }
