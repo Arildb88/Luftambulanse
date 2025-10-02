@@ -9,6 +9,7 @@ namespace Gruppe4NLA.Models
         public int Id { get; set; }
 
         // Some values are nullable using "?"
+        [Required(ErrorMessage = "Sendername is required")]
         public string? SenderName { get; set; }
 
         public string? DangerType { get; set; }
@@ -26,8 +27,8 @@ namespace Gruppe4NLA.Models
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
         public double? Longitude { get; set; }
 
-        
-    
+
+
     }
 
     // Wrapper to hold new coordinate and submitted list
