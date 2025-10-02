@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\controllers\\coordinatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\coordinatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -17,14 +25,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\views\\reports\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:views\\reports\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\controllers\\coordinatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|solutionrelative:controllers\\coordinatescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|c:\\users\\einar\\onedrive\\dokumenter\\github\\luftambulanse\\models\\errorviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,7 +62,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 17,
+          "SelectedChildIndex": 19,
           "Children": [
             {
               "$type": "Bookmark",
@@ -122,33 +122,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ErrorViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Models\\ErrorViewModel.cs",
-              "RelativeDocumentMoniker": "Models\\ErrorViewModel.cs",
-              "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Models\\ErrorViewModel.cs",
-              "RelativeToolTip": "Models\\ErrorViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-01T12:35:34.128Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "Create.cshtml",
-              "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Views\\Reports\\Create.cshtml",
-              "RelativeDocumentMoniker": "Views\\Reports\\Create.cshtml",
-              "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Views\\Reports\\Create.cshtml",
-              "RelativeToolTip": "Views\\Reports\\Create.cshtml",
-              "ViewState": "AgIAAJ8AAAAAAAAAAAAAABEAAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-01T12:20:03.71Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "ReportModel.cs",
               "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Models\\ReportModel.cs",
               "RelativeDocumentMoniker": "Models\\ReportModel.cs",
@@ -161,20 +135,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "ReportsController.cs",
               "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Controllers\\ReportsController.cs",
               "RelativeDocumentMoniker": "Controllers\\ReportsController.cs",
               "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Controllers\\ReportsController.cs",
               "RelativeToolTip": "Controllers\\ReportsController.cs",
-              "ViewState": "AgIAAFUAAAAAAAAAAAAkwGAAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAkwF4AAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-01T12:04:35.954Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Details.cshtml",
               "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Views\\Reports\\Details.cshtml",
               "RelativeDocumentMoniker": "Views\\Reports\\Details.cshtml",
@@ -187,7 +161,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "CoordinatesController.cs",
               "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Controllers\\CoordinatesController.cs",
               "RelativeDocumentMoniker": "Controllers\\CoordinatesController.cs",
@@ -213,15 +187,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4AAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-26T09:18:56.146Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Views\\Reports\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Reports\\Create.cshtml",
+              "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Views\\Reports\\Create.cshtml",
+              "RelativeToolTip": "Views\\Reports\\Create.cshtml",
+              "ViewState": "AgIAAJ8AAAAAAAAAAAAAABEAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-01T12:20:03.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ErrorViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Models\\ErrorViewModel.cs",
+              "RelativeDocumentMoniker": "Models\\ErrorViewModel.cs",
+              "ToolTip": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Models\\ErrorViewModel.cs",
+              "RelativeToolTip": "Models\\ErrorViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-01T12:35:34.128Z",
               "EditorCaption": ""
             },
             {
