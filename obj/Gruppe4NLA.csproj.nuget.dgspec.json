@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Gruppe4NLA.csproj": {}
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {}
   },
   "projects": {
-    "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Gruppe4NLA.csproj": {
+    "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Gruppe4NLA.csproj",
+        "projectUniqueName": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
         "projectName": "Gruppe4NLA",
-        "projectPath": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\Gruppe4NLA.csproj",
+        "projectPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Gruppe4NLA.csproj",
         "packagesPath": "C:\\Users\\einar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\einar\\OneDrive\\Dokumenter\\GitHub\\Luftambulanse\\obj\\",
+        "outputPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -105,7 +105,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
