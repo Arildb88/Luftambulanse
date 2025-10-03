@@ -76,3 +76,46 @@ body {
     background-image: url('/Content/Images/Topographic_green.png');
     background-size: cover;
 }
+
+#map {
+    position: relative;
+}
+
+#obstacleBox {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    font: 13px/1.2 system-ui, sans-serif;
+    cursor: pointer;
+
+    /* Size */
+    width: 85px;
+    height: 85px;
+
+
+    /* Center text */
+    display: flex;
+    align-items: center; /* vertical center */
+    justify-content: center; /* horizontal center */
+    text-align: center;
+}
+
+/* Target the zoom control buttons */
+.leaflet-control-zoom a.leaflet-control-zoom-in,
+.leaflet-control-zoom a.leaflet-control-zoom-out {
+    width: 50px !important; /* default ~26px */
+    height: 50px !important; /* default ~26px */
+    font-size: 24px !important; /* make + and - bigger */
+    line-height: 50px !important; /* vertically center the + / - */
+}
+.leaflet-control-zoom-in {
+    margin-bottom: 5px; /* space between + and - */
+}
+
+
+

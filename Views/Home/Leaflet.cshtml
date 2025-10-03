@@ -46,12 +46,10 @@
 <body>
     <div id="map">
         <div class="coordinate leaflet-control"></div>
+        <div id="obstacleBox" class="leaflet-control">Report Obstacle</div>
     </div>
 
-    <!--Report Obstacle Box-->
-    <div id="obstacleBox" class="leaflet-control">Report Obstacle</div>
-
-    <!-- Leaflet JS -->
+        <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
@@ -77,19 +75,22 @@
           maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3']
         });
 
+       
         const singleMarker = L.marker([58.1638332, 7.9812789], { draggable: false })
           .bindPopup('Kristiansand Sykehus').addTo(map);
-
+        
         L.control.layers(
           { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
           { 'Marker': singleMarker },
           { collapsed: false }
         ).addTo(map);
 
-        map.on('click', p => {
+
+        /*map.on('click', p => {
           const el = document.querySelector(".coordinate");
           if (el) el.textContent = `lat: ${p.latlng.lat}, lng: ${p.latlng.lng}`;
         });
+        */
 
         // ---- Geolocation + follow logic
         let watchId = null;
