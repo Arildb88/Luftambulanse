@@ -31,9 +31,6 @@
 <!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-<!-- Link to CSS style sheet-->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="map.css">
 
 <!-- Styling the map -->
@@ -63,7 +60,6 @@
     <partial name="_ValidationScriptsPartial" />
     
     <!-- Import map through link (should be downloaded later) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script>
@@ -79,30 +75,29 @@
                 document.getElementById("mapModal").style.display = "block";
 
             // Set view and zoom
-            if (!map) {
+        if (!map) {
                 map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
             
             // Makes marker with text "TEST"
             obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
-                .bindPopup('TEST').addTo(map);
+            .bindPopup('TEST').addTo(map);
                 
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
 
-            L.control.layers({ 'OSM': osm }, { 'Marker': obstacleMarker }, { collapsed: false }).addTo(map);
-                } else {
-            map.invalidateSize(); // Fixes map display if modal was hidden
+            L.control.layers(
+                { 'OSM': osm },
+                { 'Marker': obstacleMarker },
+                { collapsed: false }
+            ).addTo(map);
 
-            }
+        } else {
+            
+                map.invalidateSize();
+        }
 
-                L.control.layers(
-                    { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
-                    { 'Marker': obstacleMarker },
-                    { collapsed: false }
-                ).addTo(map);
-
-            };
+    };
 
             document.getElementById("btnCloseMap").onclick = function() {
                 document.getElementById("mapModal").style.display = "none";

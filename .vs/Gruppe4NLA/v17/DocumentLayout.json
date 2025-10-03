@@ -1,12 +1,12 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "\\\\elockedSSD\\usbshare3\\coding\\Fixed\\Luftambulanse-20251002T143153Z-1-001\\Luftambulanse\\",
+  "WorkspaceRootPath": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\fixed\\luftambulanse-20251002t143153z-1-001\\luftambulanse\\models\\reportmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\reports\\details.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\fixed\\luftambulanse-20251002t143153z-1-001\\luftambulanse\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1BE167F8-A667-4194-BA5D-F1463431BF25}|Gruppe4NLA.csproj|\\\\elockedssd\\usbshare3\\coding\\nla\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -16,32 +16,88 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 15,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:137:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:135:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:134:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ReportsController.cs",
-              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\Fixed\\Luftambulanse-20251002T143153Z-1-001\\Luftambulanse\\Controllers\\ReportsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\ReportsController.cs",
-              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\Fixed\\Luftambulanse-20251002T143153Z-1-001\\Luftambulanse\\Controllers\\ReportsController.cs",
-              "RelativeToolTip": "Controllers\\ReportsController.cs",
-              "ViewState": "AgIAAFMAAAAAAAAAAAAIwGQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:50:40.062Z",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAACoAAAAAAAAAAAAAAEUAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-03T10:41:58.164Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ReportModel.cs",
-              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\Fixed\\Luftambulanse-20251002T143153Z-1-001\\Luftambulanse\\Models\\ReportModel.cs",
-              "RelativeDocumentMoniker": "Models\\ReportModel.cs",
-              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\Fixed\\Luftambulanse-20251002T143153Z-1-001\\Luftambulanse\\Models\\ReportModel.cs",
-              "RelativeToolTip": "Models\\ReportModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:50:33.554Z",
+              "Title": "Details.cshtml",
+              "DocumentMoniker": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Details.cshtml",
+              "RelativeDocumentMoniker": "Views\\Reports\\Details.cshtml",
+              "ToolTip": "\\\\elockedSSD\\usbshare3\\coding\\NLA\\Views\\Reports\\Details.cshtml*",
+              "RelativeToolTip": "Views\\Reports\\Details.cshtml*",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABEAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-10-03T10:34:56.717Z",
               "EditorCaption": ""
             }
           ]
