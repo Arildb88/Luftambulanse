@@ -20,8 +20,7 @@
         <th>Latitude</th>
         <th>Longitude</th>
         <th>Danger Type</th>
-        <th>Details</th>
-        <th></th>
+        <th>DateSent</th>
     </tr>
     </thead>
     <tbody>
@@ -33,7 +32,7 @@
             <td>@r.Latitude</td>
             <td>@r.Longitude</td>
             <td>@r.DangerType</td>
-            <td>@r.Details</td>
+            <td>@r.DateSent</td>
             <td>
                 @* Link to details page *@
                 <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-info btn-sm">Details</a>

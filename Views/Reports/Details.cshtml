@@ -48,8 +48,12 @@
             z-index:1000;
         ">
     <div id="map" style="width:100%; height:90%;"></div>
-    <button id="btnCloseMap" class="btnBack">Close</button>
-    <button id="btnMoveModal" class="btnSimple" type="button">Move Map</button>
+    
+    <div id="buttonsGroup" style="display: flex; justify-content: center; gap: 10px; padding-top: 10px;">
+            <button id="btnCloseMap" class="btnBack">Close</button>
+            <button id="btnMoveModal" class="btnSimple" type="button">Move Map</button>
+    </div>
+
 </div>
 
 <!-- Button to show coords -->
@@ -78,9 +82,9 @@
         if (!map) {
                 map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
             
-            // Makes marker with text "TEST"
+            // Makes marker with dangertype
             obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
-            .bindPopup('TEST').addTo(map);
+            .bindPopup("@Model.DangerType").addTo(map);
                 
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'

@@ -54,6 +54,10 @@ body {
     display: inline-block;
     border-radius: 6px;
 }
+.btnSimple:hover {
+    background-color: darkgreen;
+}
+
 
 .btnBack {
     background-color: lightgrey;
