@@ -54,6 +54,18 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
 
+    @*Arild test 
+    <dialog id="reportDialog" style="padding:0;border:none;width:70vw;height:80vh;">
+        <div style="display:flex;flex-direction:column;height:100%;background:#fff;border-radius:8px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #ddd">
+                <strong>Add Report</strong>
+                <button id="reportClose" class="btnBack" type="button">Close</button>
+            </div>
+            <iframe id="reportFrame" style="flex:1;border:0;"></iframe>
+        </div>
+    </dialog>
+    *@
+
     <script>
         // ---- Map init
         const map = L.map('map', {minZoom: 4}).setView([58.1638332, 7.9812789], 16);
@@ -75,22 +87,35 @@
           maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3']
         });
 
-       
-        const singleMarker = L.marker([58.1638332, 7.9812789], { draggable: false })
-          .bindPopup('Kristiansand Sykehus').addTo(map);
-        
+              
         L.control.layers(
           { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
-          { 'Marker': singleMarker },
+          {},
           { collapsed: false }
         ).addTo(map);
 
+        @* Saves your last click and lets you add a report
+        let lastClick = null;
 
-        /*map.on('click', p => {
+        map.on('click', (e) => {
+          lastClick = e.latlng;                 // remember last map click
           const el = document.querySelector(".coordinate");
-          if (el) el.textContent = `lat: ${p.latlng.lat}, lng: ${p.latlng.lng}`;
+          if (el) el.textContent = `lat: ${e.latlng.lat}, lng: ${e.latlng.lng}`;
         });
-        */
+
+        const dlg = document.getElementById('reportDialog');
+        const frame = document.getElementById('reportFrame');
+        document.getElementById('reportClose').addEventListener('click', () => dlg.close());
+
+        const createUrl = '@Url.Action("CreateFromMap", "Reports")'; // -> /Reports/CreateFromMap
+
+        document.getElementById('obstacleBox').addEventListener('click', () => {
+          const lat = lastClick?.lat ?? userMarker?.getLatLng()?.lat ?? map.getCenter().lat;
+          const lng = lastClick?.lng ?? userMarker?.getLatLng()?.lng ?? map.getCenter().lng;
+          frame.src = `${createUrl}?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
+          dlg.showModal();
+        });
+        *@
 
         // ---- Geolocation + follow logic
         let watchId = null;

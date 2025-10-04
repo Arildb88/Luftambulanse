@@ -13,6 +13,11 @@ namespace Gruppe4NLA.Controllers
             _logger = logger;
         }
 
+        [HttpGet("/")]
+        public IActionResult Leaflet()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();
@@ -36,7 +41,8 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
-        public IActionResult Leaflet()
+     
+        public IActionResult Administrator()
         {
             return View();
         }

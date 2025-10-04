@@ -106,5 +106,17 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
+        ////Arild test prøvde å hente inn det Einar hadde gjort, bedre å lage eget, men kjappere å teste Einar sitt SKAL SLETTES
+        //// GET /Reports/CreateFromMap  (unique URL)
+        //[HttpGet("/Reports/CreateFromMap")]
+        //public IActionResult CreateFromMap(double? lat, double? lng)
+        //{
+        //    var vm = new ReportModelWrapper { NewCoordinate = new ReportModel() };
+        //    if (lat.HasValue) vm.NewCoordinate.Latitude = lat.Value;
+        //    if (lng.HasValue) vm.NewCoordinate.Longitude = lng.Value;
+
+        //    return View("Create", vm); // reuse the same Create view
+        //}
+
     }
 }
