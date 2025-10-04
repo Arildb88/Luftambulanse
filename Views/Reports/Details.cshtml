@@ -83,8 +83,10 @@
                 map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
             
             // Makes marker with dangertype
-            obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
-            .bindPopup("@Model.DangerType").addTo(map);
+                obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
+                    .bindPopup("@Model.DangerType")
+                    .addTo(map);
+
                 
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'

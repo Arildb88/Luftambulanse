@@ -3,25 +3,31 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Connection string (debug output)
+var connectionString = builder.Configuration.GetConnectionString("OurDbConnection");
+Console.WriteLine("Using connection: " + connectionString);
+
+// Add required services
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
-    new MySqlServerVersion(new Version(11, 8, 3))));
+builder.Services.AddAuthorization(); // <-- Required to fix the error
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(11, 8, 3)))
+);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthorization(); // <-- Uses the service registered above
 
 app.MapStaticAssets();
 
@@ -29,6 +35,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
