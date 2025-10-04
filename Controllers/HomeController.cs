@@ -37,11 +37,15 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
-        public IActionResult SignIn()
+        //public IActionResult SignIn()
+        //{
+        //    return View();
+        //}
+        
+        public IActionResult About()
         {
             return View();
         }
-     
         public IActionResult Administrator()
         {
             return View();
