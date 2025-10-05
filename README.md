@@ -5,14 +5,15 @@ We have used .NET 9, Razor Views, Dependency Injection and MariaDB/MySQL for the
 
 How to get started:
 
-1. Clone the repository:
-	1. Open your terminal or command prompt (Git Bash, Powershell etc.)
-	2. Navigate to the directory where you want to clone the repository.
-	3. Enter the command:
-		4. git clone https://github.com/Arildb88/Luftambulanse.git
-		5. cd Luftambulanse (to enter the folder of the project)
-	6. Restore packages:
-		7. dotnet watch run (to start the application and open your web browser with the project launched)
+Clone the repository:
+1. Open your terminal or command prompt (Git Bash, Powershell etc.)
+2. Navigate to the directory where you want to clone the repository.
+3. Enter the command:
+git clone https://github.com/Arildb88/Luftambulanse.git
+cd Luftambulanse (to enter the folder of the project)
+6. Run application:
+Enter the command:
+dotnet watch run (to start the application and open your web browser with the project launched)
 
 You are now ready to use the application.
 We will add a login screen where you have to login with a username and password (BankID or similar)
