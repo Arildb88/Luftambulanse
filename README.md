@@ -1,130 +1,38 @@
-										Lufambulanse
-- En ASP.NET Core MVC-applikasjon som demonstrerer grunnlegende web-funksjonalitet for luftambulasnse-domene (sider som Home/Index, Privacy og Error, samtidig struktur
-   for å legge til modeller, kontrollere og views. Applikasjonen er å gi brukere en enkel og oversiktlig måte å register, og håndtere informasjon om lufthindringer. 
-   Systemet gjør det mulig å samle inn opplysninger¨, vise dem i en strukturtrert form og sikre at de kan oppdatere på en ryddig måte.
+We have made an ASP.NET Core MVC Aplication which is going to be used by Norsk Luftambulanse and Kartverket to collect data about unregistrered obstacles in their navigation map for Helicopters.
+The application allows users to registrer, view and manage information about obstacles in a structured and user friendly way.
 
-	INNHOLD
+We have used .NET 9, Razor Views, Dependency Injection and MariaDB/MySQL for the database.
 
-- 	Teknologi
+How to get started:
 
--       Krav 
+1. Clone the repository:
+	1. Open your terminal or command prompt (Git Bash, Powershell etc.)
+	2. Navigate to the directory where you want to clone the repository.
+	3. Enter the command:
+		4. git clone https://github.com/Arildb88/Luftambulanse.git
+		5. cd Luftambulanse (to enter the folder of the project)
+	6. Restore packages:
+		7. dotnet watch run (to start the application and open your web browser with the project launched)
 
--       Komme i gang 
-
--       Kjøring 
-
--       Prosjektstruktur 
-
--       Konfigurasjon 
-
--       Logging og Feil 
-
--       Testing 
-
--       Lisens
-
-	Teknologi 	
-
--       .NET 8 (ASP.NET)
-
--       Razor Views
-
--       Innebygd Dependency Injection og Logging
-
--	MariaD/MySQL
-
-- 	
-
-	Krav
-
--       .NET SDK
-
-- 	VS Code 
-
--       MariaDB/MySQL
-
- 
-	Kom i gang 	
-# Klon repo
-git clone https://github.com/Arildb88/Luftambulanse.git
-cd Luftambulanse
-
-# Gjenopprett pakker
-dotnet restore
-
-# Bygg
-dotnet build
-
-	Kjøring 
-# Start utviklingsserver
-dotnet run
-
-# eller med hot reload
-dotnet watch
-
-	Prosjektstruktur
-
-Luftambulanse/
-├─ Controllers/
-│  └─ HomeController.cs         # Returnerer Index, Privacy og Error views
-├─ Models/
-│  └─ ErrorViewModel.cs         # Brukes av feilsiden
-├─ Views/
-│  ├─ Home/
-│  │  ├─ Index.cshtml
-│  │  └─ Privacy.cshtml
-│  └─ Shared/
-│     ├─ _Layout.cshtml
-│     └─ Error.cshtml
-├─ wwwroot/                     # CSS/JS/bilder
-├─ appsettings.json             # Konfig (logging, evt. connection strings)
-└─ Program.cs / Startup.cs      # App bootstrap og routing
-
-	Konfigurasjon 
-
-All konfig ligger i appsettings.json og miljøspesifikke filer (appsettings.Development.json).
-Eksempel:
-{
-  "Logging": { "LogLevel": { "Default": "Information", "Microsoft.AspNetCore": "Warning" } },
-  "AllowedHosts": "*"
-  // "ConnectionStrings": { "Default": "Server=...;Database=...;User Id=...;Password=...;" }
-}
-
-- Dermed det legges til database, opprett en "ConnectionStrings:Defualt" og hent den i Program.cs når dere registerer DbContext.
-
-	Logging og Feil 
-- Logging leveres av ILogger<T> via dependency injection (se HomeController).
-
-- Feilsiden (/Home/Error) viser en RequestId fra Activity.Current?.Id ?? HttpContext.TraceIdentifier.
-
-- ResponseCache på Error() forhindrer caching av feilsiden.
-
-	Testing 
-- Manuelle tester: naviger til /Home/Index og /Home/Privacy.
-
-- Legg gjerne til enhetstester med xUnit:
+You are now ready to use the application.
+We will add a login screen where you have to login with a username and password (BankID or similar)
+You are prompted with a view of a map where you can:
+- Zoom in and out
+- Choose between 4 different map types
+- Report Obstacle button (does not work at the moment)
+- The red pin allowes our app to track your current position (allow tracking when prompted) and continues to track your position as you move
+	- you can turn this off by clicking the pin or move the map
+	- We are going to add a feature where you can click on the map to add a marker, that you can use as coordinates for when you report an obstacle (this function works in the Reports page)
+- The menu bar at the top allowes you to navigate to different pages (this will be modified and changes in the future)
+	- Home (the map page)
+	- Privacy (a page with privacy information)
+	- FAQ (a page with frequently asked questions)
+	- Map (was made to show the map, but is now merged with Home, Map will be deleted from the Menu)
+	- Log In (a page where you can login, this will be modified in the future)
+	- Reports (a page where you can see all the obstacles that has been reported, and you can add a new report)
+	- Administrator (a page where you can manage users, site settings and more, this page is under development)
+	- About (a page with information about the project and the team behind it)
 	
-dotnet new xunit -n Luftambulanse.Tests
-
-
-Koble testprosjektet mot webprosjektet og kjør dotnet test.
-
-
 	
 
-										Lisens
-									      MIT License
-
-									The MIT License (MIT)
-
-								Copyright (c) 2015 Chris Kibble
-
-	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
-	to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-	and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-			The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
-	WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+		
