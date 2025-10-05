@@ -94,6 +94,22 @@
           { collapsed: false }
         ).addTo(map);
 
+        map.on('click', function(e) {
+                    if (marker) marker.setLatLng(e.latlng);
+                    else marker = L.marker(e.latlng).addTo(map);
+                });
+
+         // Save location when clicked
+
+        document.getElementById("btnSaveLocation").onclick = function(e) {
+            e.preventDefault();
+            if (marker) {
+                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
+                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
+            }
+            document.getElementById("mapModal").style.display = "none";
+        };
+
         @* Saves your last click and lets you add a report
         let lastClick = null;
 
@@ -240,6 +256,27 @@
         });
 
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(map);
+
+        // Make the "Report Obstacle" box solid (no click-through)
+        const obstacleBox = document.getElementById('obstacleBox');
+
+        // Ensure the box itself can receive clicks
+        obstacleBox.style.pointerEvents = 'auto';
+
+        // Stop all relevant events from reaching the map
+        L.DomEvent.disableClickPropagation(obstacleBox);
+        L.DomEvent.disableScrollPropagation(obstacleBox);
+
+        // Extra safety for all browsers (capture phase)
+        ['pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','click','dblclick','contextmenu']
+          .forEach(t => obstacleBox.addEventListener(t, e => { e.stopPropagation(); e.preventDefault(); }, true));
+
+        // Your click handler (open dialog, etc.)
+        obstacleBox.addEventListener('click', (e) => {
+          // do NOT place a marker here
+          // open your report UI / modal instead
+        });
+
 
     </script>
 </body>
