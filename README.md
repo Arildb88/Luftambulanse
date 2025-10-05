@@ -9,11 +9,11 @@ Clone the repository:
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)
 2. Navigate to the directory where you want to clone the repository.
 3. Enter the command:
-	4. git clone https://github.com/Arildb88/Luftambulanse.git
-	5. cd Luftambulanse (to enter the folder of the project)
+4. git clone https://github.com/Arildb88/Luftambulanse.git
+5. cd Luftambulanse (to enter the folder of the project)
 6. Run application:
-	7. Enter the command:
-	8. dotnet watch run (to start the application and open your web browser with the project launched)
+7. Enter the command:
+8. dotnet watch run (to start the application and open your web browser with the project launched)
 
 You are now ready to use the application.
 We will add a login screen where you have to login with a username and password (BankID or similar)
