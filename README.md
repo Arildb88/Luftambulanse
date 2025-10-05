@@ -15,10 +15,10 @@ Clone the repository:<br>
 Enter the command:<br>
 dotnet watch run (to start the application and open your web browser with the project launched)
 
-**How to use the application:**>br
-You are now ready to use the application.
-We will add a login screen where you have to login with a username and password (BankID or similar)
-You are prompted with a view of a map where you can:
+**How to use the application:**<br>
+You are now ready to use the application.<br>
+We will add a login screen where you have to login with a username and password (BankID or similar)<br>
+You are prompted with a view of a map where you can:<br>
 - Zoom in and out
 - Choose between 4 different map types
 - Report Obstacle button (does not work at the moment)
