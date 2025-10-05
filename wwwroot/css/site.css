@@ -117,5 +117,10 @@ body {
     margin-bottom: 5px; /* space between + and - */
 }
 
+#obstacleBox {
+    pointer-events: auto; /* make sure clicks hit the box */
+    z-index: 1001; /* slightly above other controls */
+}
+
 
 
