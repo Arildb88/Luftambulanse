@@ -1,21 +1,21 @@
-**About our Project:**
+**About our Project:** <br>
 We have made an ASP.NET Core MVC Aplication which is going to be used by Norsk Luftambulanse and Kartverket to collect data about unregistrered obstacles in their navigation map for Helicopters.
 The application allows users to registrer, view and manage information about obstacles in a structured and user friendly way.
 
 We have used .NET 9, Razor Views, Dependency Injection, NuGet files and MariaDB/MySQL for the database.
 
-**How to get started:**
-Clone the repository:
+**How to get started:** <br>
+Clone the repository:<br>
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)
 2. Navigate to the directory where you want to clone the repository.
 3. Enter the command:
-4. git clone https://github.com/Arildb88/Luftambulanse.git
-5. cd Luftambulanse (to enter the folder of the project)
-6. Run application:
-7. Enter the command:
-8. dotnet watch run (to start the application and open your web browser with the project launched)
+<br>git clone https://github.com/Arildb88/Luftambulanse.git
+<br>cd Luftambulanse (to enter the folder of the project)
+4. Run application: <br>
+Enter the command:<br>
+dotnet watch run (to start the application and open your web browser with the project launched)
 
-**How to use the application:**
+**How to use the application:**>br
 You are now ready to use the application.
 We will add a login screen where you have to login with a username and password (BankID or similar)
 You are prompted with a view of a map where you can:
