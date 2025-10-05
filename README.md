@@ -37,7 +37,8 @@ You are prompted with a view of a map where you can:<br>
 
 
 **Project Structure:**<br>
-The project is structured in a way that follows the MVC (Model-View-Controller) pattern. The main folders are:<br>
+The project is structured in a way that follows the MVC (Model-View-Controller) pattern.<br>
+The main folders are:<br>
 - Controllers: Contains the controllers that handle the requests and responses.
 - Models: Contains the models that represent the data and business logic.
 - Views: Contains the Razor views that render the HTML for the user interface.
