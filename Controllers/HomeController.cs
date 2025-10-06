@@ -13,6 +13,11 @@ namespace Gruppe4NLA.Controllers
             _logger = logger;
         }
 
+        [HttpGet("/")]
+        public IActionResult Leaflet()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             return View();
@@ -28,11 +33,20 @@ namespace Gruppe4NLA.Controllers
             return View();
         }
 
-        public IActionResult SignIn()
+        public IActionResult LogIn()
         {
             return View();
         }
-        public IActionResult Leaflet()
+        //public IActionResult SignIn()
+        //{
+        //    return View();
+        //}
+        
+        public IActionResult About()
+        {
+            return View();
+        }
+        public IActionResult Administrator()
         {
             return View();
         }

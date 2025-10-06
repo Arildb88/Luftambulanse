@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Gruppe4NLA.styles.css" asp-append-version="true" />
+    
+
+
 </head>
-<body>
+    <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -30,12 +33,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="FAQ">FAQ</a>
                         </li>
-                        <li class="nav-item">
+                        <!--<li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SignIn">Sign in</a> 
-                        </li>
+                        </li> -->
                         <!--Adds the Leaflet map to the navigation menu-->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Leaflet">Map</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LogIn">Log In</a>
+                        </li>
+                        <!-- Adds the report to navigation menu-->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Reports" asp-action="Index">Reports</a>
+                        </li>
+                        <!-- Adds the Administrator tp navigation menu-->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Administrator">Administrator</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About Us</a>
                         </li>
                     </ul>
                 </div>
@@ -48,7 +65,7 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer">
         <div class="container">
             &copy; 2025 - Gruppe4NLA - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
