@@ -12,9 +12,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization(); // <-- Required to fix the error
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(11, 8, 3)))
+    options.UseMySql(
+        connectionString,
+        new MariaDbServerVersion(new Version(11, 8, 3)), // <-- correct type for MariaDB
+        mySqlOptions => mySqlOptions.EnableRetryOnFailure(5)
+    )
 );
 
+// Original connection for local host
+//(options =>
+//    options.UseMySql(connectionString, new MySqlServerVersion(new Version(11, 8, 3)))
+//);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
