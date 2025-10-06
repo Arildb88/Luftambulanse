@@ -1,23 +1,24 @@
+**About our Project:** <br>
 We have made an ASP.NET Core MVC Aplication which is going to be used by Norsk Luftambulanse and Kartverket to collect data about unregistrered obstacles in their navigation map for Helicopters.
 The application allows users to registrer, view and manage information about obstacles in a structured and user friendly way.
 
-We have used .NET 9, Razor Views, Dependency Injection and MariaDB/MySQL for the database.
+We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql) and MariaDB/MySQL for the database.
 
-How to get started:
-
-Clone the repository:
+**How to get started:** <br>
+Clone the repository:<br>
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)
 2. Navigate to the directory where you want to clone the repository.
 3. Enter the command:
-4. git clone https://github.com/Arildb88/Luftambulanse.git
-5. cd Luftambulanse (to enter the folder of the project)
-6. Run application:
-7. Enter the command:
-8. dotnet watch run (to start the application and open your web browser with the project launched)
+<br>git clone https://github.com/Arildb88/Luftambulanse.git
+<br>cd Luftambulanse (to enter the folder of the project)
+4. Run application: <br>
+Enter the command:<br>
+dotnet watch run (to start the application and open your web browser with the project launched)
 
-You are now ready to use the application.
-We will add a login screen where you have to login with a username and password (BankID or similar)
-You are prompted with a view of a map where you can:
+**How to use the application:**<br>
+You are now ready to use the application.<br>
+We will add a login screen where you have to login with a username and password (BankID or similar)<br>
+You are prompted with a view of a map where you can:<br>
 - Zoom in and out
 - Choose between 4 different map types
 - Report Obstacle button (does not work at the moment)
@@ -33,7 +34,20 @@ You are prompted with a view of a map where you can:
 	- Reports (a page where you can see all the obstacles that has been reported, and you can add a new report)
 	- Administrator (a page where you can manage users, site settings and more, this page is under development)
 	- About (a page with information about the project and the team behind it)
-	
+
+
+**Project Structure:**<br>
+The project is structured in a way that follows the MVC (Model-View-Controller) pattern.<br>
+The main folders are:<br>
+- Controllers: Contains the controllers that handle the requests and responses.
+- Models: Contains the models that represent the data and business logic.
+- Views: Contains the Razor views that render the HTML for the user interface.
+- wwwroot: Contains static files like CSS, JavaScript, and images.
+- Data: Contains the database context and migration files.
+- Migrations: Contains Entity Framework Core migration files for database schema changes.
+- Program.cs: Main entry point for the application.
+- README.md: This file, containing information about the project.
+- .gitignore: Specifies files and directories to be ignored by Git to make merging branches seamless.
 	
 
 		

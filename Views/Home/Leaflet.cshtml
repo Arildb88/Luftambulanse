@@ -94,21 +94,29 @@
           { collapsed: false }
         ).addTo(map);
 
-        map.on('click', function(e) {
-                    if (marker) marker.setLatLng(e.latlng);
-                    else marker = L.marker(e.latlng).addTo(map);
-                });
+        //let marker be null in the beginning
+        let marker = null;
 
-         // Save location when clicked
+        // marker when map is clicked, if marker exists
+        map.on('click', (e) => {
+          if (marker) {
+            marker.setLatLng(e.latlng);
+          } else {
+            marker = L.marker(e.latlng).addTo(map);
+          }
+        });
 
-        document.getElementById("btnSaveLocation").onclick = function(e) {
-            e.preventDefault();
-            if (marker) {
-                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
-                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
-            }
-            document.getElementById("mapModal").style.display = "none";
-        };
+        
+         // Save location when clicked From EINAR
+
+        // document.getElementById("btnSaveLocation").onclick = function(e) {
+        //     e.preventDefault();
+        //     if (marker) {
+        //         document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
+        //         document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
+        //     }
+        //     document.getElementById("mapModal").style.display = "none";
+        // };
 
         @* Saves your last click and lets you add a report
         let lastClick = null;
