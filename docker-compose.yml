@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11.8.3
+    container_name: mariadb-obstaclereports
+    environment:
+      - MARIADB_ROOT_PASSWORD=9991
+      - MARIADB_DATABASE=obstaclereports
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  mariadb_data:
+    driver: local
