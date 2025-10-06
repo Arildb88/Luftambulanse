@@ -1,16 +1,104 @@
-using Microsoft.AspNetCore.Mvc;
-using Gruppe4NLA.Models;
+using Gruppe4NLA.DataContext;
 
+using Gruppe4NLA.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+
 
 namespace Gruppe4NLA.Controllers
 {
     public class ReportsController : Controller
     {
-        // Fake temporary reports (REPLACE LATER WITH DB)
-        private static readonly List<ReportModel> _sample = new List<ReportModel>
+        private readonly ApplicationContext _context;
+
+        public ReportsController(ApplicationContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var reports = await _context.Reports
+                .OrderByDescending(r => r.DateSent)
+                .ToListAsync();
+
+            return View(reports);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(ReportModelWrapper model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.SubmittedCoordinates = await _context.Reports
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync();
+
+                return View(model);
+            }
+
+            var newReport = new ReportModel
+            {
+                Latitude = model.NewCoordinate.Latitude,
+                Longitude = model.NewCoordinate.Longitude,
+                SenderName = model.NewCoordinate.SenderName,
+                DangerType = model.NewCoordinate.DangerType,
+                Details = model.NewCoordinate.Details,
+                DateSent = DateTime.Now
+            };
+
+            _context.Reports.Add(newReport);
+            await _context.SaveChangesAsync();
+
+            model.NewCoordinate = new ReportModel(); // Reset input
+            model.SubmittedCoordinates = await _context.Reports
+                .OrderByDescending(r => r.DateSent)
+                .ToListAsync();
+
+            ViewBag.Message = "Submitted successfully!";
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var model = new ReportModelWrapper
+            {
+                SubmittedCoordinates = await _context.Reports
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync()
+            };
+            return View(model);
+        }
+
+        // Show the "details" page
+        public async Task<IActionResult> Details(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null)
+            {
+                return NotFound();
+            }
+
+            return View(report);
+        }
+    }
+}
+
+// Add Create, Details, etc. here as needed
+
+
+
+// Fake temporary reports (REPLACE LATER WITH DB)
+
+/*
+
+private static readonly List<ReportModel> _sample = new List<ReportModel>
 
         {
             new ReportModel
@@ -46,7 +134,7 @@ namespace Gruppe4NLA.Controllers
         };
 
         // GET: /Reports
-        public IActionResult Index()
+        /*public IActionResult Index()
         {
             var reports = _sample.OrderByDescending(r => r.DateSent).ToList();
             return View(reports);
@@ -98,7 +186,6 @@ namespace Gruppe4NLA.Controllers
                 Id = nextId,
                 DateSent = DateTime.Now
             });
-
             model.NewCoordinate = new ReportModel(); // Reset input
             model.SubmittedCoordinates = _sample;
 
@@ -120,3 +207,5 @@ namespace Gruppe4NLA.Controllers
 
     }
 }
+
+*/
