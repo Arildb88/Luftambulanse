@@ -7,11 +7,14 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=9991
       - MARIADB_DATABASE=obstaclereports
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=9991
     ports:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-
+      - ./data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
 volumes:
   mariadb_data:
     driver: local
