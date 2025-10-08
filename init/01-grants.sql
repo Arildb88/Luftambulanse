@@ -1,2 +1,0 @@
-GRANT ALL PRIVILEGES ON obstaclereports.* TO 'admin'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;

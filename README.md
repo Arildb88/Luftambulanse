@@ -18,7 +18,7 @@ Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
 5. Run docker compose file in terminal (Git Bash, Powershell etc.):
 Enter the command: <br>
 docker compose up -d (Runs the docker compose file that builds the database)<br>
-dotnet ef database update (Updates the database to the project)<br>
+dotnet ef database update --project project (Updates the database to the project)<br>
 (if you get access denied from admin user, try to enter this in your command prompt to deactivate your local Mariadb server thats running in the background) <br>
 net stop MariaDB >nul 2>&1 <br>
 net stop mysql >nul 2>&1 <br>
@@ -26,7 +26,7 @@ Run the command again if you needed to shut down MariaDb container: <br>
 dotnet ef database update<br>
 6. Run application: <br>
 Enter the command:<br>
-dotnet watch run (to start the application and open your web browser with the project launched)
+dotnet watch run --project project (to start the application and open your web browser with the project launched)
 
 **How to use the application:**<br>
 You are now ready to use the application.<br>

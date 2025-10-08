@@ -1,0 +1,136 @@
+﻿@*
+<!-- Einar -->
+
+<!DOCTYPE html>
+
+@using Gruppe4NLA.Models
+@model ReportModelWrapper
+<!-- Page title -->
+@{
+    ViewData["Title"] = "Submission of coordinates";
+}
+
+<!-- Shows page title -->
+<h2>@ViewData["Title"]</h2>
+
+@if (ViewBag.Message != null)
+{
+    <p style="color:green">@ViewBag.Message</p>
+}
+
+<!-- Makes form -->
+
+<form asp-action="CoordinatesTest" method="post">
+    <div>
+        <label>Latitude:</label>
+        <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
+        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+        <br><br>
+    </div>
+
+    <div>
+        <label>Longitude:</label>
+        <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
+        <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
+    </div>
+    <button type="submit">Submit</button>
+</form>
+
+
+<!-- Makes button -->
+<button id="btnAdd" type="button">Open Map</button>
+
+<!-- Title for submitted coordinates -->
+<h3>Submitted Coordinates</h3>
+
+<!-- Variable "coord" will show for each instance -->
+<ul>
+    @foreach (var coord in Model.SubmittedCoordinates)
+    {
+        <li>
+            Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
+            Lng: @(coord.Longitude?.ToString("F6") ?? "N/A")
+        </li>
+    }
+</ul>
+
+
+<!-- Styling the map -->
+<div id="mapModal" style="
+            display:none;
+            position:fixed;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            width:80%;
+            height:80%;
+            background:white;
+            border:1px solid black;
+            padding:10px;
+            z-index:1000;
+        ">
+    <div id="map" style="width:100%; height:90%;"></div>
+    <button id="btnSaveLocation">Save Location</button>
+    <button id="btnCloseMap">Close</button>
+</div>
+
+<!-- Script to make map -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    
+    <!-- Import map through link (should be downloaded later) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    
+
+    <script>
+
+        // Initialize map and marker
+
+        var map, marker;
+
+        // Button to add coordinates
+
+        document.getElementById("btnAdd").onclick = function() {
+            document.getElementById("mapModal").style.display = "block";
+
+            // Set view and zoom
+
+            if (!map) {
+                map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 13);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Add marker where the user clicks
+
+                map.on('click', function(e) {
+                    if (marker) marker.setLatLng(e.latlng);
+                    else marker = L.marker(e.latlng).addTo(map);
+                });
+            }
+        };
+
+        // Save location when clicked
+
+        document.getElementById("btnSaveLocation").onclick = function(e) {
+            e.preventDefault();
+            if (marker) {
+                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
+                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
+            }
+            document.getElementById("mapModal").style.display = "none";
+        };
+
+        // Close map when clicked. Does not save data.
+
+        document.getElementById("btnCloseMap").onclick = function(e) {
+            e.preventDefault();
+            document.getElementById("mapModal").style.display = "none";
+        };
+    </script>
+} *@
+
+
