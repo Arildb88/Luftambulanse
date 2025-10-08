@@ -1,0 +1,43 @@
+@model IEnumerable<ReportModel>
+@* This view lists multiple Report objects in a table *@
+
+@{
+    ViewData["Title"] = "Reports"; 
+    @* Sets the page title *@
+}
+
+<h2>Reports</h2>
+
+@* Link to create a new report *@
+<p>
+    <a asp-action="Create" class="btn btn-primary">Add New Report</a>
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Sender</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Danger Type</th>
+        <th>DateSent</th>
+    </tr>
+    </thead>
+    <tbody>
+    @* Loop through reports and show them as rows *@
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.SenderName</td>
+            <td>@r.Latitude</td>
+            <td>@r.Longitude</td>
+            <td>@r.DangerType</td>
+            <td>@r.DateSent</td>
+            <td>
+                @* Link to details page *@
+                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-info btn-sm">Details</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

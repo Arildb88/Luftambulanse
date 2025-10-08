@@ -7,7 +7,7 @@ definer_user=mariadb.sys
 definer_host=localhost
 suid=0
 with_check_option=0
-timestamp=0001759860797018124
+timestamp=0001759917029101119
 create-version=2
 source=SELECT t.TABLE_SCHEMA,\n       t.TABLE_NAME,\n       privs.GRANTEE,\n       privs.PRIVILEGE_TYPE,\n       privs.LEVEL\nFROM INFORMATION_SCHEMA.TABLES AS t\nJOIN ( SELECT NULL AS TABLE_SCHEMA,\n              NULL AS TABLE_NAME,\n              GRANTEE,\n              PRIVILEGE_TYPE,\n             \'GLOBAL\' LEVEL\n           FROM INFORMATION_SCHEMA.USER_PRIVILEGES\n         UNION\n       SELECT TABLE_SCHEMA,\n              NULL AS TABLE_NAME,\n              GRANTEE,\n              PRIVILEGE_TYPE,\n              \'SCHEMA\' LEVEL\n           FROM INFORMATION_SCHEMA.SCHEMA_PRIVILEGES\n         UNION\n       SELECT TABLE_SCHEMA,\n              TABLE_NAME,\n              GRANTEE,\n              PRIVILEGE_TYPE,\n              \'TABLE\' LEVEL\n           FROM INFORMATION_SCHEMA.TABLE_PRIVILEGES\n       ) privs\n    ON (t.TABLE_SCHEMA = privs.TABLE_SCHEMA OR privs.TABLE_SCHEMA IS NULL)\n   AND (t.TABLE_NAME = privs.TABLE_NAME OR privs.TABLE_NAME IS NULL)\n   AND privs.PRIVILEGE_TYPE IN (\'SELECT\', \'INSERT\', \'UPDATE\', \'DELETE\',\n                                \'CREATE\', \'ALTER\', \'DROP\', \'INDEX\',\n                                \'REFERENCES\', \'TRIGGER\', \'GRANT OPTION\',\n                                \'SHOW VIEW\', \'DELETE HISTORY\')\nWHERE t.TABLE_SCHEMA NOT IN (\'sys\', \'mysql\',\'information_schema\',\n                             \'performance_schema\');
 client_cs_name=utf8mb3

@@ -1,0 +1,126 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+.footer {
+    background-color: ghostwhite;
+    border-top: thin;
+}
+
+@keyframes greenToRed {
+    from {
+        background-color: green;
+    }
+
+    to {
+        background-color: red;
+    }
+}
+
+.btnSimple {
+    background-color: #198754;
+    border: none;
+    color: ghostwhite;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 6px;
+}
+.btnSimple:hover {
+    background-color: darkgreen;
+}
+
+
+.btnBack {
+    background-color: lightgrey;
+    border: none;
+    color: black;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 6px;
+}
+.btnBack:hover {
+    background-color: darkgrey;
+}
+
+.bgGreen {
+    background-image: url('/Content/Images/Topographic_green.png');
+    background-size: cover;
+}
+
+#map {
+    position: relative;
+}
+
+#obstacleBox {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.95);
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    font: 13px/1.2 system-ui, sans-serif;
+    cursor: pointer;
+
+    /* Size */
+    width: 85px;
+    height: 85px;
+
+
+    /* Center text */
+    display: flex;
+    align-items: center; /* vertical center */
+    justify-content: center; /* horizontal center */
+    text-align: center;
+}
+
+/* Target the zoom control buttons */
+.leaflet-control-zoom a.leaflet-control-zoom-in,
+.leaflet-control-zoom a.leaflet-control-zoom-out {
+    width: 50px !important; /* default ~26px */
+    height: 50px !important; /* default ~26px */
+    font-size: 24px !important; /* make + and - bigger */
+    line-height: 50px !important; /* vertically center the + / - */
+}
+.leaflet-control-zoom-in {
+    margin-bottom: 5px; /* space between + and - */
+}
+
+#obstacleBox {
+    pointer-events: auto; /* make sure clicks hit the box */
+    z-index: 1001; /* slightly above other controls */
+}
+
+
+
