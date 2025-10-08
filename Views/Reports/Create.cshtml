@@ -52,14 +52,14 @@
     @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewCoordinate.Latitude"></label>
-        <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
+        <input asp-for="NewCoordinate.Latitude" type="text" step="any" />
         <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
         <label asp-for="NewCoordinate.Longitude"></label>
-        <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
+        <input asp-for="NewCoordinate.Longitude" type="text" step="any" />
         <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
     </div>
 
@@ -80,10 +80,10 @@
     <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
-<!-- Makes button -->
+@* <!-- Makes button -->
 <br>
 <button id="btnAdd" class="btnSimple" type="button">Open Map</button>
-
+ *@
 <!-- Title for submitted coordinates -->
 
 <h3><br>Submitted Coordinates</h3>
@@ -99,7 +99,7 @@
     }
 </ul>
 
-
+@* 
 <!-- Styling the map -->
 <div id="mapModal" style="
             display:none;
@@ -179,5 +179,5 @@
             e.preventDefault();
             document.getElementById("mapModal").style.display = "none";
         };
-    </script>
+    </script> *@
 }

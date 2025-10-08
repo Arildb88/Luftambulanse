@@ -8,10 +8,23 @@ We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (
 Clone the repository:<br>
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)
 2. Navigate to the directory where you want to clone the repository.
-3. Enter the command:
-<br>git clone https://github.com/Arildb88/Luftambulanse.git
-<br>cd Luftambulanse (to enter the folder of the project)
-4. Run application: <br>
+3. Enter the command:<br>
+git clone https://github.com/Arildb88/Luftambulanse.git <br>
+cd Luftambulanse (to enter the folder of the project) <br>
+4. Install Docker Desktop<br>
+Enter the command or search for Docker Desktop download
+Invoke-WebRequest -UseBasicParsing -OutFile docker-desktop-installer.exe https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
+Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
+5. Run docker compose file in terminal (Git Bash, Powershell etc.):
+Enter the command: <br>
+docker compose up -d (Runs the docker compose file that builds the database)<br>
+dotnet ef database update (Updates the database to the project)<br>
+(if you get access denied from admin user, try to enter this in your command prompt to deactivate your local Mariadb server thats running in the background) <br>
+net stop MariaDB >nul 2>&1 <br>
+net stop mysql >nul 2>&1 <br>
+Run the command again if you needed to shut down MariaDb container: <br>
+dotnet ef database update<br>
+6. Run application: <br>
 Enter the command:<br>
 dotnet watch run (to start the application and open your web browser with the project launched)
 

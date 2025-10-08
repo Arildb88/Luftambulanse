@@ -65,17 +65,25 @@ namespace Gruppe4NLA.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(double? lat, double? lng)
         {
             var model = new ReportModelWrapper
             {
+                NewCoordinate = new ReportModel(),
                 SubmittedCoordinates = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
-            return View(model);
-        }
 
+            if (lat.HasValue)
+                model.NewCoordinate.Latitude = lat.Value;
+
+            if (lng.HasValue)
+                model.NewCoordinate.Longitude = lng.Value;
+
+            return View(model);
+        }        
+        
         // Show the "details" page
         public async Task<IActionResult> Details(int id)
         {
@@ -87,6 +95,26 @@ namespace Gruppe4NLA.Controllers
 
             return View(report);
         }
+
+        // GET /Reports/CreateFromMap?lat=..&lng=..
+        [HttpGet("/Reports/CreateFromMap")]
+        public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
+        {
+            var vm = new ReportModelWrapper
+            {
+                NewCoordinate = new ReportModel(),
+                SubmittedCoordinates = await _context.Reports
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync()
+            };
+
+            if (lat.HasValue) vm.NewCoordinate.Latitude = lat.Value;
+            if (lng.HasValue) vm.NewCoordinate.Longitude = lng.Value;
+
+            // reuse the same Create view
+            return View("Create", vm);
+        }
+
     }
 }
 
@@ -192,18 +220,6 @@ private static readonly List<ReportModel> _sample = new List<ReportModel>
             ViewBag.Message = "Submitted successfully!";
             return View(model);
         }
-
-        ////Arild test prøvde å hente inn det Einar hadde gjort, bedre å lage eget, men kjappere å teste Einar sitt SKAL SLETTES
-        //// GET /Reports/CreateFromMap  (unique URL)
-        //[HttpGet("/Reports/CreateFromMap")]
-        //public IActionResult CreateFromMap(double? lat, double? lng)
-        //{
-        //    var vm = new ReportModelWrapper { NewCoordinate = new ReportModel() };
-        //    if (lat.HasValue) vm.NewCoordinate.Latitude = lat.Value;
-        //    if (lng.HasValue) vm.NewCoordinate.Longitude = lng.Value;
-
-        //    return View("Create", vm); // reuse the same Create view
-        //}
 
     }
 }
