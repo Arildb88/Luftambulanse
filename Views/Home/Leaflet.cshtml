@@ -1,33 +1,35 @@
-﻿
-<!--Einar, Arild-->
+﻿@* Leaflet.cshtml — map + in-page modal for Add Report *@
+@* Einar, Arild *@
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Leaflet Tutorial</title>
+    <title>Leaflet – Report Obstacles</title>
 
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
 
-    <!-- Link to CSS style sheet-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <!-- (Optional) your own stylesheet -->
     <link rel="stylesheet" href="map.css">
 
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
         }
 
         #map {
             width: 100%;
             height: 86vh;
+            position: relative;
         }
 
-        /* Coordinate readout: don’t block mouse/touch */
+        /* Centered coordinate readout (non-blocking) */
         .coordinate {
             position: absolute;
             bottom: 10px;
@@ -40,6 +42,44 @@
             z-index: 1000;
             pointer-events: none;
         }
+
+        /* Floating "Report Obstacle" button */
+        #obstacleBox {
+            position: absolute; /* relative to the #map container */
+            bottom: 20px; /* distance from bottom of map */
+            right: 20px; /* distance from right side of map */
+            background: #1976d2;
+            color: #fff;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1100; /* above the map but below modals */
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            user-select: none;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+            #obstacleBox:hover {
+                background: #1565c0;
+                transform: translateY(-2px);
+            }
+
+        /* Dialog look */
+        dialog#reportDialog {
+            padding: 0;
+            border: none;
+            width: 70vw;
+            height: 80vh;
+            max-width: 900px;
+            max-height: 850px;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        dialog::backdrop {
+            background: rgba(0,0,0,0.35);
+        }
     </style>
 </head>
 
@@ -49,243 +89,217 @@
         <div id="obstacleBox" class="leaflet-control">Report Obstacle</div>
     </div>
 
-        <!-- Leaflet JS -->
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
 
-    @*Arild test 
-    <dialog id="reportDialog" style="padding:0;border:none;width:70vw;height:80vh;">
-        <div style="display:flex;flex-direction:column;height:100%;background:#fff;border-radius:8px;overflow:hidden">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #ddd">
+    <!-- In-page modal that loads the Add Report page -->
+    <dialog id="reportDialog">
+        <div style="display:flex;flex-direction:column;height:100%;background:#fff;border-radius:10px;overflow:hidden">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #e5e5e5">
                 <strong>Add Report</strong>
                 <button id="reportClose" class="btnBack" type="button">Close</button>
             </div>
             <iframe id="reportFrame" style="flex:1;border:0;"></iframe>
         </div>
     </dialog>
-    *@
 
     <script>
-        // ---- Map init
-        const map = L.map('map', {minZoom: 4}).setView([58.1638332, 7.9812789], 16);
+        // ---------------- Map init ----------------
+        const map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
 
         const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
         const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-          minZoom: 0, maxZoom: 20, ext: 'png',
-          attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+            minZoom: 0, maxZoom: 20, ext: 'png',
+            attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
         });
 
         const googleStreets = L.tileLayer('https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
-          maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3']
+            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
         const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
-          maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3']
+            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
-              
         L.control.layers(
-          { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
-          {},
-          { collapsed: false }
+            { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
+            {},
+            { collapsed: false }
         ).addTo(map);
 
-        //let marker be null in the beginning
+        // ---------------- Marker placement ----------------
         let marker = null;
 
-        // marker when map is clicked, if marker exists
+        // Place/move a single marker when the map is clicked
         map.on('click', (e) => {
-          if (marker) {
-            marker.setLatLng(e.latlng);
-          } else {
-            marker = L.marker(e.latlng).addTo(map);
-          }
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            }
+
+            // Update coordinate readout
+            const el = document.querySelector(".coordinate");
+            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
         });
 
-        
-         // Save location when clicked From EINAR
-
-        // document.getElementById("btnSaveLocation").onclick = function(e) {
-        //     e.preventDefault();
-        //     if (marker) {
-        //         document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
-        //         document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
-        //     }
-        //     document.getElementById("mapModal").style.display = "none";
-        // };
-
-        @* Saves your last click and lets you add a report
-        let lastClick = null;
-
-        map.on('click', (e) => {
-          lastClick = e.latlng;                 // remember last map click
-          const el = document.querySelector(".coordinate");
-          if (el) el.textContent = `lat: ${e.latlng.lat}, lng: ${e.latlng.lng}`;
-        });
-
-        const dlg = document.getElementById('reportDialog');
-        const frame = document.getElementById('reportFrame');
-        document.getElementById('reportClose').addEventListener('click', () => dlg.close());
-
-        const createUrl = '@Url.Action("CreateFromMap", "Reports")'; // -> /Reports/CreateFromMap
-
-        document.getElementById('obstacleBox').addEventListener('click', () => {
-          const lat = lastClick?.lat ?? userMarker?.getLatLng()?.lat ?? map.getCenter().lat;
-          const lng = lastClick?.lng ?? userMarker?.getLatLng()?.lng ?? map.getCenter().lng;
-          frame.src = `${createUrl}?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
-          dlg.showModal();
-        });
-        *@
-
-        // ---- Geolocation + follow logic
+        // ---------------- Geolocation follow (optional) ----------------
         let watchId = null;
         let following = false;
         let userMarker = null;
         let accuracyCircle = null;
 
         function renderUserLocation(lat, lng, accuracy) {
-          if (!userMarker) {
-            userMarker = L.marker([lat, lng], { title: 'You' }).addTo(map);
-          } else {
-            userMarker.setLatLng([lat, lng]);
-          }
+            if (!userMarker) {
+                userMarker = L.marker([lat, lng], { title: 'You' }).addTo(map);
+            } else {
+                userMarker.setLatLng([lat, lng]);
+            }
 
-          if (!accuracyCircle) {
-            accuracyCircle = L.circle([lat, lng], {
-              radius: accuracy, color: '#2a83ff', weight: 0.3,
-              fillColor: '#2a83ff', fillOpacity: 0.1
-            }).addTo(map);
-          } else {
-            accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy);
-          }
+            if (!accuracyCircle) {
+                accuracyCircle = L.circle([lat, lng], {
+                    radius: accuracy, color: '#2a83ff', weight: 0.3,
+                    fillColor: '#2a83ff', fillOpacity: 0.1
+                }).addTo(map);
+            } else {
+                accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy);
+            }
         }
 
         function onPositionSuccess(position) {
-          const { latitude: lat, longitude: lng, accuracy } = position.coords;
-          renderUserLocation(lat, lng, accuracy);
-          if (following) {
-            map.setView([lat, lng], Math.max(map.getZoom(), 16), { animate: true });
-          }
+            const { latitude: lat, longitude: lng, accuracy } = position.coords;
+            renderUserLocation(lat, lng, accuracy);
+            if (following) {
+                map.setView([lat, lng], Math.max(map.getZoom(), 16), { animate: true });
+            }
         }
 
         function onPositionError(err) {
-          const msgs = {
-            1: 'Geolocation permission denied. Enable it in your browser.',
-            2: 'Position unavailable. Try enabling GPS/location services.',
-            3: 'Timeout. Please try again.'
-          };
-          alert(msgs[err.code] || 'Couldn’t get your position.');
-          setFollowing(false);
+            const msgs = {
+                1: 'Geolocation permission denied. Enable it in your browser.',
+                2: 'Position unavailable. Try enabling GPS/location services.',
+                3: 'Timeout. Please try again.'
+            };
+            alert(msgs[err.code] || 'Couldn’t get your position.');
+            setFollowing(false);
         }
 
         function startWatch() {
-          if (!('geolocation' in navigator)) {
-            alert('Your browser does not support geolocation.');
-            return;
-          }
-          if (watchId !== null) return;
-          // Immediate
-          navigator.geolocation.getCurrentPosition(onPositionSuccess, onPositionError, {
-            enableHighAccuracy: true, timeout: 10000, maximumAge: 0
-          });
-          // Continuous
-          watchId = navigator.geolocation.watchPosition(onPositionSuccess, onPositionError, {
-            enableHighAccuracy: true, timeout: 20000, maximumAge: 5000
-          });
+            if (!('geolocation' in navigator)) {
+                alert('Your browser does not support geolocation.');
+                return;
+            }
+            if (watchId !== null) return;
+            navigator.geolocation.getCurrentPosition(onPositionSuccess, onPositionError, {
+                enableHighAccuracy: true, timeout: 10000, maximumAge: 0
+            });
+            watchId = navigator.geolocation.watchPosition(onPositionSuccess, onPositionError, {
+                enableHighAccuracy: true, timeout: 20000, maximumAge: 5000
+            });
         }
 
         function stopWatch() {
-          if (watchId !== null) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
-          }
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
         }
 
         function isLocalSecure() {
-          return window.isSecureContext ||
-                 ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+            return window.isSecureContext ||
+                ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
         }
 
         function setFollowing(isOn) {
-          following = isOn;
-          if (isOn) {
-            if (isLocalSecure()) {
-              startWatch();
+            following = isOn;
+            if (isOn) {
+                if (isLocalSecure()) startWatch();
+                else {
+                    alert('Geolocation follow requires HTTPS or localhost/127.0.0.1/::1.');
+                    following = false;
+                }
             } else {
-              alert('Geolocation follow requires HTTPS or localhost/127.0.0.1/::1.');
-              following = false;
+                stopWatch();
             }
-          } else {
-            // stop to save battery when paused
-            stopWatch();
-          }
-          // Update the Leaflet control’s look
-          if (followCtrl && followCtrl.setUi) followCtrl.setUi(following);
+            if (followCtrl && followCtrl.setUi) followCtrl.setUi(following);
         }
 
-        // Pause follow when user interacts (so you can pan/zoom freely)
-        map.on('dragstart zoomstart', () => {
-          if (following) setFollowing(false);
-        });
+        // Pause following when user interacts
+        map.on('dragstart zoomstart', () => { if (following) setFollowing(false); });
 
-
-
-        // ---- Leaflet-style control (📍 pin that turns blue)
+        // Leaflet control for toggling follow
         const FollowControl = L.Control.extend({
-          onAdd: function () {
-            const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-            const link = L.DomUtil.create('a', '', container);
-            link.href = '#';
-            link.title = 'Find me';
-            link.innerHTML = '📍';
-            link.style.width = '50px';
-            link.style.height = '50px';
-            link.style.lineHeight = '50px';
-            link.style.textAlign = 'center';
-            link.style.fontSize = '20px';
+            onAdd: function () {
+                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                const link = L.DomUtil.create('a', '', container);
+                link.href = '#';
+                link.title = 'Find me';
+                link.innerHTML = '📍';
+                link.style.width = '50px';
+                link.style.height = '50px';
+                link.style.lineHeight = '50px';
+                link.style.textAlign = 'center';
+                link.style.fontSize = '20px';
 
-            L.DomEvent.on(link, 'click', L.DomEvent.stop)
-                      .on(link, 'click', () => setFollowing(!following));
+                L.DomEvent.on(link, 'click', L.DomEvent.stop)
+                    .on(link, 'click', () => setFollowing(!following));
 
-            this._link = link;
-            this.setUi(false);     // start gray
-            return container;
-          },
-          setUi: function (isOn) {
-            if (!this._link) return;
-            this._link.title = isOn ? 'Following (click to pause)' : 'Find me';
-            this._link.style.background = isOn ? '#1e88e5' : '#fff';
-            this._link.style.color = isOn ? '#fff' : '#000';
-          }
+                this._link = link;
+                this.setUi(false);
+                return container;
+            },
+            setUi: function (isOn) {
+                if (!this._link) return;
+                this._link.title = isOn ? 'Following (click to pause)' : 'Find me';
+                this._link.style.background = isOn ? '#1e88e5' : '#fff';
+                this._link.style.color = isOn ? '#fff' : '#000';
+            }
         });
-
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(map);
 
-        // Make the "Report Obstacle" box solid (no click-through)
+        // ---------------- Modal to add Report ----------------
         const obstacleBox = document.getElementById('obstacleBox');
+        const dlg = document.getElementById('reportDialog');
+        const frame = document.getElementById('reportFrame');
+        const closeBtn = document.getElementById('reportClose');
 
-        // Ensure the box itself can receive clicks
-        obstacleBox.style.pointerEvents = 'auto';
-
-        // Stop all relevant events from reaching the map
+        // Prevent map panning when clicking the box, but allow our click handler
         L.DomEvent.disableClickPropagation(obstacleBox);
         L.DomEvent.disableScrollPropagation(obstacleBox);
 
-        // Extra safety for all browsers (capture phase)
-        ['pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','click','dblclick','contextmenu']
-          .forEach(t => obstacleBox.addEventListener(t, e => { e.stopPropagation(); e.preventDefault(); }, true));
+        // Close dialog via button or ESC
+        closeBtn.addEventListener('click', () => dlg.close());
+        dlg.addEventListener('cancel', () => dlg.close());
 
-        // Your click handler (open dialog, etc.)
+        function currentLatLngForForm() {
+            // Prefer the user’s placed marker; else use map center
+            if (marker && marker.getLatLng) {
+                const ll = marker.getLatLng();
+                return { lat: ll.lat.toFixed(6), lng: ll.lng.toFixed(6) };
+            }
+            const c = map.getCenter();
+            return { lat: c.lat.toFixed(6), lng: c.lng.toFixed(6) };
+        }
+
         obstacleBox.addEventListener('click', (e) => {
-          // do NOT place a marker here
-          // open your report UI / modal instead
+            e.preventDefault();
+            const { lat, lng } = currentLatLngForForm();
+
+            // Build URL to your Reports/Create action with lat/lng prefill
+            const createUrl =
+                '@Url.Action("Create", "Reports")' +
+                `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
+
+            console.log("Opening Add Report at:", createUrl);
+
+            frame.src = createUrl;   // load the form inside the iframe
+            dlg.showModal();         // open centered modal
         });
-
-
     </script>
 </body>
 </html>
