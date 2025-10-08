@@ -209,7 +209,7 @@
                 watchId = null;
             }
         }
-
+        // Trusts your localStorage connection so tracking works
         function isLocalSecure() {
             return window.isSecureContext ||
                 ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
@@ -262,7 +262,7 @@
         });
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(map);
 
-        // ---------------- Modal to add Report ----------------
+        // Modal to add Report
         const obstacleBox = document.getElementById('obstacleBox');
         const dlg = document.getElementById('reportDialog');
         const frame = document.getElementById('reportFrame');
