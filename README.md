@@ -6,16 +6,16 @@ We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (
 
 **How to get started with a script that runs the manuel commands:**<br>
 You can paste all 3 commands at once in your terminal, the script may ask for your permission to run scripts, you will have to accept this option to run it automatically.<br>
-1. Open your terminal or command prompt (Git Bash, Powershell etc.)
+1. Open your terminal Powershell
 2. Navigate to the directory where you want to clone the repository.
 3. Enter the command:<br>
 git clone https://github.com/Arildb88/Luftambulanse.git
 cd Luftambulanse
-.\setup-luftambulanse.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-luftambulanse.ps1
 
 **How to get started with manuel commands:** <br>
 Clone the repository:<br>
-1. Open your terminal or command prompt (Git Bash, Powershell etc.)
+1. Open your terminal Powershell
 2. Navigate to the directory where you want to clone the repository.
 3. Enter the command:<br>
 git clone https://github.com/Arildb88/Luftambulanse.git <br>
@@ -27,15 +27,15 @@ Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
 5. Run docker compose file in terminal (Git Bash, Powershell etc.):
 Enter the command: <br>
 docker compose up -d (Runs the docker compose file that builds the database)<br>
-dotnet ef database update (Updates the database to the project)<br>
+dotnet ef database update --project Project\Gruppe4NLA.csproj --startup-project Project\Gruppe4NLA.csproj (Updates the database to the project)<br>
 (if you get access denied from admin user, try to enter this in your command prompt to deactivate your local Mariadb server thats running in the background) <br>
 net stop MariaDB >nul 2>&1 <br>
 net stop mysql >nul 2>&1 <br>
 Run the command again if you needed to shut down MariaDb container: <br>
-dotnet ef database update<br>
+dotnet ef database update --project Project\Gruppe4NLA.csproj --startup-project Project\Gruppe4NLA.csproj <br>
 6. Run application: <br>
 Enter the command:<br>
-dotnet watch run (to start the application and open your web browser with the project launched)
+dotnet watch run --project Project\Gruppe4NLA.csproj (to start the application and open your web browser with the project launched)
 
 **How to use the application:**<br>
 You are now ready to use the application.<br>
