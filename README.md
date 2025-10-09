@@ -27,7 +27,7 @@ Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
 5. Run docker compose file in terminal (Git Bash, Powershell etc.):
 Enter the command: <br>
 docker compose up -d (Runs the docker compose file that builds the database)<br>
-dotnet ef database update --project Project\Gruppe4NLA.csproj --startup-project Project\Gruppe4NLA.csproj (Updates the database to the project)<br>
+dotnet ef database update --project Project\Gruppe4NLA.csproj (Updates the database to the project)<br>
 (if you get access denied from admin user, try to enter this in your command prompt to deactivate your local Mariadb server thats running in the background) <br>
 net stop MariaDB >nul 2>&1 <br>
 net stop mysql >nul 2>&1 <br>
