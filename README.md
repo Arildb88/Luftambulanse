@@ -4,7 +4,16 @@ The application allows users to registrer, view and manage information about obs
 
 We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql) and MariaDB/MySQL for the database.
 
-**How to get started:** <br>
+**How to get started with a script that runs the manuel commands:**<br>
+You can paste all 3 commands at once in your terminal, the script may ask for your permission to run scripts, you will have to accept this option to run it automatically.<br>
+1. Open your terminal or command prompt (Git Bash, Powershell etc.)
+2. Navigate to the directory where you want to clone the repository.
+3. Enter the command:<br>
+git clone https://github.com/Arildb88/Luftambulanse.git
+cd Luftambulanse
+.\setup-luftambulanse.ps1
+
+**How to get started with manuel commands:** <br>
 Clone the repository:<br>
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)
 2. Navigate to the directory where you want to clone the repository.
