@@ -111,18 +111,14 @@ namespace Gruppe4NLA.Controllers
             if (lat.HasValue) vm.NewCoordinate.Latitude = lat.Value;
             if (lng.HasValue) vm.NewCoordinate.Longitude = lng.Value;
 
-            // reuse the same Create view
+            // Reuse the same Create view
             return View("Create", vm);
         }
 
     }
 }
 
-// Add Create, Details, etc. here as needed
-
-
-
-// Fake temporary reports (REPLACE LATER WITH DB)
+// Temporary reports (REPLACE LATER WITH DB)
 
 /*
 

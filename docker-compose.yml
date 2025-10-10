@@ -13,8 +13,19 @@ services:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
-      - ./data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
+  web:
+    build:
+      context: ./Project
+      dockerfile: Dockerfile
+    container_name: aspire-webapp
+    depends_on:
+      - mariadb
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETWORK_ENVIRONMENT: Development
+      ConnectionStrings__OurDbConnection: "Server=mariadb;Database=obstaclereports;User=admin;Password=9991;"
 volumes:
   mariadb_data:
     driver: local
