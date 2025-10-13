@@ -12,7 +12,7 @@ Clone the repository:<br>
 git clone https://github.com/Arildb88/Luftambulanse.git <br>
 cd Luftambulanse (to enter the folder of the project) <br>
 4. Install Docker Desktop<br>
-Enter the command or search for Docker Desktop download
+Enter the command or search for Docker Desktop download <br>
 Invoke-WebRequest -UseBasicParsing -OutFile docker-desktop-installer.exe https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
 Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
 5. Run docker compose file in terminal (Git Bash, Powershell etc.):
@@ -23,7 +23,7 @@ dotnet ef database update --project project (Updates the database to the project
 net stop MariaDB >nul 2>&1 <br>
 net stop mysql >nul 2>&1 <br>
 Run the command again if you needed to shut down MariaDb container: <br>
-dotnet ef database update<br>
+dotnet ef database update --project project<br>
 6. Run application: <br>
 Enter the command:<br>
 dotnet watch run --project project (to start the application and open your web browser with the project launched)
