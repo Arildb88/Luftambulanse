@@ -89,10 +89,16 @@
         <div id="obstacleBox" class="leaflet-control">Report Obstacle</div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- Downloaded version of Leaflet; wwwroot/lib/LeafletMap -->
+    <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
+    <script src="~/lib/LeafletMap/leaflet.js"></script>
+
+
+    @* Old version; Gets online version of leaflet *@
+    @* <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
+            crossorigin=""></script> *@
 
     <!-- In-page modal that loads the Add Report page -->
     <dialog id="reportDialog">
