@@ -44,6 +44,13 @@
   }
 }
 
+.formTitle {
+    color: var(--text-color)
+}
+
+.topTitle {
+    color: var(--base-variant)
+}
 
 .table > :not(caption) > * > * {
     background-color: var(--base-variant);

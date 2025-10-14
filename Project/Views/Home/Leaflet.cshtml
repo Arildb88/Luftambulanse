@@ -102,9 +102,9 @@
 
     <!-- In-page modal that loads the Add Report page -->
     <dialog id="reportDialog">
-        <div style="display:flex;flex-direction:column;height:100%;background:#fff;border-radius:10px;overflow:hidden">
+        <div style="display:flex;flex-direction:column;height:100%;background:var(--base-variant);border-radius:10px;overflow:hidden">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #e5e5e5">
-                <strong>Add Report</strong>
+                <strong class="formTitle">Add Report</strong>
                 <button id="reportClose" class="btnBack" type="button">Close</button>
             </div>
             <iframe id="reportFrame" style="flex:1;border:0;"></iframe>
@@ -297,10 +297,17 @@
             e.preventDefault();
             const { lat, lng } = currentLatLngForForm();
 
+            const isDarkMode = document.body.classList.contains('darkmode');
+
             // Build URL to your Reports/Create action with lat/lng prefill
             const createUrl =
                 '@Url.Action("Create", "Reports")' +
-                `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
+                `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&darkmode=${isDarkMode}`;
+
+
+            //const createUrl =
+            //    '@Url.Action("Create", "Reports")' +
+            //    `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
 
             console.log("Opening Add Report at:", createUrl);
 
