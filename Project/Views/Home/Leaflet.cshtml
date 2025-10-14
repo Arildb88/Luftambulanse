@@ -112,12 +112,13 @@
     </dialog>
 
     <script>
+        
         // ---------------- Map init ----------------
-        const map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
+        window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
 
         const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+        }).addTo(window.map);
 
         const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
             minZoom: 0, maxZoom: 20, ext: 'png',
@@ -133,7 +134,7 @@
         });
 
         L.control.layers(
-            { 'OSM': osm, 'GoogleStreets': googleStreets, 'GoogleSat': googleSat, 'Darkmode': darkMode },
+            { 'OSM': osm, 'Darkmode': darkMode },
             {},
             { collapsed: false }
         ).addTo(map);
@@ -146,7 +147,7 @@
             if (marker) {
                 marker.setLatLng(e.latlng);
             } else {
-                marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+                marker = L.marker(e.latlng, { draggable: true }).addTo(window.map);
             }
 
             // Update coordinate readout
@@ -162,7 +163,7 @@
 
         function renderUserLocation(lat, lng, accuracy) {
             if (!userMarker) {
-                userMarker = L.marker([lat, lng], { title: 'You' }).addTo(map);
+                userMarker = L.marker([lat, lng], { title: 'You' }).addTo(window.map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
@@ -171,7 +172,7 @@
                 accuracyCircle = L.circle([lat, lng], {
                     radius: accuracy, color: '#2a83ff', weight: 0.3,
                     fillColor: '#2a83ff', fillOpacity: 0.1
-                }).addTo(map);
+                }).addTo(window.map);
             } else {
                 accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy);
             }
@@ -266,7 +267,7 @@
                 this._link.style.color = isOn ? '#fff' : '#000';
             }
         });
-        const followCtrl = new FollowControl({ position: 'topleft' }).addTo(map);
+        const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);
 
         // ---------------- Modal to add Report ----------------
         const obstacleBox = document.getElementById('obstacleBox');

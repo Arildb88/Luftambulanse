@@ -4,8 +4,11 @@
 @* This tells the view it will receive and bind to a single Report object *@
 
 @{
-    ViewData["Title"] = "Add Report"; 
+    ViewData["Title"] = "Add Report";
+    ViewData["ShowNavbar"] = false;
     @* Sets the page title *@
+    
+
 }
 
 <h2>Add a new Report</h2>
@@ -26,6 +29,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
+            
         }
 
         .form-group label {
@@ -180,4 +184,3 @@
             document.getElementById("mapModal").style.display = "none";
         };
     </script> *@
-}

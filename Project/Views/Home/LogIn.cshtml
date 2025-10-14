@@ -1,92 +1,18 @@
-﻿<!DOCTYPE html>
+﻿
+@{
+    ViewData["Title"] = "Log In";
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
-  <style>
-    /* --- General page styling --- */
-    body {
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      background: #f0f0f0;
-      margin: 0;
-    }
-
-    /* --- Login wrapping for better position --- */
-    .login-wrapper {
-        min-height: calc(100vh - 60px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    /* --- Login box --- */
-    .login-container {
-      background: white;
-      padding: 30px 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      width: 340px;
-    }
-
-    /* --- Header --- */
-    .login-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    /* --- Input fields (username + password) --- */
-    .login-container input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      box-sizing: border-box;
-    }
-
-    /* --- Login button --- */
-    .login-container button {
-      width: 100%;
-      padding: 12px;
-      background: #007BFF;
-      color: white;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-    .login-container button:hover {
-      background: #0056b3;
-    }
-
-    /* --- Password requirement list --- */
-    .conditions {
-      margin: 10px 0 0;
-      padding-left: 0;
-      list-style-type: none;
-      font-size: 14px;
-    }
-
-    /* --- Default: red dot before requirements --- */
-    .conditions li::before {
-      content: "🔴";
-      margin-right: 6px;
-    }
-
-    /* --- When requirement is met: green dot --- */
-    .conditions li.valid::before {
-      content: "🟢";
-    }
-  </style>
 </head>
 <body>
-    <div class="login-wrapper">
-        <div class="login-container">
+  <div class="login-wrapper">
+     <div class="login-container">
             <h2>Login</h2>
             <form id="loginForm">
             @*Username input*@
@@ -101,61 +27,61 @@
                 <li id="capital">Starts with a capital letter</li>
                 <li id="special">Contains at least one special character </li>
             </ul>
-
+                
       @*Login button*@
       <button type="submit">Login</button>
     </form>
-  </div>
-</div>
+    </div>
+    </div>
 
-  <script>
-    // Grab elements from the DOM
-    const passwordInput = document.getElementById("password");
-    const lengthCondition = document.getElementById("length");
-    const capitalCondition = document.getElementById("capital");
-    const specialCondition = document.getElementById("special");
+    <script>
+        // Grab elements from the DOM
+        const passwordInput = document.getElementById("password");
+        const lengthCondition = document.getElementById("length");
+        const capitalCondition = document.getElementById("capital");
+        const specialCondition = document.getElementById("special");
 
-    // Listen for real-time input in the password field
-    passwordInput.addEventListener("input", function () {
-      const password = passwordInput.value;
+        // Listen for real-time input in the password field
+        passwordInput.addEventListener("input", function () {
+          const password = passwordInput.value;
 
-      // Check: at least 6 characters
-      if (password.length >= 6) {
-        lengthCondition.classList.add("valid");
-      } else {
-        lengthCondition.classList.remove("valid");
-      }
+          // Check: at least 6 characters
+          if (password.length >= 6) {
+            lengthCondition.classList.add("valid");
+          } else {
+            lengthCondition.classList.remove("valid");
+          }
 
-      // Check: starts with a capital letter
-      if (/^[A-Z]/.test(password)) {
-        capitalCondition.classList.add("valid");
-      } else {
-        capitalCondition.classList.remove("valid");
-      }
+          // Check: starts with a capital letter
+          if (/^[A-Z]/.test(password)) {
+            capitalCondition.classList.add("valid");
+          } else {
+            capitalCondition.classList.remove("valid");
+          }
 
-      // Check: at least one special character
-        if (/[!#@@$%^&*(),.?":{}|<>]/.test(password)) {
-        specialCondition.classList.add("valid");
-      } else {
-        specialCondition.classList.remove("valid");
-      }
-    });
+          // Check: at least one special character
+            if (/[!#@@$%^&*(),.?":{}|<>]/.test(password)) {
+            specialCondition.classList.add("valid");
+          } else {
+            specialCondition.classList.remove("valid");
+          }
+        });
 
-    // When the user submits the form
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault(); // Prevent page reload
+        // When the user submits the form
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevent page reload
 
-      // If all conditions are met
-      if (
-        lengthCondition.classList.contains("valid") &&
-        capitalCondition.classList.contains("valid") &&
-        specialCondition.classList.contains("valid")
-      ) {
-        alert("Login successful!");
-      } else {
-        alert("Password does not meet the required conditions.");
-      }
-    });
-  </script>
+          // If all conditions are met
+          if (
+            lengthCondition.classList.contains("valid") &&
+            capitalCondition.classList.contains("valid") &&
+            specialCondition.classList.contains("valid")
+          ) {
+            alert("Login successful!");
+          } else {
+            alert("Password does not meet the required conditions.");
+          }
+        });
+    </script>
 </body>
 </html>
