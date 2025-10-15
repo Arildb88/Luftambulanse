@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Include="wwwroot\Content\Images\Topographic_blue.png" />
+    <None Include="wwwroot\js\darkmode.js" />
   </ItemGroup>
 
   <ItemGroup>

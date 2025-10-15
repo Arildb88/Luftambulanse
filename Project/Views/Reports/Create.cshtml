@@ -1,12 +1,16 @@
-
+@using Microsoft.AspNetCore.Http
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
 
 @{
-    ViewData["Title"] = "Add Report"; 
+    ViewData["Title"] = "Add Report";
+    ViewData["ShowNavbar"] = false;
     @* Sets the page title *@
+    var darkMode = Context.Request.Query["darkmode"].ToString() == "true";
 }
+
+<body class="@(darkMode ? "darkmode" : "")">
 
 <h2>Add a new Report</h2>
 
@@ -26,6 +30,7 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
+            
         }
 
         .form-group label {
@@ -180,4 +185,4 @@
             document.getElementById("mapModal").style.display = "none";
         };
     </script> *@
-}
+</body>
