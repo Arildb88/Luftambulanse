@@ -34,7 +34,7 @@ namespace Gruppe4NLA.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.SubmittedCoordinates = await _context.Reports
+                model.SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync();
 
@@ -43,19 +43,21 @@ namespace Gruppe4NLA.Controllers
 
             var newReport = new ReportModel
             {
-                Latitude = model.NewCoordinate.Latitude,
-                Longitude = model.NewCoordinate.Longitude,
-                SenderName = model.NewCoordinate.SenderName,
-                DangerType = model.NewCoordinate.DangerType,
-                Details = model.NewCoordinate.Details,
+                Latitude = model.NewReport.Latitude,
+                Longitude = model.NewReport.Longitude,
+                SenderName = model.NewReport.SenderName,
+                DangerType = model.NewReport.DangerType,
+                Details = model.NewReport.Details,
+                HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas
+                AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
             };
 
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            model.NewCoordinate = new ReportModel(); // Reset input
-            model.SubmittedCoordinates = await _context.Reports
+            model.NewReport = new ReportModel(); // Reset input
+            model.SubmittedReport = await _context.Reports
                 .OrderByDescending(r => r.DateSent)
                 .ToListAsync();
 
@@ -69,17 +71,17 @@ namespace Gruppe4NLA.Controllers
         {
             var model = new ReportModelWrapper
             {
-                NewCoordinate = new ReportModel(),
-                SubmittedCoordinates = await _context.Reports
+                NewReport = new ReportModel(),
+                SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
 
             if (lat.HasValue)
-                model.NewCoordinate.Latitude = lat.Value;
+                model.NewReport.Latitude = lat.Value;
 
             if (lng.HasValue)
-                model.NewCoordinate.Longitude = lng.Value;
+                model.NewReport.Longitude = lng.Value;
 
             return View(model);
         }        
@@ -102,14 +104,14 @@ namespace Gruppe4NLA.Controllers
         {
             var vm = new ReportModelWrapper
             {
-                NewCoordinate = new ReportModel(),
-                SubmittedCoordinates = await _context.Reports
+                NewReport = new ReportModel(),
+                SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
 
-            if (lat.HasValue) vm.NewCoordinate.Latitude = lat.Value;
-            if (lng.HasValue) vm.NewCoordinate.Longitude = lng.Value;
+            if (lat.HasValue) vm.NewReport.Latitude = lat.Value;
+            if (lng.HasValue) vm.NewReport.Longitude = lng.Value;
 
             // Reuse the same Create view
             return View("Create", vm);
@@ -181,7 +183,7 @@ private static readonly List<ReportModel> _sample = new List<ReportModel>
         {
             var model = new ReportModelWrapper
             {
-                SubmittedCoordinates = _sample
+                SubmittedReport = _sample
             };
             return View(model);
         }
@@ -193,7 +195,7 @@ private static readonly List<ReportModel> _sample = new List<ReportModel>
             if (!ModelState.IsValid)
             {
                 // Return view with validation errors
-                model.SubmittedCoordinates = _sample;
+                model.SubmittedReport = _sample;
                 return View(model);
             }
 
@@ -202,16 +204,16 @@ private static readonly List<ReportModel> _sample = new List<ReportModel>
             // Save valid coordinate
             _sample.Add(new ReportModel
             {
-                Latitude = model.NewCoordinate.Latitude,
-                Longitude = model.NewCoordinate.Longitude,
-                SenderName = model.NewCoordinate.SenderName,
-                DangerType = model.NewCoordinate.DangerType,
-                Details = model.NewCoordinate.Details,
+                Latitude = model.NewReport.Latitude,
+                Longitude = model.NewReport.Longitude,
+                SenderName = model.NewReport.SenderName,
+                DangerType = model.NewReport.DangerType,
+                Details = model.NewReport.Details,
                 Id = nextId,
                 DateSent = DateTime.Now
             });
-            model.NewCoordinate = new ReportModel(); // Reset input
-            model.SubmittedCoordinates = _sample;
+            model.NewReport = new ReportModel(); // Reset input
+            model.SubmittedReport = _sample;
 
             ViewBag.Message = "Submitted successfully!";
             return View(model);
