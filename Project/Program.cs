@@ -25,7 +25,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
-// Jonas - Needed to load local leaflet map
+// Needed to load local leaflet map
 app.UseStaticFiles(); 
 
 

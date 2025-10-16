@@ -1,16 +1,12 @@
-@using Microsoft.AspNetCore.Http
+
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
 
 @{
-    ViewData["Title"] = "Add Report";
-    ViewData["ShowNavbar"] = false;
+    ViewData["Title"] = "Add Report"; 
     @* Sets the page title *@
-    var darkMode = Context.Request.Query["darkmode"].ToString() == "true";
 }
-
-<body class="@(darkMode ? "darkmode" : "")">
 
 <h2>Add a new Report</h2>
 
@@ -30,7 +26,6 @@
             display: flex;
             align-items: center;
             margin-bottom: 15px;
-            
         }
 
         .form-group label {
@@ -40,45 +35,67 @@
             text-align: left;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group textarea{
             flex: 1; 
             padding: 5px;
         }
 
+        .form-group input[type="checkbox"] {
+            flex: 0;
+            margin-left: 10px;
+            transform: scale(2.5);
+            cursor: pointer;
+        }
     </style>
 
     @* Sender name input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.SenderName"></label>
-        <input asp-for="NewCoordinate.SenderName" class="form-control" />
-        <span asp-validation-for="NewCoordinate.SenderName" class="text-danger"></span>
+        <label asp-for="NewReport.SenderName"></label>
+        <input asp-for="NewReport.SenderName" class="form-control" />
+        <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
     @* Latitude input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Latitude"></label>
-        <input asp-for="NewCoordinate.Latitude" type="text" step="any" />
-        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+        <label asp-for="NewReport.Latitude"></label>
+        <input asp-for="NewReport.Latitude" type="text" step="any" />
+        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Longitude"></label>
-        <input asp-for="NewCoordinate.Longitude" type="text" step="any" />
-        <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
+        <label asp-for="NewReport.Longitude"></label>
+        <input asp-for="NewReport.Longitude" type="text" step="any" />
+        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
+    </div>
+
+    @* HeightInnMeters input *@
+    <div class="form-group">
+        <label asp-for="NewReport.HeightInnMeters"></label>
+        <input asp-for="NewReport.HeightInnMeters" class="form-control" />
+        <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
     </div>
 
     @* Danger type input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.DangerType"></label>
-        <input asp-for="NewCoordinate.DangerType" class="form-control" />
+        <label asp-for="NewReport.DangerType"></label>
+        <input asp-for="NewReport.DangerType" class="form-control" />
     </div>
 
     @* Extra details textarea *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Details"></label>
-        <textarea asp-for="NewCoordinate.Details" class="form-control"></textarea>
+        <label asp-for="NewReport.Details"></label>
+        <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
+
+    @* AreLighted input *@
+    <div class="form-group">
+        <label asp-for="NewReport.AreLighted"></label>
+        <input asp-for="NewReport.AreLighted" type="checkbox" />
+    </div>
+
+
 
     @* Save and Cancel buttons *@
     <button type="submit" class="btn btn-success mt-3">Save</button>
@@ -95,7 +112,7 @@
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
-    @foreach (var coord in Model.SubmittedCoordinates)
+    @foreach (var coord in Model.SubmittedReport)
     {
         <li>
             Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
@@ -172,8 +189,8 @@
         document.getElementById("btnSaveLocation").onclick = function(e) {
             e.preventDefault();
             if (marker) {
-                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
-                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
+                document.getElementById("NewReport_Latitude").value = marker.getLatLng().lat.toFixed(6);
+                document.getElementById("NewReport_Longitude").value = marker.getLatLng().lng.toFixed(6);
             }
             document.getElementById("mapModal").style.display = "none";
         };
@@ -185,4 +202,4 @@
             document.getElementById("mapModal").style.display = "none";
         };
     </script> *@
-</body>
+}
