@@ -18,6 +18,12 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
+        [Required(ErrorMessage = "Height in meters is required")]
+        [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
+        public double? HeightInnMeters { get; set; }
+        
+        public bool AreLighted { get; set; } = false;
+
         // Coordinates are needed
         [Required(ErrorMessage = "Latitude is required")]
         [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
@@ -35,7 +41,7 @@ namespace Gruppe4NLA.Models
 
     public class ReportModelWrapper
     {
-        public ReportModel NewCoordinate { get; set; } = new ReportModel();
-        public List<ReportModel> SubmittedCoordinates { get; set; } = new List<ReportModel>();
+        public ReportModel NewReport { get; set; } = new ReportModel();
+        public List<ReportModel> SubmittedReport { get; set; } = new List<ReportModel>();
     }
 }

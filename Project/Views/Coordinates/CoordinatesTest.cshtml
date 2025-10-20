@@ -23,15 +23,15 @@
 <form asp-action="CoordinatesTest" method="post">
     <div>
         <label>Latitude:</label>
-        <input asp-for="NewCoordinate.Latitude" type="number" step="any" />
-        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+        <input asp-for="NewReport.Latitude" type="number" step="any" />
+        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
         <br><br>
     </div>
 
     <div>
         <label>Longitude:</label>
-        <input asp-for="NewCoordinate.Longitude" type="number" step="any" />
-        <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
+        <input asp-for="NewReport.Longitude" type="number" step="any" />
+        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
     <button type="submit">Submit</button>
 </form>
@@ -45,7 +45,7 @@
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
-    @foreach (var coord in Model.SubmittedCoordinates)
+    @foreach (var coord in Model.SubmittedReport)
     {
         <li>
             Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
@@ -118,8 +118,8 @@
         document.getElementById("btnSaveLocation").onclick = function(e) {
             e.preventDefault();
             if (marker) {
-                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
-                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
+                document.getElementById("NewReport_Latitude").value = marker.getLatLng().lat.toFixed(6);
+                document.getElementById("NewReport_Longitude").value = marker.getLatLng().lng.toFixed(6);
             }
             document.getElementById("mapModal").style.display = "none";
         };

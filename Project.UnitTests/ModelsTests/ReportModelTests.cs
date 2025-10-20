@@ -103,9 +103,9 @@ namespace Gruppe4NLA.Tests
         {
             var wrapper = new ReportModelWrapper();
 
-            Assert.NotNull(wrapper.NewCoordinate);
-            Assert.NotNull(wrapper.SubmittedCoordinates);
-            Assert.Empty(wrapper.SubmittedCoordinates);
+            Assert.NotNull(wrapper.NewReport);
+            Assert.NotNull(wrapper.SubmittedReport);
+            Assert.Empty(wrapper.SubmittedReport);
         }
     }
 }
