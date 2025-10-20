@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Gruppe4NLA.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gruppe4NLA.Controllers
 {
@@ -46,6 +48,8 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Administrator()
         {
             return View();

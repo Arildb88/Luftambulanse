@@ -49,16 +49,25 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Log In</a>
                             </li>
-                            <!-- Adds the report to navigation menu, now Administrator view-->
+                            <!-- Adds the report to navigation menu -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Reports" asp-action="Index">Reports</a>
                             </li>
-                            <!-- Adds the Administrator tp navigation menu-->
+                            <!-- Adds the Administrator to navigation menu -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Administrator">Administrator</a>
                             </li>
+                            <!-- Adds the About us site to navigation menu -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About Us</a>
+                            </li>
+                            <!-- Adds the Logout option to navigation menu -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
+                            </li>
+                            <!-- Adds the Register site to navigation menu -->
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register User</a>
                             </li>
                         </ul>
                     </div>

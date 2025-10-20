@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gruppe4NLA.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20251007113200_InitDatabase")]
     partial class InitDatabase
     {

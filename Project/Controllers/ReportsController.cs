@@ -13,9 +13,9 @@ namespace Gruppe4NLA.Controllers
 {
     public class ReportsController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly AppDbContext _context;
 
-        public ReportsController(ApplicationContext context)
+        public ReportsController(AppDbContext context)
         {
             _context = context;
         }
