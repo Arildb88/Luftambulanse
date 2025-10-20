@@ -4,6 +4,13 @@ The application allows users to registrer, view and manage information about obs
 
 We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql) and MariaDB/MySQL for the database.
 
+**Prerequisites** <br>
+We expect the usr to already have some technical knowledge. <br>
+Following installements should be made prior: <br>
+Docker Desktop <br>
+EF core CLI <br>
+dot.NET SDK 
+
 **How to get started:** <br>
 Clone the repository:<br>
 1. Open your terminal or command prompt (Git Bash, Powershell etc.)

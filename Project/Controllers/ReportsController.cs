@@ -48,7 +48,7 @@ namespace Gruppe4NLA.Controllers
                 SenderName = model.NewReport.SenderName,
                 DangerType = model.NewReport.DangerType,
                 Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas
+                HeightInnMeters = model.NewReport.HeightInnMeters, 
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
             };
