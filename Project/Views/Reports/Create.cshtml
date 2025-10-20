@@ -51,7 +51,7 @@
 
     @* Sender name input *@
     <div class="form-group">
-        <label asp-for="NewReport.SenderName"></label>
+        <label asp-for="NewReport.SenderName">Sender Name</label>
         <input asp-for="NewReport.SenderName" class="form-control" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
@@ -72,14 +72,14 @@
 
     @* HeightInnMeters input *@
     <div class="form-group">
-        <label asp-for="NewReport.HeightInnMeters"></label>
+        <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>
         <input asp-for="NewReport.HeightInnMeters" class="form-control" />
         <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
     </div>
 
     @* Danger type input *@
     <div class="form-group">
-        <label asp-for="NewReport.DangerType"></label>
+        <label asp-for="NewReport.DangerType">Obstacle Type</label>
         <input asp-for="NewReport.DangerType" class="form-control" />
     </div>
 
@@ -91,7 +91,7 @@
 
     @* AreLighted input *@
     <div class="form-group">
-        <label asp-for="NewReport.AreLighted"></label>
+        <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
     </div>
 
