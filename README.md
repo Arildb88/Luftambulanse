@@ -2,7 +2,12 @@
 We have made an ASP.NET Core MVC Aplication which is going to be used by Norsk Luftambulanse and Kartverket to collect data about unregistrered obstacles in their navigation map for Helicopters.
 The application allows users to registrer, view and manage information about obstacles in a structured and user friendly way.
 
-We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql) and MariaDB/MySQL for the database.
+We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql, ) and MariaDB/MySQL for the database.
+
+We expect the user to already have some technical knowledge and that Docker Desktop, SDK.9 and MariaDB preinstalled on their computer.
+
+**Migrations:** <br>
+We have deletet our Migration folder due to a namechange in our DbContext file that resultet in an error with previous migrations. We tried to change the name locally in each file, but the error presisted and we decided to delete our files and start with a clean migration history.
 
 **How to get started:** <br>
 Clone the repository:<br>
@@ -11,11 +16,7 @@ Clone the repository:<br>
 3. Enter the command:<br>
 git clone https://github.com/Arildb88/Luftambulanse.git <br>
 cd Luftambulanse (to enter the folder of the project) <br>
-4. Install Docker Desktop<br>
-Enter the command or search for Docker Desktop download <br>
-Invoke-WebRequest -UseBasicParsing -OutFile docker-desktop-installer.exe https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe
-Start-Process -FilePath .\docker-desktop-installer.exe -Wait <br>
-5. Run docker compose file in terminal (Git Bash, Powershell etc.):
+4. Run docker compose file in terminal (Git Bash, Powershell etc.):
 Enter the command: <br>
 docker compose up -d (Runs the docker compose file that builds the database)<br>
 dotnet ef database update --project project (Updates the database to the project)<br>
@@ -23,8 +24,8 @@ dotnet ef database update --project project (Updates the database to the project
 net stop MariaDB >nul 2>&1 <br>
 net stop mysql >nul 2>&1 <br>
 Run the command again if you needed to shut down MariaDb container: <br>
-dotnet ef database update --project project<br>
-6. Run application: <br>
+dotnet ef database update<br>
+5. Run application: <br>
 Enter the command:<br>
 dotnet watch run --project project (to start the application and open your web browser with the project launched)
 
