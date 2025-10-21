@@ -61,10 +61,21 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About Us</a>
                             </li>
-                            <!-- Adds the Logout option to navigation menu -->
+                            <!-- Adds the Logout option to navigation menu, redirect to Index/Home -->
+                            <!-- hidden logout form -->
+                            <form id="logoutForm"
+                                  asp-area="Identity"
+                                  asp-page="/Account/Logout"
+                                  method="post"
+                                  asp-route-returnUrl="@Url.Action("Index", "Home")">
+                            </form>
+
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Log Out</a>
+                                <a class="nav-link" href="javascript:document.getElementById('logoutForm').submit()">
+                                    Log Out
+                                </a>
                             </li>
+
                             <!-- Adds the Register site to navigation menu -->
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register User</a>

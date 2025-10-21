@@ -1,14 +1,22 @@
-using Gruppe4NLA.DataContext;
-using Microsoft.EntityFrameworkCore;
 using Gruppe4NLA.Areas.Identity.Data;
+using Gruppe4NLA.DataContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+
+// Arild: Allows access to login/register pages without being logged in
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
+    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");     // optional
+    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/AccessDenied"); // optional
+});
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
@@ -17,9 +25,17 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.
 
 
 builder.Services
-    .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = true)
+    .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+// Arild: Users need to login to use our application
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 
 // Optional: cookie paths so redirects go to Identity pages
 builder.Services.ConfigureApplicationCookie(o =>
@@ -79,6 +95,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+// Needed to load local leaflet map
+app.UseStaticFiles();
+
+app.MapStaticAssets();
 
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -87,10 +107,7 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
 
-// Needed to load local leaflet map
-app.UseStaticFiles();
 
 app.MapRazorPages();
 

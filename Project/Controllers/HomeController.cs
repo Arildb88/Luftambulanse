@@ -15,14 +15,18 @@ namespace Gruppe4NLA.Controllers
             _logger = logger;
         }
 
-        [HttpGet("/")]
         public IActionResult Leaflet()
         {
             return View();
         }
+
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction(nameof(Leaflet), "Home");
+
+            var returnUrl = Url.Action(nameof(Leaflet), "Home");
+            return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl });
         }
 
         public IActionResult Privacy()
@@ -39,11 +43,7 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
-        //public IActionResult SignIn()
-        //{
-        //    return View();
-        //}
-        
+              
         public IActionResult About()
         {
             return View();
