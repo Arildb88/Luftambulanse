@@ -29,11 +29,13 @@ namespace Gruppe4NLA.Controllers
             return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl });
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult FAQ()
         {
             return View();
@@ -43,7 +45,8 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
-              
+        
+        [AllowAnonymous]
         public IActionResult About()
         {
             return View();
