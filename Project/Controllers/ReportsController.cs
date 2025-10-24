@@ -27,6 +27,7 @@ namespace Gruppe4NLA.Controllers
             IQueryable<ReportModel> q = _context.Reports;
 
             // Non-admin/caseworker: only see own reports
+            // If user is Admin go straight to view all reports, if not sort by your username
             if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm")))
             {
                 var myId = _userManager.GetUserId(User);
