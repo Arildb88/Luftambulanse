@@ -20,6 +20,7 @@ namespace Gruppe4NLA.Controllers
             return View();
         }
 
+
         public IActionResult Index()
         {
             if (User.Identity?.IsAuthenticated == true)

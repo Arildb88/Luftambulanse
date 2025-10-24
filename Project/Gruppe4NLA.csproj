@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <Folder Include="LeafletMap\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

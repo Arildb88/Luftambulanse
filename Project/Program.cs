@@ -46,44 +46,43 @@ builder.Services.ConfigureApplicationCookie(o =>
 
 var app = builder.Build();
 
-// Create a test user to Login with
+// Create roles and demo users
 using (var scope = app.Services.CreateScope())
 {
     var sp = scope.ServiceProvider;
-    var userManager = sp.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
-    var signInManager = sp.GetRequiredService<SignInManager<ApplicationUser>>();
+    var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
-    const string email = "test@test.com";
-    const string password = "Test123!";
-    const string adminRole = "Admin";
+    // 1) Roles in our project
+    string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
+    foreach (var role in roles)
+        if (!await roleMgr.RoleExistsAsync(role))
+            await roleMgr.CreateAsync(new IdentityRole(role));
 
-    // 1) Ensure role exists
-    if (!await roleManager.RoleExistsAsync(adminRole))
-        await roleManager.CreateAsync(new IdentityRole(adminRole));
-
-    // 2) Ensure user exists
-    var user = await userManager.FindByEmailAsync(email);
-    if (user is null)
+    // 2) Demo users to try to login to our application
+    async Task EnsureUserInRole(string email, string password, string role)
     {
-        user = new ApplicationUser
+        var user = await userMgr.FindByEmailAsync(email);
+        if (user is null)
         {
-            UserName = email,
-            Email = email,
-            EmailConfirmed = true
-        };
-        var create = await userManager.CreateAsync(user, password);
-        if (!create.Succeeded)
-            throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
+            user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
+            var create = await userMgr.CreateAsync(user, password);
+            if (!create.Succeeded)
+                throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
+        }
+        if (!await userMgr.IsInRoleAsync(user, role))
+            await userMgr.AddToRoleAsync(user, role);
     }
 
-    // 3) Ensure user is in role
-    if (!await userManager.IsInRoleAsync(user, adminRole))
-    {
-        await userManager.AddToRoleAsync(user, adminRole);
-
-       
-    }
+    await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user
+    await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user
+    await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
+    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot");      // Pilot user
 }
 
 
@@ -97,29 +96,31 @@ if (!app.Environment.IsDevelopment())
 
 // Needed to load local leaflet map
 app.UseStaticFiles();
+app.UseRouting();
 
 app.MapStaticAssets();
 
-app.UseHttpsRedirection();
-app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
+app.UseHttpsRedirection();
 
 
-app.MapRazorPages();
+
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.MapControllerRoute(
     name: "Areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+// Needed for Razor Pages-routing
+app.MapRazorPages();
+
 
 
 

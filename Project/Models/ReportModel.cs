@@ -7,7 +7,7 @@ namespace Gruppe4NLA.Models
     public class ReportModel
     {
         public int Id { get; set; }
-
+        public string? UserId { get; set; }
         // Some values are nullable using "?"
         [Required(ErrorMessage = "Sendername is required")]
         public string? SenderName { get; set; }
