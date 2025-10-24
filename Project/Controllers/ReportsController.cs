@@ -50,10 +50,6 @@ namespace Gruppe4NLA.Controllers
 
             model.NewReport.SenderName = user?.Email;
 
-            // Gammel kode, kan slettes
-            //model.NewReport.SenderName = user?.UserName ?? User.Identity?.Name;
-
-            //// SenderName isn't posted anymore, so remove stale ModelState entry
             ModelState.Remove("NewReport.SenderName");
 
             if (!ModelState.IsValid)
@@ -128,6 +124,7 @@ namespace Gruppe4NLA.Controllers
             return View(report);
         }
 
+        // Gets the userid from the _usermanager, puts the senderName as user's Email.
         [HttpGet("/Reports/CreateFromMap")]
         public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
         {
@@ -137,7 +134,7 @@ namespace Gruppe4NLA.Controllers
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User),
+                    UserId = _userManager.GetUserId(User), // hidden but its used for selecting witch reports you can view in Reports View
                     SenderName = user?.Email,          // set the sender name from form
                     Latitude = lat ?? default,
                     Longitude = lng ?? default
