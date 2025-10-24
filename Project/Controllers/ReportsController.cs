@@ -34,8 +34,9 @@ namespace Gruppe4NLA.Controllers
                 var me = await _userManager.GetUserAsync(User);
                 var email = me?.Email;
 
+                // Checks myId = Identity UserId, Fallback where old rows sorted by email
                 q = q.Where(r => r.UserId == myId
-                              || (r.UserId == null && r.SenderName == email)); // fallback for old rows
+                              || (r.UserId == null && r.SenderName == email));
             }
 
             var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
