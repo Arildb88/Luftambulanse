@@ -69,7 +69,6 @@ namespace Gruppe4NLA.Controllers
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model)
         
         {
-            ViewData["ShowNavbar"] = false;
             if (!ModelState.IsValid)
             {
                 model.SubmittedReport = await _context.Reports
