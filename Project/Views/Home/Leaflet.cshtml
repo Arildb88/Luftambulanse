@@ -301,12 +301,12 @@
 
             // Build URL to your Reports/Create action with lat/lng prefill
             const createUrl =
-                '@Url.Action("Create", "Reports")' +
+                '@Url.Action("CreatePopUp", "Reports")' +
                 `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&darkmode=${isDarkMode}`;
 
 
             //const createUrl =
-            //    '@Url.Action("Create", "Reports")' +
+            //    '@Url.Action("CreatePopUp", "Reports")' +
             //    `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`;
 
             console.log("Opening Add Report at:", createUrl);
