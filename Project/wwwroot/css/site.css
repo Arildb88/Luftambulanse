@@ -38,6 +38,11 @@
         color: var(--accent-color);
     }
 
+
+.dropdown-menu {
+    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -216,18 +221,41 @@ body {
     background-size: cover;
 }
 
-#theme-switch{
-    height: 30px;
-    width: 30px;
-    padding: 0;
-    border-radius: 20%;
-    background-color: var(--icon-color);
+/* --- DARK MODE BUTTON --- */
+#theme-switch {
+    background: transparent;
+    border: none;
+    cursor: pointer;
     display: flex;
-    justify-content: center;
     align-items: center;
-    top: 20px;
-    right: 20px;
+    justify-content: center;
+    transition: transform 0.2s ease;
 }
+
+    #theme-switch:hover {
+        transform: scale(1.15);
+    }
+
+    #theme-switch svg {
+        fill: var(--text-color) !important;
+        width: 22px;
+        height: 22px;
+    }
+
+        /* Skjul måne-ikonet først */
+        #theme-switch svg:last-child {
+            display: none;
+        }
+
+/* Når darkmode er aktiv: vis måne */
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+    display: inline;
+}
+
 
 #theme-switch svg{
     fill: var(--primary-color);
@@ -288,6 +316,33 @@ body {
 #obstacleBox {
     pointer-events: auto; /* make sure clicks hit the box */
     z-index: 1001; /* slightly above other controls */
+}
+
+/* Sørger for riktig farge på bruker-/loginmeny i mørkmodus */
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: var(--text-color) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: var(--accent-color) !important;
+}
+
+/* Farger inni dropdown */
+.dropdown-menu {
+    background-color: var(--base-variant);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--accent-color);
+    color: var(--base-color);
 }
 
 

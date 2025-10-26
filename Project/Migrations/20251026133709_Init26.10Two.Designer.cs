@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251024142850_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20251026133709_Init26.10Two")]
+    partial class Init2610Two
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

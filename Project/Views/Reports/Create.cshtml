@@ -52,10 +52,11 @@
 
     @* Sender name input, gets the SenderName automaticly from the User thats logged in *@
     <div class="form-group">
-        <label>Sender</label>
-        <div class="form-control-plaintext">@Model.NewReport.SenderName</div>
+        <label asp-for="NewReport.SenderName">Sender</label>
+        <input type="hidden" asp-for="NewReport.SenderName" value="@User.Identity?.Name" />
+
     </div>
-    
+
     @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Latitude"></label>

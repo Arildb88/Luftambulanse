@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="LeafletMap\**" />
+    <Content Remove="LeafletMap\**" />
+    <EmbeddedResource Remove="LeafletMap\**" />
+    <None Remove="LeafletMap\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\Content\Images\Topographic_blue.png" />
     <None Include="wwwroot\js\darkmode.js" />
   </ItemGroup>
@@ -37,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="LeafletMap\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
