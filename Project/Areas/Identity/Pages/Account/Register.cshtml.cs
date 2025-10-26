@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Rendering; // <— NEW
 
 namespace Gruppe4NLA.Areas.Identity.Pages.Account
 {
@@ -46,71 +47,53 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+        // === NEW: roles available to choose at self-registration (used by asp-items) ===
+        public IEnumerable<SelectListItem> RegisterableRoles { get; private set; } = Array.Empty<SelectListItem>();
+
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
 
+            // === NEW: the role picked in the dropdown (optional if you want Unassigned fallback) ===
+            // Add [Required] if you want to force a choice.
+            [Display(Name = "Role")]
+            public string SelectedRole { get; set; }
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            RegisterableRoles = GetRegisterableRoles(); // NEW
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            RegisterableRoles = GetRegisterableRoles(); // NEW
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -122,6 +105,17 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // ===== NEW: safe server-side role assignment =====
+                    var allowedAtSignup = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    { "Pilot", "Caseworker" };
+
+                    var roleToGive = allowedAtSignup.Contains(Input.SelectedRole ?? string.Empty)
+                        ? Input.SelectedRole
+                        : "(no role)"; // fallback if empty or tampered
+
+                    await _userManager.AddToRoleAsync(user, roleToGive);
+                    // =================================================
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -168,6 +162,14 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
+
+        // Select between the role Pilot or Caseworker
+        private static IEnumerable<SelectListItem> GetRegisterableRoles() =>
+            new[]
+            {
+                new SelectListItem("Pilot", "Pilot"),
+                new SelectListItem("Caseworker", "Caseworker")
+            };
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
