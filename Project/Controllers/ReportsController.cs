@@ -86,12 +86,51 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreatePopUp(ReportModelWrapper model)
+        
+        {
+            if (!ModelState.IsValid)
+            {
+                model.SubmittedReport = await _context.Reports
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync();
+
+                return View(model);
+            }
+
+            var newReport = new ReportModel
+            {
+                Latitude = model.NewReport.Latitude,
+                Longitude = model.NewReport.Longitude,
+                SenderName = model.NewReport.SenderName,
+                DangerType = model.NewReport.DangerType,
+                Details = model.NewReport.Details,
+                HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas
+                AreLighted = model.NewReport.AreLighted,
+                DateSent = DateTime.Now
+            };
+
+            _context.Reports.Add(newReport);
+            await _context.SaveChangesAsync();
+
+            model.NewReport = new ReportModel(); // Reset input
+            model.SubmittedReport = await _context.Reports
+                .OrderByDescending(r => r.DateSent)
+                .ToListAsync();
+
+            ViewBag.Message = "Submitted successfully!";
+            return View(model);
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Create(double? lat, double? lng)
         {
             var user = await _userManager.GetUserAsync(User);
 
             var model = new ReportModelWrapper
+            
             {
                 NewReport = new ReportModel
                 {
@@ -113,6 +152,28 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CreatePopUp(double? lat, double? lng)
+        {
+            
+            var model = new ReportModelWrapper
+            {
+                NewReport = new ReportModel(),
+                SubmittedReport = await _context.Reports
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync()
+            };
+
+            if (lat.HasValue)
+                model.NewReport.Latitude = lat.Value;
+
+            if (lng.HasValue)
+                model.NewReport.Longitude = lng.Value;
+
+            return View(model);
+        }
+
+        // Show the "details" page
         public async Task<IActionResult> Details(int id)
         {
             var report = await _context.Reports.FindAsync(id);

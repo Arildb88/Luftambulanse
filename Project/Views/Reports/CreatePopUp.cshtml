@@ -4,12 +4,14 @@
 @* This tells the view it will receive and bind to a single Report object *@
 
 @{
-    ViewData["Title"] = "Add Report"; 
     
+    ViewData["Title"] = "Add Report"; 
+    ViewData["ShowNavbar"] = false;
+    ViewData["ShowFooter"] = false;
     @* Sets the page title *@
 }
 
-<h2>Add a new Report</h2>
+<h2><br>Add a new Report</h2>
 
 @if (ViewBag.Message != null)
 {
@@ -19,7 +21,7 @@
 @* Form that posts data to the Create action in ReportsController *@
 
 <br>
-<form asp-action="Create" method="post">
+<form asp-action="CreatePopUp" method="post">
     
     @* Adding spacing and changing the style *@
     <style>
@@ -50,12 +52,13 @@
         }
     </style>
 
-    @* Sender name input, gets the SenderName automaticly from the User thats logged in *@
+    @* Sender name input *@
     <div class="form-group">
-        <label>Sender</label>
-        <div class="form-control-plaintext">@Model.NewReport.SenderName</div>
+        <label asp-for="NewReport.SenderName">Sender Name</label>
+        <input asp-for="NewReport.SenderName" class="form-control" />
+        <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
-    
+
     @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Latitude"></label>
@@ -89,8 +92,10 @@
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    @* AreLighted input *@
+    @* AreLighted input *@ 
+    
     <div class="form-group">
+       
         <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
     </div>
@@ -98,8 +103,10 @@
 
 
     @* Save and Cancel buttons *@
-    <button type="submit" class="btn btn-success mt-3">Save</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
+    <div class="d-flex justify-content-center gap-3 mt-3">
+        <button type="submit" class="btnSubmit">Save</button>
+    </div>
+    @*<a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>*@
 </form>
 
 @* <!-- Makes button -->
@@ -108,7 +115,7 @@
  *@
 <!-- Title for submitted coordinates -->
 
-<h3><br>Submitted Coordinates</h3>
+@*<h3><br>Submitted Coordinates</h3>
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
@@ -119,5 +126,4 @@
             Lng: @(coord.Longitude?.ToString("F6") ?? "N/A")
         </li>
     }
-</ul>
-
+</ul>*@
