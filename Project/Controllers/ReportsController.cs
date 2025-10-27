@@ -155,10 +155,15 @@ namespace Gruppe4NLA.Controllers
         [HttpGet]
         public async Task<IActionResult> CreatePopUp(double? lat, double? lng)
         {
-            
+            var user = await _userManager.GetUserAsync(User);
+
             var model = new ReportModelWrapper
             {
-                NewReport = new ReportModel(),
+                NewReport = new ReportModel
+                {
+                    UserId = _userManager.GetUserId(User),
+                    SenderName = user?.Email  // ? dette fyller ut brukernavnet automatisk
+                },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
@@ -172,6 +177,28 @@ namespace Gruppe4NLA.Controllers
 
             return View(model);
         }
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> CreatePopUp(double? lat, double? lng)
+        //{
+
+        //    var model = new ReportModelWrapper
+        //    {
+        //        NewReport = new ReportModel(),
+        //        SubmittedReport = await _context.Reports
+        //            .OrderByDescending(r => r.DateSent)
+        //            .ToListAsync()
+        //    };
+
+        //    if (lat.HasValue)
+        //        model.NewReport.Latitude = lat.Value;
+
+        //    if (lng.HasValue)
+        //        model.NewReport.Longitude = lng.Value;
+
+        //    return View(model);
+        //}
 
         // Show the "details" page
         public async Task<IActionResult> Details(int id)

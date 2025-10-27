@@ -1,6 +1,6 @@
 ﻿:root {
     --base-color: white;
-    --base-variant: icewhite;
+    --base-variant: white;
     --text-color: black;
     --secondary-text: grey;
     --primary-color: #333333;
@@ -37,6 +37,9 @@
     .navbar .navbar-brand:hover {
         color: var(--accent-color);
     }
+
+
+
 
 @media (min-width: 768px) {
   html {
@@ -105,25 +108,6 @@
 
 .login-container button:hover {
         background: #0056b3;
-    }
-
-/* --- Password requirement list --- */
-.conditions {
-    margin: 10px 0 0;
-    padding-left: 0;
-    list-style-type: none;
-    font-size: 14px;
-}
-
-    /* --- Default: red dot before requirements --- */
-    .conditions li::before {
-        content: "🔴";
-        margin-right: 6px;
-    }
-
-    /* --- When requirement is met: green dot --- */
-    .conditions li.valid::before {
-        content: "🟢";
     }
 
 .btn:focus, .btn:active:focus, .btn-link
@@ -216,17 +200,39 @@ body {
     background-size: cover;
 }
 
-#theme-switch{
-    height: 30px;
-    width: 30px;
-    padding: 0;
-    border-radius: 20%;
-    background-color: var(--icon-color);
+/* --- DARK MODE BUTTON --- */
+#theme-switch {
+    background: transparent;
+    border: none;
+    cursor: pointer;
     display: flex;
-    justify-content: center;
     align-items: center;
-    top: 20px;
-    right: 20px;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+#theme-switch:hover {
+    transform: scale(1.15);
+}
+
+#theme-switch svg {
+    fill: var(--text-color) !important;
+    width: 22px;
+    height: 22px;
+}
+
+       /* Hide moon icon first */
+#theme-switch svg:last-child {
+    display: none;
+}
+
+/* When darkmode is activ: show moon*/
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+    display: inline;
 }
 
 #theme-switch svg{
@@ -288,6 +294,35 @@ body {
 #obstacleBox {
     pointer-events: auto; /* make sure clicks hit the box */
     z-index: 1001; /* slightly above other controls */
+}
+
+/* Make sure to give right color on user-/loginmenu in darkmode*/
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: var(--text-color) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: var(--accent-color) !important;
+}
+
+.dropdown-menu {
+    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
+    background-color: var(--base-variant); /* white background */
+    opacity: 1 !important; /* fully non-transparent*/
+    backdrop-filter: none !important; /* Removes glass-effect */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* optional, shadow for depth*/
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+    background-color: var(--base-variant);
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--accent-color);
+    color: var(--base-color);
 }
 
 

@@ -1,4 +1,3 @@
-
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
@@ -12,14 +11,12 @@
 }
 
 <h2><br>Add a new Report</h2>
-
 @if (ViewBag.Message != null)
 {
     <p style="color:green">@ViewBag.Message</p>
 }
 
 @* Form that posts data to the Create action in ReportsController *@
-
 <br>
 <form asp-action="CreatePopUp" method="post">
     
@@ -54,8 +51,18 @@
 
     @* Sender name input *@
     <div class="form-group">
-        <label asp-for="NewReport.SenderName">Sender Name</label>
-        <input asp-for="NewReport.SenderName" class="form-control" />
+        <label asp-for="NewReport.SenderName">Sender</label>
+
+        <!-- Shows as text, but cannot be edited -->
+        <input asp-for="NewReport.SenderName"
+               class="form-control-plaintext"
+               readonly
+               tabindex="-1"
+               onfocus="this.blur()"
+               style="user-select: none; color: var(--text-color);" />
+
+        <!-- hidden field that sends to backend -->
+        <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
@@ -93,9 +100,7 @@
     </div>
 
     @* AreLighted input *@ 
-    
     <div class="form-group">
-       
         <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
     </div>
@@ -106,24 +111,7 @@
     <div class="d-flex justify-content-center gap-3 mt-3">
         <button type="submit" class="btnSubmit">Save</button>
     </div>
-    @*<a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>*@
 </form>
 
-@* <!-- Makes button -->
-<br>
-<button id="btnAdd" class="btnSimple" type="button">Open Map</button>
- *@
-<!-- Title for submitted coordinates -->
 
-@*<h3><br>Submitted Coordinates</h3>
 
-<!-- Variable "coord" will show for each instance -->
-<ul>
-    @foreach (var coord in Model.SubmittedReport)
-    {
-        <li>
-            Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
-            Lng: @(coord.Longitude?.ToString("F6") ?? "N/A")
-        </li>
-    }
-</ul>*@
