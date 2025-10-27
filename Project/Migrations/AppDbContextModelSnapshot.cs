@@ -86,27 +86,6 @@ namespace Gruppe4NLA.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Gruppe4NLA.Models.AdviceDto", b =>
-                {
-                    b.Property<int>("AdviceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AdviceId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AdviceId");
-
-                    b.ToTable("Advices");
-                });
-
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
                 {
                     b.Property<int>("Id")

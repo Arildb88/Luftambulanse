@@ -1,6 +1,6 @@
 ﻿:root {
     --base-color: white;
-    --base-variant: icewhite;
+    --base-variant: white;
     --text-color: black;
     --secondary-text: grey;
     --primary-color: #333333;
@@ -39,9 +39,7 @@
     }
 
 
-.dropdown-menu {
-    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
-}
+
 
 @media (min-width: 768px) {
   html {
@@ -110,25 +108,6 @@
 
 .login-container button:hover {
         background: #0056b3;
-    }
-
-/* --- Password requirement list --- */
-.conditions {
-    margin: 10px 0 0;
-    padding-left: 0;
-    list-style-type: none;
-    font-size: 14px;
-}
-
-    /* --- Default: red dot before requirements --- */
-    .conditions li::before {
-        content: "🔴";
-        margin-right: 6px;
-    }
-
-    /* --- When requirement is met: green dot --- */
-    .conditions li.valid::before {
-        content: "🟢";
     }
 
 .btn:focus, .btn:active:focus, .btn-link
@@ -232,22 +211,22 @@ body {
     transition: transform 0.2s ease;
 }
 
-    #theme-switch:hover {
-        transform: scale(1.15);
-    }
+#theme-switch:hover {
+    transform: scale(1.15);
+}
 
-    #theme-switch svg {
-        fill: var(--text-color) !important;
-        width: 22px;
-        height: 22px;
-    }
+#theme-switch svg {
+    fill: var(--text-color) !important;
+    width: 22px;
+    height: 22px;
+}
 
-        /* Skjul måne-ikonet først */
-        #theme-switch svg:last-child {
-            display: none;
-        }
+       /* Hide moon icon first */
+#theme-switch svg:last-child {
+    display: none;
+}
 
-/* Når darkmode er aktiv: vis måne */
+/* When darkmode is activ: show moon*/
 .darkmode #theme-switch svg:first-child {
     display: none;
 }
@@ -255,7 +234,6 @@ body {
 .darkmode #theme-switch svg:last-child {
     display: inline;
 }
-
 
 #theme-switch svg{
     fill: var(--primary-color);
@@ -318,7 +296,7 @@ body {
     z-index: 1001; /* slightly above other controls */
 }
 
-/* Sørger for riktig farge på bruker-/loginmeny i mørkmodus */
+/* Make sure to give right color on user-/loginmenu in darkmode*/
 .navbar .nav-link,
 .navbar .dropdown-toggle {
     color: var(--text-color) !important;
@@ -329,15 +307,17 @@ body {
     color: var(--accent-color) !important;
 }
 
-/* Farger inni dropdown */
 .dropdown-menu {
-    background-color: var(--base-variant);
-    color: var(--text-color);
-    border: 1px solid var(--accent-color);
+    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
+    background-color: var(--base-variant); /* white background */
+    opacity: 1 !important; /* fully non-transparent*/
+    backdrop-filter: none !important; /* Removes glass-effect */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* optional, shadow for depth*/
 }
 
 .dropdown-menu .dropdown-item {
     color: var(--text-color);
+    background-color: var(--base-variant);
 }
 
 .dropdown-menu .dropdown-item:hover {

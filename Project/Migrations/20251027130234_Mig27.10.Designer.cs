@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251026133709_Init26.10Two")]
-    partial class Init2610Two
+    [Migration("20251027130234_Mig27.10")]
+    partial class Mig2710
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,27 +87,6 @@ namespace Gruppe4NLA.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("Gruppe4NLA.Models.AdviceDto", b =>
-                {
-                    b.Property<int>("AdviceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AdviceId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AdviceId");
-
-                    b.ToTable("Advices");
                 });
 
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>

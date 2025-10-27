@@ -1729,6 +1729,9 @@
   	// see https://rosettacode.org/wiki/Haversine_formula
   	R: 6371000,
 
+
+
+    
   	// distance between two geographical points using spherical law of cosines approximation
   	distance: function (latlng1, latlng2) {
   		var rad = Math.PI / 180,
