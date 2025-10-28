@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Gruppe4NLA.DataContext;
 
 using Gruppe4NLA.Models;
@@ -30,7 +31,7 @@ namespace Gruppe4NLA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ReportModelWrapper model)
+        public async Task<IActionResult> Create(ReportModelWrapper model, string submitAction)
         {
             if (!ModelState.IsValid)
             {
@@ -51,17 +52,41 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            _context.Reports.Add(newReport);
-            await _context.SaveChangesAsync();
+            //  Save as draft or submit based on button clicked
+            if (string.Equals(submitAction, "SaveDraft", StringComparison.OrdinalIgnoreCase))
+            {
+                newReport.Status = ReportStatus.Draft;        
+                ModelState.Clear();                            
 
-            model.NewCoordinate = new ReportModel(); // Reset input
+                _context.Reports.Add(newReport);
+                await _context.SaveChangesAsync();
+
+                ViewBag.Message = "Draft saved successfully!"; //  message for draft
+            }
+            else
+            {
+                newReport.Status = ReportStatus.Submitted;     //  mark as submitted
+                _context.Reports.Add(newReport);
+                await _context.SaveChangesAsync();
+
+                ViewBag.Message = "Submitted successfully!";   // message for submission
+            }
+
+            // The rest resets the view as before
+            model.NewCoordinate = new ReportModel(); // reset input
             model.SubmittedCoordinates = await _context.Reports
                 .OrderByDescending(r => r.DateSent)
                 .ToListAsync();
 
-            ViewBag.Message = "Submitted successfully!";
             return View(model);
         }
+
+        public IActionResult MyDrafts()
+        {
+            return RedirectToAction("Reports", "Home");
+        }
+
+
 
 
         [HttpGet]
@@ -82,8 +107,53 @@ namespace Gruppe4NLA.Controllers
                 model.NewCoordinate.Longitude = lng.Value;
 
             return View(model);
-        }        
-        
+        }
+
+        //  get the "edit" page
+        public async Task<IActionResult> Edit(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null)
+                return NotFound();
+
+            return View(report); // returns a plain ReportModel, not a wrapper
+        }
+        // POST /Reports/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ReportModel model, string submitAction)
+        {
+            if (id != model.Id)
+                return BadRequest();
+
+            var db = await _context.Reports.FindAsync(id);
+            if (db == null)
+                return NotFound();
+
+            // update editable fields
+            db.SenderName = model.SenderName;
+            db.DangerType = model.DangerType;
+            db.Details = model.Details;
+            db.Latitude = model.Latitude;
+            db.Longitude = model.Longitude;
+            db.DateSent = DateTime.Now;
+
+            if (string.Equals(submitAction, "SaveDraft", StringComparison.OrdinalIgnoreCase))
+            {
+                db.Status = ReportStatus.Draft;
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Draft updated.";
+                return RedirectToAction("Reports", "Home");
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            db.Status = ReportStatus.Submitted;
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Report submitted.";
+            return RedirectToAction("Reports", "Home");
+        }
         // Show the "details" page
         public async Task<IActionResult> Details(int id)
         {

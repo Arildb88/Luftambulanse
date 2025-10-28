@@ -1,0 +1,98 @@
+﻿@model Gruppe4NLA.Models.ViewModels.ReportsOverviewVm
+@using Gruppe4NLA
+@using Gruppe4NLA.Models
+@using Gruppe4NLA.Models.ViewModels
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Reports";
+
+    bool hasSubmitted = Model != null && Model.Submitted != null && Model.Submitted.Count > 0;
+    bool hasDrafts = Model != null && Model.Drafts != null && Model.Drafts.Count > 0;
+
+    string Short(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return "-";
+        return s!.Length > 60 ? s.Substring(0, 60) + "..." : s;
+    }
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (!hasSubmitted && !hasDrafts)
+{
+    <p>No reports yet.</p>
+}
+else
+{
+    <h3 class="mt-3">Submitted (@(Model?.Submitted?.Count ?? 0))</h3>
+
+    @if (hasSubmitted)
+    {
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sender</th>
+                    <th>Danger</th>
+                    <th>Details</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model!.Submitted!)
+                {
+                    <tr>
+                        <td>@r.SenderName</td>
+                        <td>@r.DangerType</td>
+                        <td>@Short(r.Details)</td>
+                        <td>@r.DateSent.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">None</p>
+    }
+
+    <h3 class="mt-4">Drafts (@(Model?.Drafts?.Count ?? 0))</h3>
+
+    @if (hasDrafts)
+    {
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sender</th>
+                    <th>Danger</th>
+                    <th>Details</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model!.Drafts!)
+                {
+                    <tr>
+                        <td>@r.SenderName</td>
+                        <td>@r.DangerType</td>
+                        <td>@Short(r.Details)</td>
+                        <td>@r.DateSent.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>
+                            <a asp-controller="Reports" asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-secondary">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">None</p>
+    }
+}
+
+<div class="mt-3">
+    <a asp-controller="Reports" asp-action="Create" class="btn btn-primary">Create new report</a>
+</div>
