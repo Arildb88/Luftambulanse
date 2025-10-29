@@ -8,7 +8,8 @@ namespace Gruppe4NLA.Models
     {
         public int Id { get; set; }
         public string? UserId { get; set; }
-        // Some values are nullable using "?"
+        //public string? CaseworkerGroupId { get; set; }
+
         [Required(ErrorMessage = "Sendername is required")]
         public string? SenderName { get; set; }
 
@@ -18,7 +19,6 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
-        [Required(ErrorMessage = "Height in meters is required")]
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
         public double? HeightInnMeters { get; set; }
         

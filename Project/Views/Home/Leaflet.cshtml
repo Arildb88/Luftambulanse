@@ -163,6 +163,10 @@
                 marker = L.marker(e.latlng, { draggable: true }).addTo(window.map);
             }
 
+        
+
+
+
             // Update coordinate readout
             const el = document.querySelector(".coordinate");
             if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
