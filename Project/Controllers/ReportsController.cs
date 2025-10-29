@@ -28,7 +28,7 @@ namespace Gruppe4NLA.Controllers
 
             // Non-admin/caseworker: only see own reports
             // If user is Admin go straight to view all reports, if not sort by your username
-            if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm")))
+            if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker")))
             {
                 var myId = _userManager.GetUserId(User);
                 var me = await _userManager.GetUserAsync(User);
@@ -67,6 +67,7 @@ namespace Gruppe4NLA.Controllers
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
+                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
                 DangerType = model.NewReport.DangerType,
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters,
@@ -104,6 +105,7 @@ namespace Gruppe4NLA.Controllers
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
+                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
                 DangerType = model.NewReport.DangerType,
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas

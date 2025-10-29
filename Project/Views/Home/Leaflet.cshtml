@@ -80,6 +80,9 @@
         dialog::backdrop {
             background: rgba(0,0,0,0.35);
         }
+
+        
+
     </style>
 </head>
 
@@ -112,6 +115,16 @@
     </dialog>
 
     <script>
+
+        //CustomElementRegistry Helicopter icon for your location
+        const userIcon = L.icon({
+            iconUrl: '@Url.Content("~/Content/Images/Heli2.png")',
+            iconSize: [40, 40],        // pixel size of the image
+            iconAnchor: [18, 36],      // "tip" of the pin (x,y from top-left)
+            popupAnchor: [0, -30],     // where popups open relative to the anchor
+            tooltipAnchor: [0, -24],   // optional
+            className: 'leaflet-user-icon' // optional CSS hook
+        });
         
         // ---------------- Map init ----------------
         window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
@@ -134,7 +147,7 @@
         });
 
         L.control.layers(
-            { 'OSM': osm, 'Darkmode': darkMode },
+            { 'OSM': osm, 'Darkmode': darkMode, 'SatView': googleSat },
             {},
             { collapsed: false }
         ).addTo(map);
@@ -150,10 +163,58 @@
                 marker = L.marker(e.latlng, { draggable: true }).addTo(window.map);
             }
 
+           //------------ Draw tools
+
+            // Initialize the feature group that will hold the drawn shapes
+         var drawnItems = new L.FeatureGroup();
+         map.addLayer(drawnItems);
+
+         // Creates the drawing control on the left hand side
+         // The drawing control enables drawing of markers, polygons, and polylines
+         var drawControl = new L.Control.Draw({
+             draw: {
+                 polygon: false,
+                 polyline: true,
+                 marker: true,
+                 circle: false,  // Disable circle drawing
+                 rectangle: false
+             },
+             edit: {
+                 featureGroup: drawnItems
+             }
+         });
+         map.addControl(drawControl);
+
+
+         // Event handling when a layer is drawn on the map
+         map.on(L.Draw.Event.CREATED, function (e) {
+                 layer = e.layer;
+
+             drawnItems.addLayer(layer);
+
+             // Get the GeoJSON representation of the drawn layer
+             var geoJsonData = layer.toGeoJSON();
+             var geoJsonString = JSON.stringify(geoJsonData);
+
+             // Set the GeoJSON string into the hidden input field in the form
+             document.getElementById('GeometryGeoJson').value = geoJsonString;
+             document.getElementById('CoordinatesPreview').value = geoJsonString;
+         });
+
+
             // Update coordinate readout
             const el = document.querySelector(".coordinate");
             if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
         });
+
+
+
+
+
+
+
+
+
 
         // ---------------- Geolocation follow (optional) ----------------
         let watchId = null;
@@ -163,7 +224,10 @@
 
         function renderUserLocation(lat, lng, accuracy) {
             if (!userMarker) {
-                userMarker = L.marker([lat, lng], { title: 'You' }).addTo(window.map);
+                userMarker = L.marker([lat, lng], {
+                    title: 'You',
+                    icon: userIcon,
+                }).addTo(window.map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
