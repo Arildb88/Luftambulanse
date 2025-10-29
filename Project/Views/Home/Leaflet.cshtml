@@ -80,6 +80,9 @@
         dialog::backdrop {
             background: rgba(0,0,0,0.35);
         }
+
+        
+
     </style>
 </head>
 
@@ -112,6 +115,16 @@
     </dialog>
 
     <script>
+
+        //CustomElementRegistry Helicopter icon for your location
+        const userIcon = L.icon({
+            iconUrl: '@Url.Content("~/Content/Images/Heli2.png")',
+            iconSize: [40, 40],        // pixel size of the image
+            iconAnchor: [18, 36],      // "tip" of the pin (x,y from top-left)
+            popupAnchor: [0, -30],     // where popups open relative to the anchor
+            tooltipAnchor: [0, -24],   // optional
+            className: 'leaflet-user-icon' // optional CSS hook
+        });
         
         // ---------------- Map init ----------------
         window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
@@ -134,7 +147,7 @@
         });
 
         L.control.layers(
-            { 'OSM': osm, 'Darkmode': darkMode },
+            { 'OSM': osm, 'Darkmode': darkMode, 'SatView': googleSat },
             {},
             { collapsed: false }
         ).addTo(map);
@@ -163,7 +176,10 @@
 
         function renderUserLocation(lat, lng, accuracy) {
             if (!userMarker) {
-                userMarker = L.marker([lat, lng], { title: 'You' }).addTo(window.map);
+                userMarker = L.marker([lat, lng], {
+                    title: 'You',
+                    icon: userIcon,
+                }).addTo(window.map);
             } else {
                 userMarker.setLatLng([lat, lng]);
             }
