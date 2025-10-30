@@ -3,6 +3,7 @@ using Gruppe4NLA.DataContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +21,10 @@ builder.Services.AddRazorPages(options =>
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
-    new MySqlServerVersion(new Version(11, 8, 3))));
+    new MariaDbServerVersion(new Version(11, 8, 3)),
+    
+    MySqlOptions => MySqlOptions.EnableRetryOnFailure()
+    ));
 
 
 
@@ -50,6 +54,28 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var sp = scope.ServiceProvider;
+
+    //Run migrations on startup with a simple retry in case DB container is not ready yet
+    var logger = sp.GetRequiredService<ILogger<Program>>();
+    var db = sp.GetRequiredService<AppDbContext>();
+
+    const int maxAttempts = 10;
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();   // applies all pending migrations
+            logger.LogInformation("Database migrated successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (attempt == maxAttempts) throw;
+            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s…", attempt, maxAttempts);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
+    }
+
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
