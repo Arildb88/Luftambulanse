@@ -67,7 +67,6 @@ namespace Gruppe4NLA.Controllers
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
-                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
                 DangerType = model.NewReport.DangerType,
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters,
@@ -105,7 +104,6 @@ namespace Gruppe4NLA.Controllers
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
-                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
                 DangerType = model.NewReport.DangerType,
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas

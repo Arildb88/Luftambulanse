@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251027130234_Mig27.10")]
-    partial class Mig2710
+    [Migration("20251030090518_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,7 +109,7 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("longtext");
 
-                    b.Property<double>("HeightInnMeters")
+                    b.Property<double?>("HeightInnMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")

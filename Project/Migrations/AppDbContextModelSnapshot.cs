@@ -106,7 +106,7 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("longtext");
 
-                    b.Property<double>("HeightInnMeters")
+                    b.Property<double?>("HeightInnMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")
