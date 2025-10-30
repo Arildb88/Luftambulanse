@@ -152,18 +152,98 @@
             { collapsed: false }
         ).addTo(map);
 
+
         // ---------------- Marker placement ----------------
         let marker = null;
+        let latlngs = [];
+        let polyline = null;
+        let drawing = false;
 
         // Place/move a single marker when the map is clicked
         map.on('click', (e) => {
+            if (drawing) {
+                // If drawing mode is on, add polyline points instead
+                latlngs.push(e.latlng);
+
+                if (polyline) {
+                    polyline.setLatLngs(latlngs);
+                } else {
+                    polyline = L.polyline(latlngs, { color: 'red' }).addTo(window.map);
+                }
+                return; // don't drop a marker when drawing
+            }
+
+            // Normal marker placement
             if (marker) {
                 marker.setLatLng(e.latlng);
             } else {
                 marker = L.marker(e.latlng, { draggable: true }).addTo(window.map);
             }
 
-           //------------ Draw tools
+            // Update coordinate readout
+            const el = document.querySelector(".coordinate");
+            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
+        });
+
+        // ---------------- Polyline Button ----------------
+        const DrawPolylineControl = L.Control.extend({
+            onAdd: function (map) {
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                btn.innerHTML = '+ Polyline';
+                btn.style.backgroundColor = 'white';
+                btn.style.cursor = 'pointer';
+                btn.style.padding = '5px';
+                btn.title = 'Click to start/stop drawing a polyline';
+
+                L.DomEvent.on(btn, 'click', (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    L.DomEvent.preventDefault(e);
+                    drawing = !drawing;
+                    btn.style.backgroundColor = drawing ? '#a3e635' : 'white';
+                });
+
+                return btn;
+            }
+        });
+
+        // ---------------- Marker Button ----------------
+        const DrawMarkerControl = L.Control.extend({
+            onAdd: function (map) {
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                btn.innerHTML = '+ Marker';
+                btn.style.backgroundColor = 'white';
+                btn.style.cursor = 'pointer';
+                btn.style.padding = '5px';
+                btn.title = 'Click to start/stop making marker';
+
+                L.DomEvent.on(btn, 'click', (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    L.DomEvent.preventDefault(e);
+                    drawing = !drawing;
+                    btn.style.backgroundColor = drawing ? '#a3e635' : 'white';
+                });
+
+                return btn;
+            }
+        });
+
+
+        // Add the button to the map
+        map.addControl(new DrawPolylineControl({ position: 'topleft' }));
+        map.addControl(new DrawMarkerControl({ position: 'topleft' }));
+
+        // Optional: double-click anywhere to stop drawing mode
+        map.on('dblclick', () => {
+            drawing = false;
+            const btn = document.querySelector('.leaflet-control-custom');
+            if (btn) btn.style.backgroundColor = 'white';
+        });
+
+
+
+
+        
+         /*  //------------ Draw tools
 
             // Initialize the feature group that will hold the drawn shapes
          var drawnItems = new L.FeatureGroup();
@@ -173,11 +253,9 @@
          // The drawing control enables drawing of markers, polygons, and polylines
          var drawControl = new L.Control.Draw({
              draw: {
-                 polygon: false,
                  polyline: true,
                  marker: true,
-                 circle: false,  // Disable circle drawing
-                 rectangle: false
+                 circle: true
              },
              edit: {
                  featureGroup: drawnItems
@@ -199,21 +277,13 @@
              // Set the GeoJSON string into the hidden input field in the form
              document.getElementById('GeometryGeoJson').value = geoJsonString;
              document.getElementById('CoordinatesPreview').value = geoJsonString;
-         });
+         }); 
 
 
             // Update coordinate readout
             const el = document.querySelector(".coordinate");
             if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
-        });
-
-
-
-
-
-
-
-
+        });*/
 
 
         // ---------------- Geolocation follow (optional) ----------------
