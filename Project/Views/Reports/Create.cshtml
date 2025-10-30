@@ -51,10 +51,26 @@
     </style>
 
     @* Sender name input, gets the SenderName automaticly from the User thats logged in *@
-    <div class="form-group">
+    @*<div class="form-group">
         <label asp-for="NewReport.SenderName">Sender</label>
         <input type="hidden" asp-for="NewReport.SenderName" value="@User.Identity?.Name" />
 
+    </div> *@
+
+    <div class="form-group">
+        <label asp-for="NewReport.SenderName">Sender</label>
+
+        <!-- Shows as text, but cannot be edited -->
+        <input asp-for="NewReport.SenderName"
+               class="form-control-plaintext"
+               readonly
+               tabindex="-1"
+               onfocus="this.blur()"
+               style="user-select: none; color: var(--text-color);" />
+
+        <!-- hidden field that sends to backend -->
+        <input type="hidden" asp-for="NewReport.SenderName" />
+        <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
     @* Latitude input *@
