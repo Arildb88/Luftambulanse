@@ -49,14 +49,7 @@
             cursor: pointer;
         }
     </style>
-
-    @* Sender name input, gets the SenderName automaticly from the User thats logged in *@
-    @*<div class="form-group">
-        <label asp-for="NewReport.SenderName">Sender</label>
-        <input type="hidden" asp-for="NewReport.SenderName" value="@User.Identity?.Name" />
-
-    </div> *@
-
+       
     <div class="form-group">
         <label asp-for="NewReport.SenderName">Sender</label>
 
@@ -76,14 +69,14 @@
     @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Latitude"></label>
-        <input asp-for="NewReport.Latitude" type="text" step="any" />
+        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Longitude"></label>
-        <input asp-for="NewReport.Longitude" type="text" step="any" />
+        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
@@ -94,10 +87,44 @@
         <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
     </div>
 
-    @* Danger type input *@
-    <div class="form-group">
-        <label asp-for="NewReport.DangerType">Obstacle Type</label>
-        <input asp-for="NewReport.DangerType" class="form-control" />
+    @* DangerType radio buttons *@
+    <div class="mb-3">
+        <label class="form-label d-block">Obstacle Type</label>
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
+                       value="@((int)ReportModel.DangerType.PowerLine)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.PowerLine ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typePowerLine">PowerLine</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
+                       value="@((int)ReportModel.DangerType.Pole)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Pole ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typePole">Pole</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
+                       value="@((int)ReportModel.DangerType.Construction)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Construction ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typeConstruction">Construction</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
+                       value="@((int)ReportModel.DangerType.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Other ? "checked" : "")>
+                <label class="btn btn-outline-secondary btn-lg w-100" for="typeOther">Other</label>
+            </div>
+        </div>
+        <span class="text-danger" asp-validation-for="NewReport.Type"></span>
+    </div>
+
+    @* OtherDangerType input, shown only if "Other" is selected *@
+    <div id="otherTypeWrapper"
+         class="form-group @(Model.NewReport.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
+        <input asp-for="NewReport.OtherDangerType" class="form-control" />
+        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
     </div>
 
     @* Extra details textarea *@
@@ -119,10 +146,25 @@
     <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
-@* <!-- Makes button -->
-<br>
-<button id="btnAdd" class="btnSimple" type="button">Open Map</button>
- *@
+
+@*Script that makes the Others input field visible if Other is choosen*@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateOtherVisibility() {
+          const wrap = document.getElementById('otherTypeWrapper');
+          const isOther = document.getElementById('typeOther').checked;
+          wrap.classList.toggle('d-none', !isOther);
+        }
+        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
+          r.addEventListener('change', updateOtherVisibility)
+        );
+        updateOtherVisibility();
+    </script>
+}
+
+
 <!-- Title for submitted coordinates -->
 
 <h3><br>Submitted Coordinates</h3>

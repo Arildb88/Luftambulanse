@@ -2,8 +2,10 @@ using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.DataContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +52,7 @@ builder.Services.ConfigureApplicationCookie(o =>
     o.LoginPath = "/Identity/Account/Login";
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
+
 
 var app = builder.Build();
 

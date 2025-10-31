@@ -1,3 +1,5 @@
+﻿
+
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
@@ -69,14 +71,14 @@
     @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Latitude"></label>
-        <input asp-for="NewReport.Latitude" type="text" step="any" />
+        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Longitude"></label>
-        <input asp-for="NewReport.Longitude" type="text" step="any" />
+        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
@@ -87,10 +89,66 @@
         <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
     </div>
 
-    @* Danger type input *@
-    <div class="form-group">
-        <label asp-for="NewReport.DangerType">Obstacle Type</label>
-        <input asp-for="NewReport.DangerType" class="form-control" />
+    <!-- Obstacle Type cards -->
+    <div class="mb-3">
+        <label class="form-label d-block">Obstacle Type</label>
+
+        <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
+            <div class="col">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
+                       value="@((int)ReportModel.DangerType.PowerLine)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.PowerLine ? "checked" : "")>
+                <label class="obstacle-card" for="typePowerLine" aria-label="PowerLine">
+                    <!-- Prefer an SVG/PNG in wwwroot; fallback emoji below -->
+                    @* <img src="~/Content/Images/obstacles/powerline.svg" alt="" /> *@
+                    <span class="obstacle-emoji">⚡</span>
+                    <span>PowerLine</span>
+                </label>
+            </div>
+
+            <div class="col">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
+                       value="@((int)ReportModel.DangerType.Pole)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Pole ? "checked" : "")>
+                <label class="obstacle-card" for="typePole" aria-label="Pole">
+                    @* <img src="~/Content/Images/obstacles/pole.svg" alt="" /> *@
+                    <span class="obstacle-emoji">📍</span>
+                    <span>Pole</span>
+                </label>
+            </div>
+
+            <div class="col">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
+                       value="@((int)ReportModel.DangerType.Construction)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Construction ? "checked" : "")>
+                <label class="obstacle-card" for="typeConstruction" aria-label="Construction">
+                    @* <img src="~/Content/Images/obstacles/construction.svg" alt="" /> *@
+                    <span class="obstacle-emoji">🚧</span>
+                    <span>Construction</span>
+                </label>
+            </div>
+
+            <div class="col">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
+                       value="@((int)ReportModel.DangerType.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerType.Other ? "checked" : "")>
+                <label class="obstacle-card" for="typeOther" aria-label="Other">
+                    @* <img src="~/Content/Images/obstacles/other.svg" alt="" /> *@
+                    <span class="obstacle-emoji">📦</span>
+                    <span>Other</span>
+                </label>
+            </div>
+        </div>
+
+        <span class="text-danger" asp-validation-for="NewReport.Type"></span>
+    </div>
+
+    <!-- Other obstacle textbox -->
+    <div id="otherTypeWrapper"
+         class="form-group @(Model.NewReport.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
+        <input asp-for="NewReport.OtherDangerType" class="form-control" />
+        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
     </div>
 
     @* Extra details textarea *@
@@ -112,6 +170,21 @@
         <button type="submit" class="btnSubmit">Save</button>
     </div>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateOtherVisibility() {
+          const wrap = document.getElementById('otherTypeWrapper');
+          const isOther = document.getElementById('typeOther').checked;
+          wrap.classList.toggle('d-none', !isOther);
+        }
+        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
+          r.addEventListener('change', updateOtherVisibility)
+        );
+        updateOtherVisibility();
+    </script>
+}
 
 
 
