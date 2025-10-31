@@ -2,7 +2,10 @@ using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.DataContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,11 +19,17 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Register");     // optional
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/AccessDenied"); // optional
+    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/ForgotPassword"); // optional
+    options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/ForgotPasswordConfirmation"); // optional
+
 });
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
-    new MySqlServerVersion(new Version(11, 8, 3))));
+    new MariaDbServerVersion(new Version(11, 8, 3)),
+    
+    MySqlOptions => MySqlOptions.EnableRetryOnFailure()
+    ));
 
 
 
@@ -44,46 +53,78 @@ builder.Services.ConfigureApplicationCookie(o =>
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
+
 var app = builder.Build();
 
-// Create a test user to Login with
+// Create roles and demo users
 using (var scope = app.Services.CreateScope())
 {
     var sp = scope.ServiceProvider;
-    var userManager = sp.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
-    var signInManager = sp.GetRequiredService<SignInManager<ApplicationUser>>();
 
-    const string email = "test@test.com";
-    const string password = "Test123!";
-    const string adminRole = "Admin";
+    //Run migrations on startup with a simple retry in case DB container is not ready yet
+    var logger = sp.GetRequiredService<ILogger<Program>>();
+    var db = sp.GetRequiredService<AppDbContext>();
 
-    // 1) Ensure role exists
-    if (!await roleManager.RoleExistsAsync(adminRole))
-        await roleManager.CreateAsync(new IdentityRole(adminRole));
-
-    // 2) Ensure user exists
-    var user = await userManager.FindByEmailAsync(email);
-    if (user is null)
+    const int maxAttempts = 10;
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
     {
-        user = new ApplicationUser
+        try
         {
-            UserName = email,
-            Email = email,
-            EmailConfirmed = true
-        };
-        var create = await userManager.CreateAsync(user, password);
-        if (!create.Succeeded)
-            throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
+            await db.Database.MigrateAsync();   // applies all pending migrations
+            logger.LogInformation("Database migrated successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (attempt == maxAttempts) throw;
+            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s…", attempt, maxAttempts);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
     }
 
-    // 3) Ensure user is in role
-    if (!await userManager.IsInRoleAsync(user, adminRole))
+    var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
+
+    // 1) Roles in our project
+    string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
+    foreach (var role in roles)
+        if (!await roleMgr.RoleExistsAsync(role))
+            await roleMgr.CreateAsync(new IdentityRole(role));
+
+    // 2) Demo users to try to login to our application
+    async Task EnsureUserInRole(string email, string password, string role)
     {
-        await userManager.AddToRoleAsync(user, adminRole);
-
-       
+        var user = await userMgr.FindByEmailAsync(email);
+        if (user is null)
+        {
+            user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true
+            };
+            var create = await userMgr.CreateAsync(user, password);
+            if (!create.Succeeded)
+                throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
+        }
+        if (!await userMgr.IsInRoleAsync(user, role))
+            await userMgr.AddToRoleAsync(user, role);
     }
+
+    await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user
+    await EnsureUserInRole("admin2@test.com", "Test123!", "Admin");      // Admin user
+
+    await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user
+    await EnsureUserInRole("caseworker2@test.com", "Test123!", "Caseworker"); // Caseworker user
+
+    await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
+    await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
+
+    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot");      // Pilot user
+    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot");      // Pilot user
+    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot");      // Pilot user
+
+
 }
 
 
@@ -97,29 +138,31 @@ if (!app.Environment.IsDevelopment())
 
 // Needed to load local leaflet map
 app.UseStaticFiles();
+app.UseRouting();
 
 app.MapStaticAssets();
 
-app.UseHttpsRedirection();
-app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
+app.UseHttpsRedirection();
 
 
-app.MapRazorPages();
+
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
 
 app.MapControllerRoute(
     name: "Areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+// Needed for Razor Pages-routing
+app.MapRazorPages();
+
 
 
 

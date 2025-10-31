@@ -1,6 +1,6 @@
 ﻿:root {
     --base-color: white;
-    --base-variant: icewhite;
+    --base-variant: white;
     --text-color: black;
     --secondary-text: grey;
     --primary-color: #333333;
@@ -37,6 +37,9 @@
     .navbar .navbar-brand:hover {
         color: var(--accent-color);
     }
+
+
+
 
 @media (min-width: 768px) {
   html {
@@ -107,26 +110,7 @@
         background: #0056b3;
     }
 
-/* --- Password requirement list --- */
-.conditions {
-    margin: 10px 0 0;
-    padding-left: 0;
-    list-style-type: none;
-    font-size: 14px;
-}
-
-    /* --- Default: red dot before requirements --- */
-    .conditions li::before {
-        content: "🔴";
-        margin-right: 6px;
-    }
-
-    /* --- When requirement is met: green dot --- */
-    .conditions li.valid::before {
-        content: "🟢";
-    }
-
-.btn:focus, .btn:active:focus, .btn-link.
+.btn:focus, .btn:active:focus, .btn-link
 
 :focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
@@ -171,6 +155,19 @@ body {
     }
 }
 
+.btnSubmit {
+    background-color: #198754;
+    border: none;
+    color: ghostwhite;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .btnSimple {
     background-color: #198754;
     border: none;
@@ -203,17 +200,39 @@ body {
     background-size: cover;
 }
 
-#theme-switch{
-    height: 30px;
-    width: 30px;
-    padding: 0;
-    border-radius: 20%;
-    background-color: var(--icon-color);
+/* --- DARK MODE BUTTON --- */
+#theme-switch {
+    background: transparent;
+    border: none;
+    cursor: pointer;
     display: flex;
-    justify-content: center;
     align-items: center;
-    top: 20px;
-    right: 20px;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+#theme-switch:hover {
+    transform: scale(1.15);
+}
+
+#theme-switch svg {
+    fill: var(--text-color) !important;
+    width: 22px;
+    height: 22px;
+}
+
+       /* Hide moon icon first */
+#theme-switch svg:last-child {
+    display: none;
+}
+
+/* When darkmode is activ: show moon*/
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+    display: inline;
 }
 
 #theme-switch svg{
@@ -277,6 +296,101 @@ body {
     z-index: 1001; /* slightly above other controls */
 }
 
+/* Make sure to give right color on user-/loginmenu in darkmode*/
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: var(--text-color) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: var(--accent-color) !important;
+}
+
+.dropdown-menu {
+    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
+    background-color: var(--base-variant); /* white background */
+    opacity: 1 !important; /* fully non-transparent*/
+    backdrop-filter: none !important; /* Removes glass-effect */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* optional, shadow for depth*/
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+    background-color: var(--base-variant);
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--accent-color);
+    color: var(--base-color);
+}
+
+/* ===== Obstacle option cards ===== */
+.obstacle-grid {
+    margin-top: .25rem;
+}
+
+.obstacle-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 140px; /* make them big */
+    border-radius: 16px; /* rounded rectangle */
+    border: 2px solid var(--accent-color);
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+    text-align: center;
+}
+
+    .obstacle-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+
+    .obstacle-card img,
+    .obstacle-card .obstacle-emoji {
+        width: 48px;
+        height: 48px;
+        display: inline-block;
+        line-height: 48px;
+        font-size: 36px; /* for emoji fallback */
+    }
+
+    .obstacle-card span {
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+/* Checked state (paired with .btn-check radio) */
+.btn-check:checked + .obstacle-card {
+    background: #0d6efd; /* Bootstrap primary */
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,110,253,.35);
+}
+
+/* Keyboard focus when tabbing to the radio */
+.btn-check:focus + .obstacle-card {
+    outline: 3px solid rgba(13,110,253,.4);
+    outline-offset: 2px;
+}
+
+/* Dark mode tweaks */
+.darkmode .obstacle-card {
+    border-color: #424242;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.darkmode .btn-check:checked + .obstacle-card {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+}
 
 
 

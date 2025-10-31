@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251021161420_InitialCreateDeletedLastMigrations")]
-    partial class InitialCreateDeletedLastMigrations
+    [Migration("20251030090518_InitalCreate")]
+    partial class InitalCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,27 +89,6 @@ namespace Gruppe4NLA.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Gruppe4NLA.Models.AdviceDto", b =>
-                {
-                    b.Property<int>("AdviceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AdviceId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("AdviceId");
-
-                    b.ToTable("Advices");
-                });
-
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
                 {
                     b.Property<int>("Id")
@@ -130,7 +109,7 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("Details")
                         .HasColumnType("longtext");
 
-                    b.Property<double>("HeightInnMeters")
+                    b.Property<double?>("HeightInnMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")
@@ -141,6 +120,9 @@ namespace Gruppe4NLA.Migrations
 
                     b.Property<string>("SenderName")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

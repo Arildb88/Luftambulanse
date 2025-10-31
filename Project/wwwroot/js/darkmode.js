@@ -2,7 +2,7 @@
     const map = window.map;  // Map must be created already
     const themeSwitch = document.getElementById('theme-switch');
 
-    if (!themeSwitch) return;  // No button, exit
+    //if (!themeSwitch) return;  // No button, exit
     if (!map) {
         // No map found — fallback: just toggle body class and localStorage without map layers
         const isDark = localStorage.getItem('darkmode') === 'active';
