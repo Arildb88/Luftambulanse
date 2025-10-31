@@ -28,12 +28,16 @@
     @* Loop through reports and show them as rows *@
     @foreach (var r in Model)
     {
+        var typeText = r.Type == Gruppe4NLA.Models.ReportModel.DangerType.Other
+            ? (r.OtherDangerType ?? "Other")
+            : (r.Type?.ToString() ?? "—");
+
         <tr>
             <td>@r.SenderName</td>
             <td>@r.Latitude</td>
             <td>@r.Longitude</td>
             <td>@r.HeightInnMeters</td>
-            <td>@r.DangerType</td>
+            <td>@typeText</td>
             <td>@r.DateSent</td>
             <td>
                 @* Link to details page *@

@@ -325,6 +325,72 @@ body {
     color: var(--base-color);
 }
 
+/* ===== Obstacle option cards ===== */
+.obstacle-grid {
+    margin-top: .25rem;
+}
+
+.obstacle-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 140px; /* make them big */
+    border-radius: 16px; /* rounded rectangle */
+    border: 2px solid var(--accent-color);
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+    text-align: center;
+}
+
+    .obstacle-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+
+    .obstacle-card img,
+    .obstacle-card .obstacle-emoji {
+        width: 48px;
+        height: 48px;
+        display: inline-block;
+        line-height: 48px;
+        font-size: 36px; /* for emoji fallback */
+    }
+
+    .obstacle-card span {
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+/* Checked state (paired with .btn-check radio) */
+.btn-check:checked + .obstacle-card {
+    background: #0d6efd; /* Bootstrap primary */
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,110,253,.35);
+}
+
+/* Keyboard focus when tabbing to the radio */
+.btn-check:focus + .obstacle-card {
+    outline: 3px solid rgba(13,110,253,.4);
+    outline-offset: 2px;
+}
+
+/* Dark mode tweaks */
+.darkmode .obstacle-card {
+    border-color: #424242;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.darkmode .btn-check:checked + .obstacle-card {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+}
 
 
 

@@ -14,19 +14,25 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
-
+    healthcheck:                           # optional but recommended
+       test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MARIADB_ROOT_PASSWORD}"]
+       interval: 5s
+       timeout: 3s
+       retries: 20
+       start_period: 10s
   web:
     build:
       context: ./Project
       dockerfile: Dockerfile
     container_name: aspire-webapp
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__OurDbConnection=Server=mariadb;Database=obstaclereports;User=admin;Password=9991;
+      - ConnectionStrings__OurDbConnection=Server=mariadb;Database=obstaclereports;User=admin;Password=9991;SslMode=None;
 
 volumes:
   mariadb_data:

@@ -52,6 +52,13 @@ namespace Gruppe4NLA.Controllers
 
             ModelState.Remove("NewReport.SenderName");
 
+            // Validate OtherDangerType if "Other" is selected
+            if (model.NewReport.Type == ReportModel.DangerType.Other
+                && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
+            {
+                ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.SubmittedReport = await _context.Reports
@@ -67,8 +74,8 @@ namespace Gruppe4NLA.Controllers
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
-                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
-                DangerType = model.NewReport.DangerType,
+                Type = model.NewReport.Type,
+                OtherDangerType = model.NewReport.OtherDangerType,
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters,
                 AreLighted = model.NewReport.AreLighted,
@@ -91,6 +98,13 @@ namespace Gruppe4NLA.Controllers
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model)
         
         {
+            // Validate OtherDangerType if "Other" is selected
+            if (model.NewReport.Type == ReportModel.DangerType.Other
+                && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
+            {
+                ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
+            }
+
             if (!ModelState.IsValid)
             {
                 model.SubmittedReport = await _context.Reports
@@ -102,13 +116,14 @@ namespace Gruppe4NLA.Controllers
 
             var newReport = new ReportModel
             {
+                UserId = model.NewReport.UserId,
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
                 SenderName = model.NewReport.SenderName,
-                //CaseworkerGroupId = model.NewReport.CaseworkerGroupId,
-                DangerType = model.NewReport.DangerType,
+                Type = model.NewReport.Type,
+                OtherDangerType = model.NewReport.OtherDangerType,
                 Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas
+                HeightInnMeters = model.NewReport.HeightInnMeters,
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
             };
@@ -164,7 +179,7 @@ namespace Gruppe4NLA.Controllers
                 NewReport = new ReportModel
                 {
                     UserId = _userManager.GetUserId(User),
-                    SenderName = user?.Email  // ? dette fyller ut brukernavnet automatisk
+                    SenderName = user?.Email  // fills in the user's email as sender name
                 },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
@@ -180,29 +195,6 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
-
-        //[HttpGet]
-        //public async Task<IActionResult> CreatePopUp(double? lat, double? lng)
-        //{
-
-        //    var model = new ReportModelWrapper
-        //    {
-        //        NewReport = new ReportModel(),
-        //        SubmittedReport = await _context.Reports
-        //            .OrderByDescending(r => r.DateSent)
-        //            .ToListAsync()
-        //    };
-
-        //    if (lat.HasValue)
-        //        model.NewReport.Latitude = lat.Value;
-
-        //    if (lng.HasValue)
-        //        model.NewReport.Longitude = lng.Value;
-
-        //    return View(model);
-        //}
-
-        // Show the "details" page
         public async Task<IActionResult> Details(int id)
         {
             var report = await _context.Reports.FindAsync(id);
@@ -238,155 +230,3 @@ namespace Gruppe4NLA.Controllers
         }
     }
 }
-
-
-
-
-// Commented out
-//[HttpGet("/Reports/CreateFromMap")]
-//public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
-//{
-//    var user = await _userManager.GetUserAsync(User);
-
-//    var vm = new ReportModelWrapper
-//    {
-//        NewReport = new ReportModel(),
-//        SubmittedReport = await _context.Reports
-//            .OrderByDescending(r => r.DateSent)
-//            .ToListAsync()
-//    };
-
-//    if (lat.HasValue) vm.NewReport.Latitude = lat.Value;
-//    if (lng.HasValue) vm.NewReport.Longitude = lng.Value;
-
-//    return View("Create", vm);
-//}
-
-
-
-
-
-// Commented out original code:
-
-//using Gruppe4NLA.DataContext;
-
-//using Gruppe4NLA.Models;
-//using Microsoft.AspNetCore.Mvc;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using Microsoft.EntityFrameworkCore;
-
-
-
-//namespace Gruppe4NLA.Controllers
-//{
-//    public class ReportsController : Controller
-//    {
-//        private readonly AppDbContext _context;
-
-//        public ReportsController(AppDbContext context)
-//        {
-//            _context = context;
-//        }
-
-//        public async Task<IActionResult> Index()
-//        {
-//            var reports = await _context.Reports
-//                .OrderByDescending(r => r.DateSent)
-//                .ToListAsync();
-
-//            return View(reports);
-//        }
-
-//        [HttpPost]
-//        public async Task<IActionResult> Create(ReportModelWrapper model)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                model.SubmittedReport = await _context.Reports
-//                    .OrderByDescending(r => r.DateSent)
-//                    .ToListAsync();
-
-//                return View(model);
-//            }
-
-//            var newReport = new ReportModel
-//            {
-//                Latitude = model.NewReport.Latitude,
-//                Longitude = model.NewReport.Longitude,
-//                SenderName = model.NewReport.SenderName,
-//                DangerType = model.NewReport.DangerType,
-//                Details = model.NewReport.Details,
-//                HeightInnMeters = model.NewReport.HeightInnMeters, // change variable names for the report form? -jonas
-//                AreLighted = model.NewReport.AreLighted,
-//                DateSent = DateTime.Now
-//            };
-
-//            _context.Reports.Add(newReport);
-//            await _context.SaveChangesAsync();
-
-//            model.NewReport = new ReportModel(); // Reset input
-//            model.SubmittedReport = await _context.Reports
-//                .OrderByDescending(r => r.DateSent)
-//                .ToListAsync();
-
-//            ViewBag.Message = "Submitted successfully!";
-//            return View(model);
-//        }
-
-
-//        [HttpGet]
-//        public async Task<IActionResult> Create(double? lat, double? lng)
-//        {
-//            var model = new ReportModelWrapper
-//            {
-//                NewReport = new ReportModel(),
-//                SubmittedReport = await _context.Reports
-//                    .OrderByDescending(r => r.DateSent)
-//                    .ToListAsync()
-//            };
-
-//            if (lat.HasValue)
-//                model.NewReport.Latitude = lat.Value;
-
-//            if (lng.HasValue)
-//                model.NewReport.Longitude = lng.Value;
-
-//            return View(model);
-//        }        
-
-//        // Show the "details" page
-//        public async Task<IActionResult> Details(int id)
-//        {
-//            var report = await _context.Reports.FindAsync(id);
-//            if (report == null)
-//            {
-//                return NotFound();
-//            }
-
-//            return View(report);
-//        }
-
-//        // GET /Reports/CreateFromMap?lat=..&lng=..
-//        [HttpGet("/Reports/CreateFromMap")]
-//        public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
-//        {
-//            var vm = new ReportModelWrapper
-//            {
-//                NewReport = new ReportModel(),
-//                SubmittedReport = await _context.Reports
-//                    .OrderByDescending(r => r.DateSent)
-//                    .ToListAsync()
-//            };
-
-//            if (lat.HasValue) vm.NewReport.Latitude = lat.Value;
-//            if (lng.HasValue) vm.NewReport.Longitude = lng.Value;
-
-//            // Reuse the same Create view
-//            return View("Create", vm);
-//        }
-
-//    }
-//}
-
