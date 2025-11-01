@@ -82,6 +82,19 @@
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
+    @* GeoJson *@
+    <div class="form-group">
+        <label asp-for="NewReport.GeoJson">GeoJSON</label>
+        <textarea asp-for="NewReport.GeoJson"
+                  rows="6"
+                  class="form-control"
+                  readonly
+                  style="font-family: monospace; white-space: pre;"></textarea>
+        <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
+    </div>
+
+
+
     @* HeightInnMeters input *@
     <div class="form-group">
         <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>
@@ -162,8 +175,6 @@
         <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
     </div>
-
-
 
     @* Save and Cancel buttons *@
     <div class="d-flex justify-content-center gap-3 mt-3">
