@@ -1,0 +1,55 @@
+@model List<Gruppe4NLA.Models.ReportModel>
+@{
+    ViewData["Title"] = "My Queue";
+}
+
+<h2>My Assigned Reports</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <p>You have no reports assigned to you at this time.</p>
+    </div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Sender</th>
+            <th>Type</th>
+            <th>Date Sent</th>
+            <th>Assigned At</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var report in Model)
+        {
+            var typeText = report.Type == ReportModel.DangerTypeEnum.Other
+                ? (report.OtherDangerType ?? "Other")
+                : report.Type.ToString();
+                    
+            <tr>
+                <td>@report.Id</td>
+                <td>@report.SenderName</td>
+                <td>@typeText</td>
+                <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                <td>
+                    <span class="badge bg-@(report.Status == ReportStatus.Assigned ? "primary" : "warning")">
+                        @report.Status
+                    </span>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">View Details</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Back to All Reports</a>

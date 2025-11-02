@@ -1,13 +1,19 @@
-using Gruppe4NLA.Areas.Identity.Data;
-using Gruppe4NLA.DataContext;
-using Gruppe4NLA.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Gruppe4NLA.Areas.Identity.Data;   
+using Gruppe4NLA.DataContext;           
+using Gruppe4NLA.Models;                
+using Gruppe4NLA.Services;             
+using Gruppe4NLA.ViewModels;
+
+
 
 namespace Gruppe4NLA.Controllers
 {
@@ -16,12 +22,21 @@ namespace Gruppe4NLA.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public ReportsController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        // NEW: delegation service (assign/unassign logic)
+        private readonly IReportAssignmentService _assigner;
+
+        public ReportsController(
+            AppDbContext context,
+            UserManager<ApplicationUser> userManager,
+            IReportAssignmentService assigner // NEW
+        )
         {
             _context = context;
             _userManager = userManager;
+            _assigner = assigner; // NEW
         }
 
+        
         public async Task<IActionResult> Index()
         {
             IQueryable<ReportModel> q = _context.Reports;
@@ -53,11 +68,12 @@ namespace Gruppe4NLA.Controllers
             ModelState.Remove("NewReport.SenderName");
 
             // Validate OtherDangerType if "Other" is selected
-            if (model.NewReport.Type == ReportModel.DangerType.Other
+            if (model.NewReport.Type == ReportModel.DangerTypeEnum.Other
                 && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
             {
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
             }
+
 
             if (!ModelState.IsValid)
             {
@@ -96,14 +112,14 @@ namespace Gruppe4NLA.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model)
-        
         {
             // Validate OtherDangerType if "Other" is selected
-            if (model.NewReport.Type == ReportModel.DangerType.Other
+            if (model.NewReport.Type == ReportModel.DangerTypeEnum.Other
                 && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
             {
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
             }
+
 
             if (!ModelState.IsValid)
             {
@@ -140,21 +156,19 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Create(double? lat, double? lng)
         {
             var user = await _userManager.GetUserAsync(User);
 
             var model = new ReportModelWrapper
-            
             {
                 NewReport = new ReportModel
                 {
                     UserId = _userManager.GetUserId(User),
                     SenderName = user?.Email,
                 },
-                
+
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
@@ -178,8 +192,8 @@ namespace Gruppe4NLA.Controllers
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User),
-                    SenderName = user?.Email  // fills in the user's email as sender name
+                    UserId = _userManager.GetUserId(User), // hidden but used to select which reports you can view
+                    SenderName = user?.Email               // fills in the user's email as sender name
                 },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
@@ -210,23 +224,156 @@ namespace Gruppe4NLA.Controllers
         [HttpGet("/Reports/CreateFromMap")]
         public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
         {
-            var user = await _userManager.GetUserAsync(User);            
-            
+            var user = await _userManager.GetUserAsync(User);
+
             var vm = new ReportModelWrapper
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User), // hidden but its used for selecting witch reports you can view in Reports View
-                    SenderName = user?.Email,          // set the sender name from form
+                    UserId = _userManager.GetUserId(User), // used to filter "my reports"
+                    SenderName = user?.Email,              // set the sender name from the user
                     Latitude = lat ?? default,
                     Longitude = lng ?? default
                 },
                 SubmittedReport = await _context.Reports
-            .OrderByDescending(r => r.DateSent)
-            .ToListAsync()
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync()
             };
 
             return View("Create", vm);
         }
+        
+        
+        /// Admin inbox: list all reports with assignment/status info.
+        /// Only CaseworkerAdm can open this page.
+        [Authorize(Roles = "CaseworkerAdm")]
+        public async Task<IActionResult> Inbox()
+        {
+            var data = await _context.Reports
+                .OrderByDescending(r => r.DateSent)
+                .Select(r => new ReportListItemVM
+                {
+                    Id = r.Id,
+                    SenderName = r.SenderName,
+                    DangerType = r.DangerType,
+                    DateSent = r.DateSent,
+                    Status = r.Status.ToString(),      // requires ReportStatus on your model
+                    AssignedTo = r.AssignedToUserId    // shows Id; can be mapped to username later
+                })
+                .ToListAsync();
+
+            return View(data);
+        }
+        
+        /// Show assignment dialog to choose a Caseworker.
+        [Authorize(Roles = "CaseworkerAdm")]
+        public async Task<IActionResult> Assign(int id)
+        {
+            var report = await _context.Reports.FirstOrDefaultAsync(r => r.Id == id);
+            if (report == null) return NotFound();
+
+            // Load users who have the "Caseworker" role
+            var caseworkers = await _context.Users
+                .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r.Name })
+                .Where(x => x.Name == "Caseworker")
+                .Select(x => x.u)
+                .ToListAsync();
+
+            var vm = new AssignReportVM
+            {
+                ReportId = report.Id,
+                CurrentAssignee = report.AssignedToUserId,
+                Caseworkers = caseworkers
+                    .Select(u => new SelectListItem
+                    {
+                        Value = u.Id,
+                        Text = u.UserName ?? u.Email ?? u.Id
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
+        }
+        
+        /// Perform the assignment 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "CaseworkerAdm")]
+        public async Task<IActionResult> Assign(AssignReportVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Repopulate caseworker list if validation fails
+                var caseworkers = await _context.Users
+                    .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
+                    .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r.Name })
+                    .Where(x => x.Name == "Caseworker")
+                    .Select(x => x.u)
+                    .ToListAsync();
+
+                vm.Caseworkers = caseworkers
+                    .Select(u => new SelectListItem { Value = u.Id, Text = u.UserName ?? u.Email ?? u.Id })
+                    .ToList();
+
+                return View(vm);
+            }
+
+            var me = _userManager.GetUserId(User)!; // admin performing the assignment
+            await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!, me);
+
+            TempData["Ok"] = "Report assigned.";
+            return RedirectToAction(nameof(Inbox));
+        }
+        
+        /// Remove assignment 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "CaseworkerAdm")]
+        public async Task<IActionResult> Unassign(int id)
+        {
+            var me = _userManager.GetUserId(User)!;
+            await _assigner.UnassignAsync(id, me);
+            TempData["Ok"] = "Assignment removed.";
+            return RedirectToAction(nameof(Inbox));
+        }
+        
+        /// Caseworker's personal queue: what is assigned to me and in progress.
+        [Authorize(Roles = "Caseworker")]
+        public async Task<IActionResult> MyQueue()
+        {
+            var me = _userManager.GetUserId(User)!;
+
+            var items = await _context.Reports
+                .Where(r => r.AssignedToUserId == me &&
+                            (r.Status == ReportStatus.Assigned || r.Status == ReportStatus.InReview))
+                .OrderBy(r => r.AssignedAtUtc)
+                .ToListAsync();
+
+            return View(items);
+        }
+    }
+    
+    // NEW: ViewModels (lightweight)
+    // Place them here or in a separate file if you prefer.
+    public class AssignReportVM
+    {
+        [Required] public int ReportId { get; set; }
+        public string? CurrentAssignee { get; set; }
+
+        [Required(ErrorMessage = "Please select a caseworker")]
+        public string? ToUserId { get; set; }
+
+        public List<SelectListItem> Caseworkers { get; set; } = new();
+    }
+
+    public class ReportListItemVM
+    {
+        public int Id { get; set; }
+        public string? SenderName { get; set; }
+        public string? DangerType { get; set; }
+        public DateTime DateSent { get; set; }
+        public string Status { get; set; } = "";
+        public string? AssignedTo { get; set; }
     }
 }

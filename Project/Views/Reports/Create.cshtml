@@ -1,4 +1,3 @@
-
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
@@ -93,26 +92,26 @@
         <div class="row g-2">
             <div class="col-6 col-md-3">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
-                       value="@((int)ReportModel.DangerType.PowerLine)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.PowerLine ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.PowerLine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.PowerLine ? "checked" : "")>
                 <label class="btn btn-outline-primary btn-lg w-100" for="typePowerLine">PowerLine</label>
             </div>
             <div class="col-6 col-md-3">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
-                       value="@((int)ReportModel.DangerType.Pole)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Pole ? "checked" : "")>
-                <label class="btn btn-outline-primary btn-lg w-100" for="typePole">Pole</label>
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeTower"
+                       value="@((int)ReportModel.DangerTypeEnum.Tower)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Tower ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typeTower">Tower</label>
             </div>
             <div class="col-6 col-md-3">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
-                       value="@((int)ReportModel.DangerType.Construction)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Construction ? "checked" : "")>
-                <label class="btn btn-outline-primary btn-lg w-100" for="typeConstruction">Construction</label>
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeWindTurbine"
+                       value="@((int)ReportModel.DangerTypeEnum.WindTurbine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.WindTurbine ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typeWindTurbine">WindTurbine</label>
             </div>
             <div class="col-6 col-md-3">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
-                       value="@((int)ReportModel.DangerType.Other)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Other ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "checked" : "")>
                 <label class="btn btn-outline-secondary btn-lg w-100" for="typeOther">Other</label>
             </div>
         </div>
@@ -121,7 +120,7 @@
 
     @* OtherDangerType input, shown only if "Other" is selected *@
     <div id="otherTypeWrapper"
-         class="form-group @(Model.NewReport.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+         class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
         <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
         <input asp-for="NewReport.OtherDangerType" class="form-control" />
         <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
@@ -179,4 +178,3 @@
         </li>
     }
 </ul>
-

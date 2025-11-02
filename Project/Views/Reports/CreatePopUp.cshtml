@@ -1,6 +1,4 @@
-﻿
-
-@using Gruppe4NLA.Models
+﻿@using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
 
@@ -96,8 +94,8 @@
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
-                       value="@((int)ReportModel.DangerType.PowerLine)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.PowerLine ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.PowerLine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.PowerLine ? "checked" : "")>
                 <label class="obstacle-card" for="typePowerLine" aria-label="PowerLine">
                     <!-- Prefer an SVG/PNG in wwwroot; fallback emoji below -->
                     @* <img src="~/Content/Images/obstacles/powerline.svg" alt="" /> *@
@@ -107,31 +105,31 @@
             </div>
 
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
-                       value="@((int)ReportModel.DangerType.Pole)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Pole ? "checked" : "")>
-                <label class="obstacle-card" for="typePole" aria-label="Pole">
-                    @* <img src="~/Content/Images/obstacles/pole.svg" alt="" /> *@
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeTower"
+                       value="@((int)ReportModel.DangerTypeEnum.Tower)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Tower ? "checked" : "")>
+                <label class="obstacle-card" for="typeTower" aria-label="Tower">
+                    @* <img src="~/Content/Images/obstacles/tower.svg" alt="" /> *@
                     <span class="obstacle-emoji">📍</span>
-                    <span>Pole</span>
+                    <span>Tower</span>
                 </label>
             </div>
 
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
-                       value="@((int)ReportModel.DangerType.Construction)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Construction ? "checked" : "")>
-                <label class="obstacle-card" for="typeConstruction" aria-label="Construction">
-                    @* <img src="~/Content/Images/obstacles/construction.svg" alt="" /> *@
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeWindTurbine"
+                       value="@((int)ReportModel.DangerTypeEnum.WindTurbine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.WindTurbine ? "checked" : "")>
+                <label class="obstacle-card" for="typeWindTurbine" aria-label="WindTurbine">
+                    @* <img src="~/Content/Images/obstacles/windturbine.svg" alt="" /> *@
                     <span class="obstacle-emoji">🚧</span>
-                    <span>Construction</span>
+                    <span>WindTurbine</span>
                 </label>
             </div>
 
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
-                       value="@((int)ReportModel.DangerType.Other)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Other ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "checked" : "")>
                 <label class="obstacle-card" for="typeOther" aria-label="Other">
                     @* <img src="~/Content/Images/obstacles/other.svg" alt="" /> *@
                     <span class="obstacle-emoji">📦</span>
@@ -145,7 +143,7 @@
 
     <!-- Other obstacle textbox -->
     <div id="otherTypeWrapper"
-         class="form-group @(Model.NewReport.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+         class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
         <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
         <input asp-for="NewReport.OtherDangerType" class="form-control" />
         <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
@@ -185,6 +183,3 @@
         updateOtherVisibility();
     </script>
 }
-
-
-
