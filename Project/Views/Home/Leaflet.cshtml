@@ -96,14 +96,7 @@
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
 
-
-    @* Old version; Gets online version of leaflet *@
-    @* <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script> *@
-
-    <!-- In-page modal that loads the Add Report page -->
+        <!-- In-page modal that loads the Add Report page -->
     <dialog id="reportDialog">
         <div style="display:flex;flex-direction:column;height:100%;background:var(--base-variant);border-radius:10px;overflow:hidden">
             <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #e5e5e5">
@@ -527,6 +520,27 @@
                     console.error("Could not access iframe form:", err);
                 }
             };
+
+                // ---- NEW: When the form loads, also insert geometry type ----
+            frame.onload = () => {
+            try {
+                const doc = frame.contentDocument || frame.contentWindow.document;
+                const geoInput = doc.querySelector('[name="NewReport.GeoJson"]');
+                if (geoInput) geoInput.value = geoJsonString;
+
+                // 👇 NEW: insert geometry type into form textbox
+                const geometryType = currentMode || "marker"; // default if nothing selected
+                const geomField = doc.getElementById("GeometryType");
+                if (geomField) {
+                    geomField.value = geometryType.charAt(0).toUpperCase() + geometryType.slice(1);
+                }
+
+                console.log("Inserted GeometryType:", geometryType);
+
+            } catch (err) {
+                console.error("Could not access iframe form:", err);
+            }
+        };
         });
     </script>
 </body>
