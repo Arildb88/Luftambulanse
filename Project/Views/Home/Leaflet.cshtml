@@ -211,10 +211,14 @@
         // --- Polyline button ---
         const DrawPolylineControl = L.Control.extend({
             onAdd: function () {
+                
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-                btn.innerHTML = 'Polyline';
+
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
                 btn.dataset.mode = 'polyline';
                 btn.style.backgroundColor = 'white';
+                btn.style.width = '100px';
+                btn.style.height = '100px';
                 btn.style.cursor = 'pointer';
                 btn.style.padding = '5px';
                 btn.title = 'Click to start/stop drawing a polyline';
@@ -225,17 +229,28 @@
         });
 
         // --- Marker button ---
+
         const DrawMarkerControl = L.Control.extend({
             onAdd: function () {
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-                btn.innerHTML = 'Marker';
+
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="red">
+                        <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
+                    </svg>
+                `;
+
                 btn.dataset.mode = 'marker';
                 btn.style.backgroundColor = 'white';
+                btn.style.width = '100px';
+                btn.style.height = '100px';
                 btn.style.cursor = 'pointer';
                 btn.style.padding = '5px';
                 btn.title = 'Click to start/stop placing markers';
+
                 L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                          .on(btn, 'click', (e) => setMode('marker'));
+                          .on(btn, 'click', () => setMode('marker'));
+
                 return btn;
             }
         });
@@ -363,31 +378,34 @@
         map.on('dragstart zoomstart', () => { if (following) setFollowing(false); });
 
         // Leaflet control for toggling follow
-        const FollowControl = L.Control.extend({
+                const FollowControl = L.Control.extend({
             onAdd: function () {
-                const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-                const link = L.DomUtil.create('a', '', container);
-                link.href = '#';
-                link.title = 'Find me';
-                link.innerHTML = '📍';
-                link.style.width = '50px';
-                link.style.height = '50px';
-                link.style.lineHeight = '50px';
-                link.style.textAlign = 'center';
-                link.style.fontSize = '20px';
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                btn.title = 'Find me';
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue">
+                        <path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                    </svg>
+                `;
 
-                L.DomEvent.on(link, 'click', L.DomEvent.stop)
-                    .on(link, 'click', () => setFollowing(!following));
+                btn.style.width = '100px';
+                btn.style.height = '100px';
+                btn.style.padding = '5px';
+                btn.style.cursor = 'pointer';
+                btn.style.background = 'white';
 
-                this._link = link;
+                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                          .on(btn, 'click', () => setFollowing(!following));
+
+                this._btn = btn;
                 this.setUi(false);
-                return container;
+                return btn;
             },
             setUi: function (isOn) {
-                if (!this._link) return;
-                this._link.title = isOn ? 'Following (click to pause)' : 'Find me';
-                this._link.style.background = isOn ? '#1e88e5' : '#fff';
-                this._link.style.color = isOn ? '#fff' : '#000';
+                if (!this._btn) return;
+                this._btn.title = isOn ? 'Following (click to pause)' : 'Find me';
+                this._btn.style.background = isOn ? '#1e88e5' : 'white';
+                this._btn.style.color = isOn ? '#fff' : '#000';
             }
         });
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);
@@ -501,12 +519,12 @@
                     const geoInput = doc.querySelector('[name="NewReport.GeoJson"]');
                     if (geoInput) {
                         geoInput.value = geoJsonString;
-                        console.log("✅ GeoJSON inserted into form");
+                        console.log("GeoJSON inserted into form");
                     } else {
-                        console.warn("⚠️ GeoJSON input not found in CreatePopUp form");
+                        console.warn("GeoJSON input not found in CreatePopUp form");
                     }
                 } catch (err) {
-                    console.error("❌ Could not access iframe form:", err);
+                    console.error("Could not access iframe form:", err);
                 }
             };
         });

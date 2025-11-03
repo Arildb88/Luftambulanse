@@ -282,10 +282,10 @@ body {
 /* Target the zoom control buttons */
 .leaflet-control-zoom a.leaflet-control-zoom-in,
 .leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 50px !important; /* default ~26px */
-    height: 50px !important; /* default ~26px */
-    font-size: 24px !important; /* make + and - bigger */
-    line-height: 50px !important; /* vertically center the + / - */
+    width: 100px !important; /* default ~26px */
+    height: 100px !important; /* default ~26px */
+    font-size: 48px !important; /* make + and - bigger */
+    line-height: 100px !important; /* vertically center the + / - */
 }
 .leaflet-control-zoom-in {
     margin-bottom: 5px; /* space between + and - */
