@@ -24,6 +24,8 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
+        public string? GeoJson { get; set; }
+
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
         public double? HeightInnMeters { get; set; }
         
