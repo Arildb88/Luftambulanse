@@ -20,6 +20,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <label asp-for="Input.SelectedRole" class="form-label"></label>
+                    <select asp-for="Input.SelectedRole" asp-items="Model.RegisterableRoles" class="form-select">
+                        <option value="">-- choose role --</option>
+                    </select>
+                    <span asp-validation-for="Input.SelectedRole" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
                     <label asp-for="Input.Password" class="form-label"></label>
                     <input asp-for="Input.Password" class="form-control" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>

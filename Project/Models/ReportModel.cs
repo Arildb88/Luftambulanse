@@ -7,18 +7,23 @@ namespace Gruppe4NLA.Models
     public class ReportModel
     {
         public int Id { get; set; }
+        public string? UserId { get; set; }
+        //public string? CaseworkerGroupId { get; set; }
 
-        // Some values are nullable using "?"
         [Required(ErrorMessage = "Sendername is required")]
         public string? SenderName { get; set; }
+        [Required(ErrorMessage = "Select an obstacle type")]
 
-        public string? DangerType { get; set; }
+        // DangerType enum to make buttons easier to manage
+        public DangerType? Type { get; set; }
+        [MaxLength(100)]
+        // Only needed if Other is selected
+        public string? OtherDangerType { get; set; } 
 
         public DateTime DateSent { get; set; }
 
         public string? Details { get; set; }
 
-        [Required(ErrorMessage = "Height in meters is required")]
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
         public double? HeightInnMeters { get; set; }
         
@@ -33,7 +38,14 @@ namespace Gruppe4NLA.Models
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
         public double? Longitude { get; set; }
 
-
+        // Enum for different danger types, each with a specific integer value
+        public enum DangerType
+        {
+            PowerLine = 1,
+            Pole = 2,
+            Construction = 3,
+            Other = 99
+        }
 
     }
 

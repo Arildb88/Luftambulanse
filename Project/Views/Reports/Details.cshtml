@@ -1,9 +1,15 @@
+@using Gruppe4NLA.Models
 @model ReportModel
 @* This view displays details of a single Report object *@
 
 @{
-    ViewData["Title"] = "Report Details";
     @* Sets the page title *@
+    ViewData["Title"] = "Report Details";
+     
+     var typeText = Model.Type == ReportModel.DangerType.Other
+        ? (Model.OtherDangerType ?? "Other")
+        : (Model.Type?.ToString() ?? "—");
+   
 }
 
 <h2>Report Details</h2>
@@ -21,8 +27,8 @@
     @* Display Height Inn Meters *@
     <p><strong>Height (Meters):</strong> @Model.HeightInnMeters</p>
 
-    @* Display danger type *@
-    <p><strong>Danger Type:</strong> @Model.DangerType</p>
+    @* Display ObstacleType and if "Other" show that*@
+    <p><strong>Obstacle Type:</strong> @typeText</p>
 
     @* Display extra details *@
     <p><strong>Details:</strong> @Model.Details</p>
@@ -90,7 +96,7 @@
             
             // Makes marker with dangertype
             obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
-            .bindPopup("@Model.DangerType").addTo(map);
+            .bindPopup("@typeText").addTo(map);
                 
             osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors'
