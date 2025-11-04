@@ -79,6 +79,14 @@
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
+    @* GeoJson *@
+    <div class="form-group">
+        <label asp-for="NewReport.GeoJson"></label>
+        <textarea asp-for="NewReport.GeoJson" class="form-control"></textarea>
+        <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
+    </div>
+
+
     @* HeightInnMeters input *@
     <div class="form-group">
         <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>

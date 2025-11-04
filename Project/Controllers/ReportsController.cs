@@ -89,6 +89,7 @@ namespace Gruppe4NLA.Controllers
                 UserId = model.NewReport.UserId,
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
+                GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
                 OtherDangerType = model.NewReport.OtherDangerType,
@@ -96,6 +97,7 @@ namespace Gruppe4NLA.Controllers
                 HeightInnMeters = model.NewReport.HeightInnMeters,
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
+                
             };
 
             _context.Reports.Add(newReport);
@@ -135,6 +137,7 @@ namespace Gruppe4NLA.Controllers
                 UserId = model.NewReport.UserId,
                 Latitude = model.NewReport.Latitude,
                 Longitude = model.NewReport.Longitude,
+                GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
                 OtherDangerType = model.NewReport.OtherDangerType,
