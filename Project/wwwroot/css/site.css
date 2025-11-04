@@ -5,7 +5,9 @@
     --secondary-text: grey;
     --primary-color: #333333;
     --accent-color: lightblue;
+    --polyline-color: #dc3545;
 }
+
 
 .darkmode {
     --base-color: #080808;
@@ -15,6 +17,7 @@
     --secondary-text: white;
     --primary-color: #333333;
     --accent-color: #5f6570;
+    --polyline-color: #dc3545;
 }
 .navbar {
     background-color: var(--base-variant); 
@@ -37,9 +40,6 @@
     .navbar .navbar-brand:hover {
         color: var(--accent-color);
     }
-
-
-
 
 @media (min-width: 768px) {
   html {

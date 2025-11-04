@@ -32,7 +32,7 @@
         /* Centered coordinate readout (non-blocking) */
         .coordinate {
             position: absolute;
-            bottom: 10px;
+            bottom: 1px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(255,255,255,0.9);
@@ -41,6 +41,10 @@
             font: 12px/1 system-ui, sans-serif;
             z-index: 1000;
             pointer-events: none;
+        }
+        /* Added black text in darkmode to the coordinate box*/
+        .darkmode .coordinate {
+            color: black !important;
         }
 
         /* Floating "Report Obstacle" button */
@@ -81,8 +85,6 @@
             background: rgba(0,0,0,0.35);
         }
 
-        
-
     </style>
 </head>
 
@@ -95,13 +97,6 @@
     <!-- Downloaded version of Leaflet; wwwroot/lib/LeafletMap -->
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
-
-
-    @* Old version; Gets online version of leaflet *@
-    @* <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script> *@
 
     <!-- In-page modal that loads the Add Report page -->
     <dialog id="reportDialog">
@@ -116,418 +111,442 @@
 
     <script>
 
-        //CustomElementRegistry Helicopter icon for your location
-        const userIcon = L.icon({
-            iconUrl: '@Url.Content("~/Content/Images/Heli2.png")',
-            iconSize: [40, 40],        // pixel size of the image
-            iconAnchor: [18, 36],      // "tip" of the pin (x,y from top-left)
-            popupAnchor: [0, -30],     // where popups open relative to the anchor
-            tooltipAnchor: [0, -24],   // optional
-            className: 'leaflet-user-icon' // optional CSS hook
-        });
-        
-        // ---------------- Map init ----------------
-        window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
+            //CustomElementRegistry Helicopter icon for your location
+            const userIcon = L.icon({
+                iconUrl: '@Url.Content("~/Content/Images/Heli2.png")',
+                iconSize: [40, 40],        // pixel size of the image
+                iconAnchor: [18, 36],      // "tip" of the pin (x,y from top-left)
+                popupAnchor: [0, -30],     // where popups open relative to the anchor
+                tooltipAnchor: [0, -24],   // optional
+                className: 'leaflet-user-icon' // optional CSS hook
+            });
 
-        const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(window.map);
+            // ---------------- Map init ----------------
+            window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
 
-        const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-            minZoom: 0, maxZoom: 20, ext: 'png',
-            attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
-        });
+            const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(window.map);
 
-        const googleStreets = L.tileLayer('https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        });
+            const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
+                minZoom: 0, maxZoom: 20, ext: 'png',
+                attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+            });
 
-        const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        });
+            const googleStreets = L.tileLayer('https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            });
 
-        L.control.layers(
-            { 'OSM': osm, 'Darkmode': darkMode, 'SatView': googleSat },
-            {},
-            { collapsed: false }
-        ).addTo(map);
+            const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
+                maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            });
 
-        // ---------------- Marker placement ----------------
-        let marker = null;
-        let latlngs = [];
-        let polyline = null;
-        let currentMode = null;
+            L.control.layers(
+                { 'OSM': osm, 'Darkmode': darkMode, 'SatView': googleSat },
+                {},
+                { collapsed: false }
+            ).addTo(map);
 
-        function setMode(mode) {
-            if (currentMode === mode) {
-                currentMode = null; // turn off if same mode clicked
-            } else {
-                currentMode = mode;
-            }   
+            // ---------------- Marker placement ----------------
+            let marker = null;
+            let latlngs = [];
+            let polyline = null;
+            let currentMode = null;
+            let vertexMarkers = [];
+            let vertexLayer = L.layerGroup().addTo(map);
 
-        // update button colors
-        document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
-            const btnMode = btn.dataset.mode;
-        btn.style.backgroundColor = (btnMode === currentMode) ? '#a3e635' : 'white';
-        });
+                    function setMode(mode) {
+          currentMode = (currentMode === mode) ? null : mode;
 
-        // reset state when leaving polyline mode
-            if (currentMode !== 'polyline') {
-                latlngs = [];
+          // button highlight
+          document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
+            btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? '#a3e635' : 'white';
+          });
+
+          // leaving polyline mode → clear line + vertices
+          if (currentMode !== 'polyline') {
+            latlngs = [];
             if (polyline) {
-                map.removeLayer(polyline);
-                polyline = null;
+              map.removeLayer(polyline);
+              polyline = null;
             }
-        }
-        // reset state when leaving marker mode
-            if (currentMode !== 'marker') {
-                latlngs = [];
+            // clear all vertex dots in one go
+            vertexLayer.clearLayers();
+            vertexMarkers = [];
+          }
+
+          // leaving marker mode → remove marker
+          if (currentMode !== 'marker') {
             if (marker) {
-                map.removeLayer(marker);
-                marker = null;
+              map.removeLayer(marker);
+              marker = null;
             }
+          }
         }
-    }
 
         // --- Map click handling ---
-        map.on('click', (e) => {
-            if (currentMode === 'polyline') {
-                latlngs.push(e.latlng);
-                if (polyline) polyline.setLatLngs(latlngs);
-                else polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
-                return;
-            }
+     map.on('click', (e) => {
+        const { lat, lng } = e.latlng;
 
-            if (currentMode === 'marker') {
-                if (marker) marker.setLatLng(e.latlng);
-                else marker = L.marker(e.latlng, { draggable: true }).addTo(map);
-            }
+        // get the css color, since its written in CSS
+        const polyColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--polyline-color')
+        .trim();
 
-            const el = document.querySelector(".coordinate");
-            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
+        // shows your coordinate when you click the map
+        const el = document.querySelector('.coordinate');
+        if (el) el.textContent = `lat: ${lat.toFixed(6)}, lng: ${lng.toFixed(6)}`;
 
-        });
+        if (currentMode === 'polyline') {
+          // create / extend the line
+          if (!polyline) {
+            latlngs = [e.latlng];
+            polyline = L.polyline(latlngs, { color: polyColor }).addTo(map);
+          } else {
+            latlngs.push(e.latlng);
+            polyline.setLatLngs(latlngs);
+          }
 
-        // --- Polyline button ---
-        const DrawPolylineControl = L.Control.extend({
-            onAdd: function () {
-                
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
-                btn.dataset.mode = 'polyline';
-                btn.style.backgroundColor = 'white';
-                btn.style.width = '100px';
-                btn.style.height = '100px';
-                btn.style.cursor = 'pointer';
-                btn.style.padding = '5px';
-                btn.title = 'Click to start/stop drawing a polyline';
-                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                          .on(btn, 'click', (e) => setMode('polyline'));
-                return btn;
-            }
-        });
-
-        // --- Marker button ---
-
-        const DrawMarkerControl = L.Control.extend({
-            onAdd: function () {
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-
-                btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="red">
-                        <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
-                    </svg>
-                `;
-
-                btn.dataset.mode = 'marker';
-                btn.style.backgroundColor = 'white';
-                btn.style.width = '100px';
-                btn.style.height = '100px';
-                btn.style.cursor = 'pointer';
-                btn.style.padding = '5px';
-                btn.title = 'Click to start/stop placing markers';
-
-                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                          .on(btn, 'click', () => setMode('marker'));
-
-                return btn;
-            }
-        });
+         // addEventListener vertex dot on every click
+          const dot = L.circleMarker(e.latlng, {
+            radius: 6,
+               color: polyColor,
+               fillColor:polyColor,
+            fillOpacity: 1,
+            weight: 0
+          }).addTo(vertexLayer);
+          dot.bringToFront();
+          vertexMarkers.push(dot);
 
 
-        // Add the button to the map
-        map.addControl(new DrawPolylineControl({ position: 'topleft' }));
-        map.addControl(new DrawMarkerControl({ position: 'topleft' }));
+        } else if (currentMode === 'marker') {
+          if (!marker) {
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
 
-        /*// Optional: double-click anywhere to stop drawing mode
-        map.on('dblclick', () => {
-            drawing = false;
-            const btn = document.querySelector('.leaflet-control-custom');
-            if (btn) btn.style.backgroundColor = 'white';
-        });*/
-
-
-        /*// Event handling when a layer is drawn on the map
-        map.on(L.Draw.Event.CREATED, function (e) {
-                 layer = e.layer;
-
-             drawnItems.addLayer(layer);
-
-             // Get the GeoJSON representation of the drawn layer
-             var geoJsonData = layer.toGeoJSON();
-             var geoJsonString = JSON.stringify(geoJsonData);
-
-             // Set the GeoJSON string into the hidden input field in the form
-             document.getElementById('GeometryGeoJson').value = geoJsonString;
-             document.getElementById('CoordinatesPreview').value = geoJsonString;
-        });
-
-
-            // Update coordinate readout
-            const el = document.querySelector(".coordinate");
-            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
-        });*/
-
-        // ---------------- Geolocation follow (optional) ----------------
-        let watchId = null;
-        let following = false;
-        let userMarker = null;
-        let accuracyCircle = null;
-        
-
-        function renderUserLocation(lat, lng, accuracy) {
-            if (!userMarker) {
-                userMarker = L.marker([lat, lng], {
-                    title: 'You',
-                    icon: userIcon,
-                }).addTo(window.map);
-            } else {
-                userMarker.setLatLng([lat, lng]);
-            }
-
-            if (!accuracyCircle) {
-                accuracyCircle = L.circle([lat, lng], {
-                    radius: accuracy, color: '#2a83ff', weight: 0.3,
-                    fillColor: '#2a83ff', fillOpacity: 0.1
-                }).addTo(window.map);
-            } else {
-                accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy);
-            }
-        }
-
-        function onPositionSuccess(position) {
-            const { latitude: lat, longitude: lng, accuracy } = position.coords;
-            renderUserLocation(lat, lng, accuracy);
-            if (following) {
-                map.setView([lat, lng], Math.max(map.getZoom(), 16), { animate: true });
-            }
-        }
-
-        function onPositionError(err) {
-            const msgs = {
-                1: 'Geolocation permission denied. Enable it in your browser.',
-                2: 'Position unavailable. Try enabling GPS/location services.',
-                3: 'Timeout. Please try again.'
-            };
-            alert(msgs[err.code] || 'Couldn’t get your position.');
-            setFollowing(false);
-        }
-
-        function startWatch() {
-            if (!('geolocation' in navigator)) {
-                alert('Your browser does not support geolocation.');
-                return;
-            }
-            if (watchId !== null) return;
-            navigator.geolocation.getCurrentPosition(onPositionSuccess, onPositionError, {
-                enableHighAccuracy: true, timeout: 10000, maximumAge: 0
+            // Updates the cordinate when marker is dragged
+            marker.on('drag', (event) => {
+              const pos = event.target.getLatLng();
+              const el = document.querySelector('.coordinate');
+              if (el) el.textContent = `lat: ${pos.lat.toFixed(6)}, lng: ${pos.lng.toFixed(6)}`;
             });
-            watchId = navigator.geolocation.watchPosition(onPositionSuccess, onPositionError, {
-                enableHighAccuracy: true, timeout: 20000, maximumAge: 5000
-            });
+          } else {
+            marker.setLatLng(e.latlng);
+          }
         }
+        });
 
-        function stopWatch() {
-            if (watchId !== null) {
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-            }
-        }
+            // --- Polyline button ---
+            const DrawPolylineControl = L.Control.extend({
+                onAdd: function () {
 
-        function isLocalSecure() {
-            return window.isSecureContext ||
-                ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
-        }
+                    const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
-        function setFollowing(isOn) {
-            following = isOn;
-            if (isOn) {
-                if (isLocalSecure()) startWatch();
-                else {
-                    alert('Geolocation follow requires HTTPS or localhost/127.0.0.1/::1.');
-                    following = false;
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
+                    btn.dataset.mode = 'polyline';
+                    btn.style.backgroundColor = 'white';
+                    btn.style.width = '100px';
+                    btn.style.height = '100px';
+                    btn.style.cursor = 'pointer';
+                    btn.style.padding = '5px';
+                    btn.title = 'Click to start/stop drawing a polyline';
+                    L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                              .on(btn, 'click', (e) => setMode('polyline'));
+                    return btn;
                 }
-            } else {
-                stopWatch();
+            });
+
+            // --- Marker button ---
+
+            const DrawMarkerControl = L.Control.extend({
+                onAdd: function () {
+                    const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+
+                    btn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="red">
+                            <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
+                        </svg>
+                    `;
+
+                    btn.dataset.mode = 'marker';
+                    btn.style.backgroundColor = 'white';
+                    btn.style.width = '100px';
+                    btn.style.height = '100px';
+                    btn.style.cursor = 'pointer';
+                    btn.style.padding = '5px';
+                    btn.title = 'Click to start/stop placing markers';
+
+                    L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                              .on(btn, 'click', () => setMode('marker'));
+
+                    return btn;
+                }
+            });
+
+
+            // Add the button to the map
+            map.addControl(new DrawPolylineControl({ position: 'topleft' }));
+            map.addControl(new DrawMarkerControl({ position: 'topleft' }));
+                      
+            // ---------------- Geolocation follow (optional) ----------------
+            let watchId = null;
+            let following = false;
+            let userMarker = null;
+            let accuracyCircle = null;
+
+
+            function renderUserLocation(lat, lng, accuracy) {
+                if (!userMarker) {
+                    userMarker = L.marker([lat, lng], {
+                        title: 'You',
+                        icon: userIcon,
+                    }).addTo(window.map);
+                } else {
+                    userMarker.setLatLng([lat, lng]);
+                }
+
+                if (!accuracyCircle) {
+                    accuracyCircle = L.circle([lat, lng], {
+                        radius: accuracy, color: '#2a83ff', weight: 0.3,
+                        fillColor: '#2a83ff', fillOpacity: 0.1
+                    }).addTo(window.map);
+                } else {
+                    accuracyCircle.setLatLng([lat, lng]).setRadius(accuracy);
+                }
             }
-            if (followCtrl && followCtrl.setUi) followCtrl.setUi(following);
-        }
 
-        // Pause following when user interacts
-        map.on('dragstart zoomstart', () => { if (following) setFollowing(false); });
-
-        // Leaflet control for toggling follow
-                const FollowControl = L.Control.extend({
-            onAdd: function () {
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-                btn.title = 'Find me';
-                btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue">
-                        <path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
-                    </svg>
-                `;
-
-                btn.style.width = '100px';
-                btn.style.height = '100px';
-                btn.style.padding = '5px';
-                btn.style.cursor = 'pointer';
-                btn.style.background = 'white';
-
-                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                          .on(btn, 'click', () => setFollowing(!following));
-
-                this._btn = btn;
-                this.setUi(false);
-                return btn;
-            },
-            setUi: function (isOn) {
-                if (!this._btn) return;
-                this._btn.title = isOn ? 'Following (click to pause)' : 'Find me';
-                this._btn.style.background = isOn ? '#1e88e5' : 'white';
-                this._btn.style.color = isOn ? '#fff' : '#000';
+            function onPositionSuccess(position) {
+                const { latitude: lat, longitude: lng, accuracy } = position.coords;
+                renderUserLocation(lat, lng, accuracy);
+                if (following) {
+                    map.setView([lat, lng], Math.max(map.getZoom(), 16), { animate: true });
+                }
             }
-        });
-        const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);
 
-        // ---------------- Modal to add Report ----------------
+            function onPositionError(err) {
+                const msgs = {
+                    1: 'Geolocation permission denied. Enable it in your browser.',
+                    2: 'Position unavailable. Try enabling GPS/location services.',
+                    3: 'Timeout. Please try again.'
+                };
+                alert(msgs[err.code] || 'Couldn’t get your position.');
+                setFollowing(false);
+            }
 
-        const obstacleBox = document.getElementById('obstacleBox');
-        const dlg = document.getElementById('reportDialog');
-        const frame = document.getElementById('reportFrame');
-        const closeBtn = document.getElementById('reportClose');
-
-        // Prevent map panning when clicking the box, but allow our click handler
-        L.DomEvent.disableClickPropagation(obstacleBox);
-        L.DomEvent.disableScrollPropagation(obstacleBox);
-
-        // Close dialog via button or ESC
-        closeBtn.addEventListener('click', () => dlg.close());
-        dlg.addEventListener('cancel', () => dlg.close());
-
-        function currentLatLngForForm() {
-            const features = [];
-            // Prefer the user’s placed marker; else use map center
-            if (marker && marker.getLatLng) {
-                const ll = marker.getLatLng();
-                
-
-                features.push({
-                    type: "Feature",
-                    geometry: {
-                    coordinates: [parseFloat(ll.lng.toFixed(6)), parseFloat(ll.lat.toFixed(6))]
-                },
-                properties: {}
+            function startWatch() {
+                if (!('geolocation' in navigator)) {
+                    alert('Your browser does not support geolocation.');
+                    return;
+                }
+                if (watchId !== null) return;
+                navigator.geolocation.getCurrentPosition(onPositionSuccess, onPositionError, {
+                    enableHighAccuracy: true, timeout: 10000, maximumAge: 0
+                });
+                watchId = navigator.geolocation.watchPosition(onPositionSuccess, onPositionError, {
+                    enableHighAccuracy: true, timeout: 20000, maximumAge: 5000
                 });
             }
-            
-            if (polyline && polyline.getLatLngs && polyline.getLatLngs().length > 0) {
-                const coords = polyline.getLatLngs().map(p => [
-                    parseFloat(p.lng.toFixed(6)),
-                    parseFloat(p.lat.toFixed(6))
-                ]);
-                features.push({
-                    type: "Feature",
-                    geometry: {
-                        type: "LineString",
-                        coordinates: coords
-                },
-                properties: {}
-                });
+
+            function stopWatch() {
+                if (watchId !== null) {
+                    navigator.geolocation.clearWatch(watchId);
+                    watchId = null;
+                }
             }
-            if (features.length === 0) {
-                const c = map.getCenter();
-                features.push({
-                    type: "Feature",
+
+            function isLocalSecure() {
+                return window.isSecureContext ||
+                    ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+            }
+
+            function setFollowing(isOn) {
+                following = isOn;
+                if (isOn) {
+                    if (isLocalSecure()) startWatch();
+                    else {
+                        alert('Geolocation follow requires HTTPS or localhost/127.0.0.1/::1.');
+                        following = false;
+                    }
+                } else {
+                    stopWatch();
+                }
+                if (followCtrl && followCtrl.setUi) followCtrl.setUi(following);
+            }
+
+            // Pause following when user interacts
+            map.on('dragstart zoomstart', () => { if (following) setFollowing(false); });
+
+            // Leaflet control for toggling follow
+                    const FollowControl = L.Control.extend({
+                onAdd: function () {
+                    const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                    btn.title = 'Find me';
+                    btn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue">
+                            <path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                        </svg>
+                    `;
+
+                    btn.style.width = '100px';
+                    btn.style.height = '100px';
+                    btn.style.padding = '5px';
+                    btn.style.cursor = 'pointer';
+                    btn.style.background = 'white';
+
+                    L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                              .on(btn, 'click', () => setFollowing(!following));
+
+                    this._btn = btn;
+                    this.setUi(false);
+                    return btn;
+                },
+                setUi: function (isOn) {
+                    if (!this._btn) return;
+                    this._btn.title = isOn ? 'Following (click to pause)' : 'Find me';
+                    this._btn.style.background = isOn ? '#1e88e5' : 'white';
+                    this._btn.style.color = isOn ? '#fff' : '#000';
+                }
+            });
+            const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);
+
+            // ---------------- Modal to add Report ----------------
+
+            const obstacleBox = document.getElementById('obstacleBox');
+            const dlg = document.getElementById('reportDialog');
+            const frame = document.getElementById('reportFrame');
+            const closeBtn = document.getElementById('reportClose');
+
+            // Prevent map panning when clicking the box, but allow our click handler
+            L.DomEvent.disableClickPropagation(obstacleBox);
+            L.DomEvent.disableScrollPropagation(obstacleBox);
+
+            // Close dialog via button or ESC
+            closeBtn.addEventListener('click', () => dlg.close());
+            dlg.addEventListener('cancel', () => dlg.close());
+
+            function currentLatLngForForm() {
+                const features = [];
+                // Prefer the user’s placed marker; else use map center
+                if (marker && marker.getLatLng) {
+                    const ll = marker.getLatLng();
+
+
+                    features.push({
+                        type: "Feature",
                         geometry: {
-                            type: "Point",
-                            coordinates: [parseFloat(c.lng.toFixed(6)), parseFloat(c.lat.toFixed(6))]
-                                },
-                                properties: {}
-                        });
-            }
-                
-            return {
-                type: "FeatureCollection", features};
-            }
+                        coordinates: [parseFloat(ll.lng.toFixed(6)), parseFloat(ll.lat.toFixed(6))]
+                    },
+                    properties: {}
+                    });
+                }
 
-                function firstLatLng() {
-                        const geoJson = currentLatLngForForm();
-                        const firstFeature = geoJson.features[0];
+                if (polyline && polyline.getLatLngs && polyline.getLatLngs().length > 0) {
+                    const coords = polyline.getLatLngs().map(p => [
+                        parseFloat(p.lng.toFixed(6)),
+                        parseFloat(p.lat.toFixed(6))
+                    ]);
+                    features.push({
+                        type: "Feature",
+                        geometry: {
+                            type: "LineString",
+                            coordinates: coords
+                    },
+                    properties: {}
+                    });
+                }
+                if (features.length === 0) {
+                    const c = map.getCenter();
+                    features.push({
+                        type: "Feature",
+                            geometry: {
+                                type: "Point",
+                                coordinates: [parseFloat(c.lng.toFixed(6)), parseFloat(c.lat.toFixed(6))]
+                                    },
+                                    properties: {}
+                            });
+                }
 
-                        if (firstFeature.geometry.type === "Point") {
-                            const [lng, lat] = firstFeature.geometry.coordinates;
-                            return { lat, lng };
+                return {
+                    type: "FeatureCollection", features};
+                }
 
-                        } else if (firstFeature.geometry.type === "LineString") {
-                            const [lng, lat] = firstFeature.geometry.coordinates[0];
-                            return { lat, lng };
+                    function firstLatLng() {
+                            const geoJson = currentLatLngForForm();
+                            const firstFeature = geoJson.features[0];
 
+                            if (firstFeature.geometry.type === "Point") {
+                                const [lng, lat] = firstFeature.geometry.coordinates;
+                                return { lat, lng };
+
+                            } else if (firstFeature.geometry.type === "LineString") {
+                                const [lng, lat] = firstFeature.geometry.coordinates[0];
+                                return { lat, lng };
+
+                            } else {
+                            // Default to map center if unknown geometry
+                            const c = map.getCenter();
+                            return { lat: c.lat, lng: c.lng };
+                                    }
+
+                }
+
+                obstacleBox.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                // ---- Build the GeoJSON ----
+                const geoJsonData = currentLatLngForForm();
+                const geoJsonString = JSON.stringify(geoJsonData, null, 2); // pretty-print for readability
+
+                // ---- Determine first point for CreatePopUp URL ----
+                const { lat, lng } = firstLatLng();
+                const isDarkMode = document.body.classList.contains('darkmode');
+                const createUrl =
+                    '@Url.Action("CreatePopUp", "Reports")' +
+                    `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&darkmode=${isDarkMode}`;
+
+                console.log("Opening Add Report at:", createUrl);
+                console.log("GeoJSON to insert:", geoJsonString);
+
+                // ---- Open the CreatePopUp form inside iframe ----
+                frame.src = createUrl;
+                dlg.showModal();
+
+                // ---- When the form loads inside iframe, insert the GeoJSON ----
+                frame.onload = () => {
+                    try {
+                        const doc = frame.contentDocument || frame.contentWindow.document;
+                        const geoInput = doc.querySelector('[name="NewReport.GeoJson"]');
+                        if (geoInput) {
+                            geoInput.value = geoJsonString;
+                            console.log("GeoJSON inserted into form");
                         } else {
-                        // Default to map center if unknown geometry
-                        const c = map.getCenter();
-                        return { lat: c.lat, lng: c.lng };
-                                }
+                            console.warn("GeoJSON input not found in CreatePopUp form");
+                        }
+                    } catch (err) {
+                        console.error("Could not access iframe form:", err);
+                    }
+                };
 
-            }
-
-            obstacleBox.addEventListener('click', (e) => {
-            e.preventDefault();
-
-            // ---- Build the GeoJSON ----
-            const geoJsonData = currentLatLngForForm();
-            const geoJsonString = JSON.stringify(geoJsonData, null, 2); // pretty-print for readability
-
-            // ---- Determine first point for CreatePopUp URL ----
-            const { lat, lng } = firstLatLng();
-            const isDarkMode = document.body.classList.contains('darkmode');
-            const createUrl =
-                '@Url.Action("CreatePopUp", "Reports")' +
-                `?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&darkmode=${isDarkMode}`;
-
-            console.log("Opening Add Report at:", createUrl);
-            console.log("GeoJSON to insert:", geoJsonString);
-
-            // ---- Open the CreatePopUp form inside iframe ----
-            frame.src = createUrl;
-            dlg.showModal();
-
-            // ---- When the form loads inside iframe, insert the GeoJSON ----
-            frame.onload = () => {
+                    // ---- NEW: When the form loads, also insert geometry type ----
+                frame.onload = () => {
                 try {
                     const doc = frame.contentDocument || frame.contentWindow.document;
                     const geoInput = doc.querySelector('[name="NewReport.GeoJson"]');
-                    if (geoInput) {
-                        geoInput.value = geoJsonString;
-                        console.log("GeoJSON inserted into form");
-                    } else {
-                        console.warn("GeoJSON input not found in CreatePopUp form");
+                    if (geoInput) geoInput.value = geoJsonString;
+
+                    // 👇 NEW: insert geometry type into form textbox
+                    const geometryType = currentMode || "marker"; // default if nothing selected
+                    const geomField = doc.getElementById("GeometryType");
+                    if (geomField) {
+                        geomField.value = geometryType.charAt(0).toUpperCase() + geometryType.slice(1);
                     }
+
+                    console.log("Inserted GeometryType:", geometryType);
+
                 } catch (err) {
                     console.error("Could not access iframe form:", err);
                 }
             };
-        });
+            });
     </script>
 </body>
 </html>
