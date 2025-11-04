@@ -12,7 +12,10 @@ namespace Gruppe4NLA.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "GeoJson",
-                table: "Reports",
+                table: "
+                
+                
+                s",
                 type: "longtext",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
