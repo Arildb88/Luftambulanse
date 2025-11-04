@@ -116,7 +116,7 @@ namespace Gruppe4NLA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportAssignmentLogs");
+                    b.ToTable("ReportAssignmentLogs", (string)null);
                 });
 
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
@@ -178,7 +178,7 @@ namespace Gruppe4NLA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
