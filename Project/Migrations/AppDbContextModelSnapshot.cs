@@ -116,7 +116,7 @@ namespace Gruppe4NLA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReportAssignmentLogs", (string)null);
+                    b.ToTable("ReportAssignmentLogs");
                 });
 
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
@@ -146,6 +146,9 @@ namespace Gruppe4NLA.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Details")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GeoJson")
                         .HasColumnType("longtext");
 
                     b.Property<double>("HeightInnMeters")
@@ -178,7 +181,7 @@ namespace Gruppe4NLA.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reports", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

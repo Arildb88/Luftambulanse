@@ -27,7 +27,6 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
-        [Required(ErrorMessage = "Height in meters is required")]
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")]
         public double? HeightInnMeters { get; set; }
 
