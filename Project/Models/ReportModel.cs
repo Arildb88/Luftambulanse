@@ -41,9 +41,10 @@ namespace Gruppe4NLA.Models
         [Required(ErrorMessage = "Longitude is required")]
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
         public double? Longitude { get; set; }
-
-        //System delegation
-
+    
+        // GeoJSON string for geometry storage
+        public string? GeoJson { get; set; }
+        
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
 
