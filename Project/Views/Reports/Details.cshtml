@@ -6,9 +6,9 @@
     @* Sets the page title *@
     ViewData["Title"] = "Report Details";
      
-     var typeText = Model.Type == ReportModel.DangerType.Other
+     var typeText = Model.Type == ReportModel.DangerTypeEnum.Other
         ? (Model.OtherDangerType ?? "Other")
-        : (Model.Type?.ToString() ?? "—");
+        : (Model.Type.ToString() ?? "â€“");
    
 }
 

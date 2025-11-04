@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Gruppe4NLA.Services;
 
 
 
@@ -38,12 +39,18 @@ builder.Services
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
+// Delegation business logic (used by CaseworkerAdmin to assign/unassign reports)
+builder.Services.AddScoped<IReportAssignmentService, ReportAssignmentService>();
+
 // Arild: Users need to login to use our application
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
+    
+    // Delegation policy: only users with the CaseworkerAdm role can assign/unassign reports
+    options.AddPolicy("CanAssignReports", p => p.RequireRole("CaseworkerAdm"));
 });
 
 // Optional: cookie paths so redirects go to Identity pages
@@ -77,7 +84,7 @@ using (var scope = app.Services.CreateScope())
         catch (Exception ex)
         {
             if (attempt == maxAttempts) throw;
-            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s…", attempt, maxAttempts);
+            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2sï¿½", attempt, maxAttempts);
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
     }
