@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace Gruppe4NLA.Models
 {
+    public enum ReportStatus
+    {
+        Submitted,
+        Assigned,
+        InProgress,
+        Approved,
+        Rejected
+    }
+
     // Holds all information the users send in as a report
     public class ReportModel
     {
@@ -39,6 +48,15 @@ namespace Gruppe4NLA.Models
         [Required(ErrorMessage = "Longitude is required")]
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
         public double? Longitude { get; set; }
+
+        public ReportStatus Status { get; set; } = ReportStatus.Submitted;
+        public string? AssignedToUserId { get; set; }
+        public string? AssignedByUserId { get; set; }
+        public DateTime? AssignedAtUtc { get; set; }
+        public DateTime? UpdatedAtUtc { get; set; }
+        public string? RejectionReason { get; set; }
+
+        public static Type DangerTypeEnum => typeof(DangerType);
 
         // Enum for different danger types, each with a specific integer value
         public enum DangerType
