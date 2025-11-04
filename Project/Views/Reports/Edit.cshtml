@@ -1,0 +1,20 @@
+@using Gruppe4NLA.Models
+@model ReportModel
+@{
+    ViewData["Title"] = "Edit Draft";
+}
+
+<h2>Edit Draft</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    @* Legg inn de samme feltene som i Create (SenderName readonly, Latitude, Longitude, HeightInnMeters, Type/OtherDangerType, Details, AreLighted, osv.) *@
+
+    <!-- --- NEW (Draft feature) START --- -->
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" name="action" value="save" class="btn btn-outline-secondary">Save Draft</button>
+        <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
+    </div>
+    <!-- --- NEW (Draft feature) END --- -->
+</form>

@@ -4,6 +4,17 @@ using System.Collections.Generic;
 namespace Gruppe4NLA.Models
 {
     // Holds all information the users send in as a report
+
+    public enum ReportStatus
+    {
+        Draft = 0,
+        Submitted = 1
+
+        // Further statuses can be added here
+    }
+
+
+
     public class ReportModel
     {
         public int Id { get; set; }
@@ -48,6 +59,12 @@ namespace Gruppe4NLA.Models
             Construction = 3,
             Other = 99
         }
+
+        public ReportStatus Status { get; set; } = ReportStatus.Draft;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? SubmittedAt { get; set; }
+
 
     }
 

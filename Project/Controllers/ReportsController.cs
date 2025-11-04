@@ -22,7 +22,7 @@ namespace Gruppe4NLA.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? filter)
         {
             IQueryable<ReportModel> q = _context.Reports;
 
@@ -39,12 +39,22 @@ namespace Gruppe4NLA.Controllers
                               || (r.UserId == null && r.SenderName == email));
             }
 
+            var f = (filter ?? "all").ToLowerInvariant();
+            if (f == "submitted")
+                q = q.Where(r => r.Status == ReportStatus.Submitted);
+            else if (f == "drafts")
+                q = q.Where(r => r.Status == ReportStatus.Draft);
+
+            ViewData["Filter"] = f;
+
             var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
             return View(reports);
+
+         
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ReportModelWrapper model)
+        public async Task<IActionResult> Create(ReportModelWrapper model, string? action)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -80,8 +90,15 @@ namespace Gruppe4NLA.Controllers
                 Details = model.NewReport.Details,
                 HeightInnMeters = model.NewReport.HeightInnMeters,
                 AreLighted = model.NewReport.AreLighted,
-                DateSent = DateTime.Now
-                
+                DateSent = DateTime.Now,
+
+                Status = (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
+                    ? ReportStatus.Submitted
+                    : ReportStatus.Draft,
+                SubmittedAt = (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
+                    ? DateTime.UtcNow
+                    : null
+
             };
 
             _context.Reports.Add(newReport);
@@ -91,6 +108,10 @@ namespace Gruppe4NLA.Controllers
             model.SubmittedReport = await _context.Reports
                 .OrderByDescending(r => r.DateSent)
                 .ToListAsync();
+
+            ViewBag.Message = (newReport.Status == ReportStatus.Submitted)
+        ? "Submitted successfully!"
+        : "Draft saved!";
 
             ViewBag.Message = "Submitted successfully!";
             return View(model);
@@ -230,6 +251,102 @@ namespace Gruppe4NLA.Controllers
             };
 
             return View("Create", vm);
+        
+
+     
         }
+
+        //  NEW (Draft feature) 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            if (report.Status == ReportStatus.Submitted)
+            {
+                TempData["Error"] = "Cannot edit a submitted report.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(report);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, ReportModel updated, string? action)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            if (report.Status == ReportStatus.Submitted)
+            {
+                TempData["Error"] = "Cannot edit a submitted report.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+                return View(updated);
+
+            // Kopier felter som skal kunne endres:
+            report.Latitude = updated.Latitude;
+            report.Longitude = updated.Longitude;
+            report.GeoJson = updated.GeoJson;
+            report.Type = updated.Type;
+            report.OtherDangerType = updated.OtherDangerType;
+            report.Details = updated.Details;
+            report.HeightInnMeters = updated.HeightInnMeters;
+            report.AreLighted = updated.AreLighted;
+            // ++ legg til flere hvis du har flere felter som kan endres
+
+            if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
+            {
+                report.Status = ReportStatus.Submitted;
+                report.SubmittedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                report.Status = ReportStatus.Draft;
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = (report.Status == ReportStatus.Submitted)
+                ? "Report submitted."
+                : "Draft updated.";
+
+            return RedirectToAction(nameof(Index), new { filter = (report.Status == ReportStatus.Draft) ? "drafts" : "submitted" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Submit(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            if (report.Status == ReportStatus.Submitted)
+            {
+                TempData["Message"] = "Already submitted.";
+                return RedirectToAction(nameof(Index), new { filter = "submitted" });
+            }
+
+            report.Status = ReportStatus.Submitted;
+            report.SubmittedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            TempData["Message"] = "Report submitted.";
+            return RedirectToAction(nameof(Index), new { filter = "submitted" });
+        }
+        //  (Draft feature) 
+
+
+
+
+
+
     }
+
+
+
 }
