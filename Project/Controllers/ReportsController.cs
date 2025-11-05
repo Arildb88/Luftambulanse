@@ -4,7 +4,6 @@ using Gruppe4NLA.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,14 +26,13 @@ namespace Gruppe4NLA.Controllers
             IQueryable<ReportModel> q = _context.Reports;
 
             // Non-admin/caseworker: only see own reports
-            // If user is Admin go straight to view all reports, if not sort by your username
             if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker")))
             {
                 var myId = _userManager.GetUserId(User);
                 var me = await _userManager.GetUserAsync(User);
                 var email = me?.Email;
 
-                // Checks myId = Identity UserId, Fallback where old rows sorted by email
+                // Either same Identity UserId, or legacy rows matched by email
                 q = q.Where(r => r.UserId == myId
                               || (r.UserId == null && r.SenderName == email));
             }
@@ -49,74 +47,9 @@ namespace Gruppe4NLA.Controllers
 
             var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
             return View(reports);
-
-         
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ReportModelWrapper model, string? action)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            model.NewReport.SenderName = user?.Email;
-
-            ModelState.Remove("NewReport.SenderName");
-
-            // Validate OtherDangerType if "Other" is selected
-            if (model.NewReport.Type == ReportModel.DangerType.Other
-                && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
-            {
-                ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
-            }
-
-            if (!ModelState.IsValid)
-            {
-                model.SubmittedReport = await _context.Reports
-                    .OrderByDescending(r => r.DateSent)
-                    .ToListAsync();
-
-                return View(model);
-            }
-
-            var newReport = new ReportModel
-            {
-                UserId = model.NewReport.UserId,
-                Latitude = model.NewReport.Latitude,
-                Longitude = model.NewReport.Longitude,
-                GeoJson = model.NewReport.GeoJson,
-                SenderName = model.NewReport.SenderName,
-                Type = model.NewReport.Type,
-                OtherDangerType = model.NewReport.OtherDangerType,
-                Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters,
-                AreLighted = model.NewReport.AreLighted,
-                DateSent = DateTime.Now,
-
-                Status = (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
-                    ? ReportStatus.Submitted
-                    : ReportStatus.Draft,
-                SubmittedAt = (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
-                    ? DateTime.UtcNow
-                    : null
-
-            };
-
-            _context.Reports.Add(newReport);
-            await _context.SaveChangesAsync();
-
-            model.NewReport = new ReportModel(); // Reset input
-            model.SubmittedReport = await _context.Reports
-                .OrderByDescending(r => r.DateSent)
-                .ToListAsync();
-
-            ViewBag.Message = (newReport.Status == ReportStatus.Submitted)
-        ? "Submitted successfully!"
-        : "Draft saved!";
-
-            ViewBag.Message = "Submitted successfully!";
-            return View(model);
-        }
-
+        // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
@@ -133,7 +66,6 @@ namespace Gruppe4NLA.Controllers
                 model.SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync();
-
                 return View(model);
             }
 
@@ -152,45 +84,46 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            // Draft vs Submit
+            // Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 newReport.Status = ReportStatus.Submitted;
                 newReport.SubmittedAt = DateTime.UtcNow;
-
-                TempData["ToastType"] = "success";
-                TempData["ToastMessage"] = "Report submitted successfully.";
             }
             else
             {
                 newReport.Status = ReportStatus.Draft;
-
-                TempData["ToastType"] = "info";
-                TempData["ToastMessage"] = "Draft saved successfully.";
             }
 
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            // ?? Viktig: gå tilbake til kartet (samme sted som brukeren kom fra)
-            // Har du en Map-side under Home? Bruk den:
-            return RedirectToAction("Map", "Home");
+            // Green message on the same page
+            ViewBag.Message = newReport.Status == ReportStatus.Submitted
+                ? "Submit was successful"
+                : "Draft was successful";
 
-            // Alternativt, hvis du vil tilbake til samme URL:
-            // var referer = Request.Headers["Referer"].ToString();
-            // if (!string.IsNullOrWhiteSpace(referer)) return Redirect(referer);
-            // return RedirectToAction("Map", "Home");
+            // Keep these fields in the form after save
+            var keepLat = model.NewReport.Latitude;
+            var keepLng = model.NewReport.Longitude;
+            var keepSender = model.NewReport.SenderName;
 
-            var referer = Request.Headers["Referer"].ToString();
-            if (!string.IsNullOrWhiteSpace(referer))
-                return Redirect(referer);
+            // Refresh list if shown below
+            model.SubmittedReport = await _context.Reports
+                .OrderByDescending(r => r.DateSent)
+                .ToListAsync();
 
-            // fallback if referer is missing
-            return RedirectToAction("Index", "Home");
+            // Reset inputs but keep key fields
+            model.NewReport = new ReportModel
+            {
+                Latitude = keepLat,
+                Longitude = keepLng,
+                SenderName = keepSender
+            };
+
+            ModelState.Clear();
+            return View(model);
         }
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> Create(double? lat, double? lng)
@@ -198,14 +131,13 @@ namespace Gruppe4NLA.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             var model = new ReportModelWrapper
-            
             {
                 NewReport = new ReportModel
                 {
                     UserId = _userManager.GetUserId(User),
                     SenderName = user?.Email,
                 },
-                
+
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
@@ -257,33 +189,30 @@ namespace Gruppe4NLA.Controllers
             return View(report);
         }
 
-        // Gets the userid from the _usermanager, puts the senderName as user's Email.
+        // Create from map (route alias)
         [HttpGet("/Reports/CreateFromMap")]
         public async Task<IActionResult> CreateFromMap(double? lat, double? lng)
         {
-            var user = await _userManager.GetUserAsync(User);            
-            
+            var user = await _userManager.GetUserAsync(User);
+
             var vm = new ReportModelWrapper
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User), // hidden but its used for selecting witch reports you can view in Reports View
-                    SenderName = user?.Email,          // set the sender name from form
+                    UserId = _userManager.GetUserId(User),
+                    SenderName = user?.Email,
                     Latitude = lat ?? default,
                     Longitude = lng ?? default
                 },
                 SubmittedReport = await _context.Reports
-            .OrderByDescending(r => r.DateSent)
-            .ToListAsync()
+                    .OrderByDescending(r => r.DateSent)
+                    .ToListAsync()
             };
 
             return View("Create", vm);
-        
-
-     
         }
 
-        //  NEW (Draft feature) 
+        // === Draft feature ===
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -315,7 +244,7 @@ namespace Gruppe4NLA.Controllers
             if (!ModelState.IsValid)
                 return View(updated);
 
-            // Kopier felter som skal kunne endres:
+            // Update editable fields
             report.Latitude = updated.Latitude;
             report.Longitude = updated.Longitude;
             report.GeoJson = updated.GeoJson;
@@ -324,7 +253,6 @@ namespace Gruppe4NLA.Controllers
             report.Details = updated.Details;
             report.HeightInnMeters = updated.HeightInnMeters;
             report.AreLighted = updated.AreLighted;
-            // ++ legg til flere hvis du har flere felter som kan endres
 
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
@@ -365,15 +293,6 @@ namespace Gruppe4NLA.Controllers
             TempData["Message"] = "Report submitted.";
             return RedirectToAction(nameof(Index), new { filter = "submitted" });
         }
-        //  (Draft feature) 
-
-
-
-
-
-
+        // === /Draft feature ===
     }
-
-
-
 }

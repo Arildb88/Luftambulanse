@@ -37,24 +37,7 @@
             margin-top: 1.25rem;
         }
 
-        .btnSubmit {
-            display: inline-block;
-            width: 100%;
-            padding: 16px 24px;
-            border: none;
-            border-radius: 18px;
-            background: #198754; /* samme grønne */
-            color: #fff;
-            font-weight: 600;
-            font-size: 1.05rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-            transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
-        }
 
-            .btnSubmit:hover {
-                background: #157347;
-                box-shadow: 0 6px 16px rgba(0,0,0,.16);
-            }
 
             .btnSubmit:active {
                 transform: translateY(1px);
@@ -99,13 +82,39 @@
         <span asp-validation-for="HeightInnMeters" class="text-danger"></span>
     </div>
 
-    <!-- Obstacle Type (identisk med CreatePopUp gjennom partialen) -->
+    <!-- Obstacle Type (bruker eksisterende stil og verdier fra draftreport) -->
     <div class="mb-3">
         <label class="form-label d-block">Obstacle Type</label>
-        @* VIKTIG: Partialen må ha de samme IMG-src som CreatePopUp *@
-        @await Html.PartialAsync("_ObstacleTypeCards", (Name: "Type", Selected: Model.Type))
+
+        <div class="obstacle-grid">
+            @foreach (var type in Enum.GetValues(typeof(ReportModel.DangerType)).Cast<ReportModel.DangerType>())
+            {
+                <div class="col">
+                    <input type="radio"
+                           class="btn-check"
+                           name="Type"
+                           id="type@(type)"
+                           value="@((int)type)"
+                           @(Model.Type == type ? "checked" : "")>
+                    <label class="obstacle-card" for="type@(type)">
+                        @type
+                    </label>
+                </div>
+            }
+        </div>
+
         <span class="text-danger" asp-validation-for="Type"></span>
     </div>
+
+    <!-- Other obstacle textbox -->
+    <div id="otherTypeWrapper"
+         class="form-group @(Model.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+        <label asp-for="OtherDangerType">Obstacle Type</label>
+        <input asp-for="OtherDangerType" class="form-control" />
+        <span asp-validation-for="OtherDangerType" class="text-danger"></span>
+    </div>
+
+   
 
     @* “Other” feltet – vises bare når Type = Other *@
     @{
@@ -138,13 +147,14 @@
 
 @section Scripts {
     <script>
-        // Viser/skjuler "Other"-feltet når man klikker radioknappen
-        function toggleOther() {
-          const wrap = document.getElementById('otherTypeWrapper');
-          const isOther = document.getElementById('typeOther')?.checked;
-          if (wrap) wrap.classList.toggle('d-none', !isOther);
+        function updateOtherVisibility() {
+            const wrap = document.getElementById('otherTypeWrapper');
+            const isOther = document.getElementById('typeOther')?.checked;
+            if (wrap) wrap.classList.toggle('d-none', !isOther);
         }
-        document.querySelectorAll('input[name="Type"]').forEach(r => r.addEventListener('change', toggleOther));
-        toggleOther();
+        document.querySelectorAll('input[name="Type"]').forEach(r =>
+            r.addEventListener('change', updateOtherVisibility)
+        );
+        updateOtherVisibility();
     </script>
 }
