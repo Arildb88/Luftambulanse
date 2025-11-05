@@ -5,7 +5,7 @@
 namespace Gruppe4NLA.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateReportsTable : Migration
+    public partial class CreateReport : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
