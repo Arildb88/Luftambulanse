@@ -18,7 +18,7 @@ namespace Gruppe4NLA.Models
         public string? DangerType { get; set; }
 
         // Enum-backed selection used in views/controllers via "Type"
-        public DangerTypeEnum Type { get; set; } = DangerTypeEnum.PowerLine;
+        public DangerTypeEnum Type { get; set; } = DangerTypeEnum.Cable;
 
         // Free-text when Type == Other
         public string? OtherDangerType { get; set; }
@@ -27,9 +27,9 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
-        [Required(ErrorMessage = "Height in meters is required")]
+       
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")]
-        public double? HeightInnMeters { get; set; }
+        public double? HeightInMeters { get; set; }
 
         public bool AreLighted { get; set; } = false;
 
@@ -63,9 +63,9 @@ namespace Gruppe4NLA.Models
         // Rename enum to avoid clash with the string property
         public enum DangerTypeEnum
         {
-            PowerLine = 0,
-            Tower = 1,
-            WindTurbine = 2,
+            Cable = 0,
+            Pole = 1,
+            Construction = 2,
             Other = 99
         }
     }

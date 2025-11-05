@@ -93,11 +93,11 @@
 
 
 
-    @* HeightInnMeters input *@
+    @* HeightInMeters input *@
     <div class="form-group">
-        <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>
-        <input asp-for="NewReport.HeightInnMeters" class="form-control" />
-        <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
+        <label asp-for="NewReport.HeightInMeters">Height In Meters</label>
+        <input asp-for="NewReport.HeightInMeters" class="form-control" />
+        <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
     </div>
 
     <!-- Obstacle Type cards -->
@@ -106,36 +106,36 @@
 
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
-                       value="@((int)ReportModel.DangerTypeEnum.PowerLine)"
-                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.PowerLine ? "checked" : "")>
-                <label class="obstacle-card" for="typePowerLine" aria-label="PowerLine">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeCable"
+                       value="@((int)ReportModel.DangerTypeEnum.Cable)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Cable ? "checked" : "")>
+                <label class="obstacle-card" for="typeCable" aria-label="Cable">
                     <!-- Prefer an SVG/PNG in wwwroot; fallback emoji below -->
                     @* <img src="~/Content/Images/obstacles/powerline.svg" alt="" /> *@
                     <span class="obstacle-emoji">⚡</span>
-                    <span>PowerLine</span>
+                    <span>Cable</span>
                 </label>
             </div>
 
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typeTower"
-                       value="@((int)ReportModel.DangerTypeEnum.Tower)"
-                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Tower ? "checked" : "")>
-                <label class="obstacle-card" for="typeTower" aria-label="Tower">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
+                       value="@((int)ReportModel.DangerTypeEnum.Pole)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Pole ? "checked" : "")>
+                <label class="obstacle-card" for="typePole" aria-label="Pole">
                     @* <img src="~/Content/Images/obstacles/tower.svg" alt="" /> *@
                     <span class="obstacle-emoji">📍</span>
-                    <span>Tower</span>
+                    <span>Pole</span>
                 </label>
             </div>
 
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typeWindTurbine"
-                       value="@((int)ReportModel.DangerTypeEnum.WindTurbine)"
-                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.WindTurbine ? "checked" : "")>
-                <label class="obstacle-card" for="typeWindTurbine" aria-label="WindTurbine">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
+                       value="@((int)ReportModel.DangerTypeEnum.Construction)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Construction ? "checked" : "")>
+                <label class="obstacle-card" for="typeConstruction" aria-label="Construction">
                     @* <img src="~/Content/Images/obstacles/windturbine.svg" alt="" /> *@
                     <span class="obstacle-emoji">🚧</span>
-                    <span>WindTurbine</span>
+                    <span>Construction</span>
                 </label>
             </div>
 
