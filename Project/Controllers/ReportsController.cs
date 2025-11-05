@@ -94,7 +94,7 @@ namespace Gruppe4NLA.Controllers
                 Type = model.NewReport.Type,
                 OtherDangerType = model.NewReport.OtherDangerType,
                 Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters,
+                HeightInMeters = model.NewReport.HeightInMeters,
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
                 
@@ -142,7 +142,7 @@ namespace Gruppe4NLA.Controllers
                 Type = model.NewReport.Type,
                 OtherDangerType = model.NewReport.OtherDangerType,
                 Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters,
+                HeightInMeters = model.NewReport.HeightInMeters,
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
             };
