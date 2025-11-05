@@ -1,6 +1,45 @@
-html {
-  font-size: 14px;
+﻿:root {
+    --base-color: white;
+    --base-variant: white;
+    --text-color: black;
+    --secondary-text: grey;
+    --primary-color: #333333;
+    --accent-color: lightblue;
 }
+
+.darkmode {
+    --base-color: #080808;
+    --base-variant: #1a1a1a;
+    --icon-color: #d3d6de;
+    --text-color: #edf3ff;
+    --secondary-text: white;
+    --primary-color: #333333;
+    --accent-color: #5f6570;
+}
+.navbar {
+    background-color: var(--base-variant); 
+    border-bottom: 1px solid var(--accent-color);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    margin-bottom: 1rem;
+}
+
+    .navbar .nav-link {
+        color: var(--text-color);
+    }
+
+        .navbar .nav-link:hover {
+            color: var(--accent-color);
+        }
+
+.navbar .navbar-brand {
+    color: var(--text-color);
+}
+    .navbar .navbar-brand:hover {
+        color: var(--accent-color);
+    }
+
+
+
 
 @media (min-width: 768px) {
   html {
@@ -8,9 +47,75 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.formTitle {
+    color: var(--text-color)
+}
+
+.topTitle {
+    color: var(--base-variant)
+}
+
+.table > :not(caption) > * > * {
+    background-color: var(--base-variant);
+    color: var(--text-color)
+}
+/* --- Login box --- */
+.login-container {
+    background: var(--base-variant);
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 340px;
+}
+/* --- Login wrapping for better position --- */
+.login-wrapper {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- Header --- */
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* --- Input fields (username + password) --- */
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* --- Login button --- */
+.login-container button {
+    width: 100%;
+    padding: 12px;
+    background: #007BFF;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.login-container button:hover {
+        background: #0056b3;
+    }
+
+.btn:focus, .btn:active:focus, .btn-link
+
+:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
+
 
 html {
   position: relative;
@@ -18,7 +123,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: var(--base-color);
+    color: var(--text-color);
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -30,9 +137,12 @@ body {
   text-align: start;
 }
 
+
+
 .footer {
-    background-color: ghostwhite;
+    background-color: var(--base-variant);
     border-top: thin;
+    color: var(--secondary-text)
 }
 
 @keyframes greenToRed {
@@ -45,6 +155,19 @@ body {
     }
 }
 
+.btnSubmit {
+    background-color: #198754;
+    border: none;
+    color: ghostwhite;
+    padding: 15px 30px;
+    text-align: left;
+    display: inline-block;
+    border-radius: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .btnSimple {
     background-color: #198754;
     border: none;
@@ -75,6 +198,57 @@ body {
 .bgGreen {
     background-image: url('/Content/Images/Topographic_green.png');
     background-size: cover;
+}
+
+/* --- DARK MODE BUTTON --- */
+#theme-switch {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+#theme-switch:hover {
+    transform: scale(1.15);
+}
+
+#theme-switch svg {
+    fill: var(--text-color) !important;
+    width: 22px;
+    height: 22px;
+}
+
+       /* Hide moon icon first */
+#theme-switch svg:last-child {
+    display: none;
+}
+
+/* When darkmode is activ: show moon*/
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+    display: inline;
+}
+
+#theme-switch svg{
+    fill: var(--primary-color);
+}
+
+#theme-switch svg:last-child{
+    display: none;
+}
+
+.darkmode #theme-switch svg:first-child{
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child{
+    display: block;
 }
 
 #map {
@@ -108,10 +282,10 @@ body {
 /* Target the zoom control buttons */
 .leaflet-control-zoom a.leaflet-control-zoom-in,
 .leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 50px !important; /* default ~26px */
-    height: 50px !important; /* default ~26px */
-    font-size: 24px !important; /* make + and - bigger */
-    line-height: 50px !important; /* vertically center the + / - */
+    width: 100px !important; /* default ~26px */
+    height: 100px !important; /* default ~26px */
+    font-size: 48px !important; /* make + and - bigger */
+    line-height: 100px !important; /* vertically center the + / - */
 }
 .leaflet-control-zoom-in {
     margin-bottom: 5px; /* space between + and - */
@@ -121,6 +295,103 @@ body {
     pointer-events: auto; /* make sure clicks hit the box */
     z-index: 1001; /* slightly above other controls */
 }
+
+/* Make sure to give right color on user-/loginmenu in darkmode*/
+.navbar .nav-link,
+.navbar .dropdown-toggle {
+    color: var(--text-color) !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .dropdown-toggle:hover {
+    color: var(--accent-color) !important;
+}
+
+.dropdown-menu {
+    z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
+    background-color: var(--base-variant); /* white background */
+    opacity: 1 !important; /* fully non-transparent*/
+    backdrop-filter: none !important; /* Removes glass-effect */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* optional, shadow for depth*/
+}
+
+.dropdown-menu .dropdown-item {
+    color: var(--text-color);
+    background-color: var(--base-variant);
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: var(--accent-color);
+    color: var(--base-color);
+}
+
+/* ===== Obstacle option cards ===== */
+.obstacle-grid {
+    margin-top: .25rem;
+}
+
+.obstacle-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 140px; /* make them big */
+    border-radius: 16px; /* rounded rectangle */
+    border: 2px solid var(--accent-color);
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+    text-align: center;
+}
+
+    .obstacle-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
+
+    .obstacle-card img,
+    .obstacle-card .obstacle-emoji {
+        width: 48px;
+        height: 48px;
+        display: inline-block;
+        line-height: 48px;
+        font-size: 36px; /* for emoji fallback */
+    }
+
+    .obstacle-card span {
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+/* Checked state (paired with .btn-check radio) */
+.btn-check:checked + .obstacle-card {
+    background: #0d6efd; /* Bootstrap primary */
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,110,253,.35);
+}
+
+/* Keyboard focus when tabbing to the radio */
+.btn-check:focus + .obstacle-card {
+    outline: 3px solid rgba(13,110,253,.4);
+    outline-offset: 2px;
+}
+
+/* Dark mode tweaks */
+.darkmode .obstacle-card {
+    border-color: #424242;
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.darkmode .btn-check:checked + .obstacle-card {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+}
+
 
 
 

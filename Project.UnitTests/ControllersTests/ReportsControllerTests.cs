@@ -97,7 +97,7 @@ namespace Gruppe4NLA.Tests
             // Assert
             Assert.NotNull(result);
             var model = Assert.IsType<ReportModelWrapper>(result.Model);
-            Assert.NotEmpty(model.SubmittedCoordinates);
+            Assert.NotEmpty(model.SubmittedReport);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Gruppe4NLA.Tests
             var controller = GetControllerWithData(nameof(Create_Post_ValidModel_AddsReportAndReturnsView));
             var newReport = new ReportModelWrapper
             {
-                NewCoordinate = new ReportModel
+                NewReport = new ReportModel
                 {
                     SenderName = "Test",
                     Latitude = 59.0,
@@ -143,7 +143,7 @@ namespace Gruppe4NLA.Tests
             var model = Assert.IsType<ReportModelWrapper>(result.Model);
 
             // Verify the new record exists
-            Assert.Contains(model.SubmittedCoordinates, r => r.SenderName == "Test");
+            Assert.Contains(model.SubmittedReport, r => r.SenderName == "Test");
             Assert.Equal("Submitted successfully!", controller.ViewBag.Message);
         }
     }

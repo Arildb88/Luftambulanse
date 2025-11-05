@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Gruppe4NLA.Models;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gruppe4NLA.Controllers
 {
@@ -13,21 +15,28 @@ namespace Gruppe4NLA.Controllers
             _logger = logger;
         }
 
-        [HttpGet("/")]
         public IActionResult Leaflet()
         {
             return View();
         }
+
+
         public IActionResult Index()
         {
-            return View();
+            if (User.Identity?.IsAuthenticated == true)
+                return RedirectToAction(nameof(Leaflet), "Home");
+
+            var returnUrl = Url.Action(nameof(Leaflet), "Home");
+            return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl });
         }
 
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult FAQ()
         {
             return View();
@@ -37,15 +46,14 @@ namespace Gruppe4NLA.Controllers
         {
             return View();
         }
-        //public IActionResult SignIn()
-        //{
-        //    return View();
-        //}
         
+        [AllowAnonymous]
         public IActionResult About()
         {
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Administrator()
         {
             return View();

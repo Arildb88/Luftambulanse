@@ -1,10 +1,10 @@
-
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
 @* This tells the view it will receive and bind to a single Report object *@
 
 @{
     ViewData["Title"] = "Add Report"; 
+    
     @* Sets the page title *@
 }
 
@@ -35,62 +35,150 @@
             text-align: left;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group textarea{
             flex: 1; 
             padding: 5px;
         }
 
+        .form-group input[type="checkbox"] {
+            flex: 0;
+            margin-left: 10px;
+            transform: scale(2.5);
+            cursor: pointer;
+        }
     </style>
-
-    @* Sender name input *@
+       
     <div class="form-group">
-        <label asp-for="NewCoordinate.SenderName"></label>
-        <input asp-for="NewCoordinate.SenderName" class="form-control" />
-        <span asp-validation-for="NewCoordinate.SenderName" class="text-danger"></span>
+        <label asp-for="NewReport.SenderName">Sender</label>
+
+        <!-- Shows as text, but cannot be edited -->
+        <input asp-for="NewReport.SenderName"
+               class="form-control-plaintext"
+               readonly
+               tabindex="-1"
+               onfocus="this.blur()"
+               style="user-select: none; color: var(--text-color);" />
+
+        <!-- hidden field that sends to backend -->
+        <input type="hidden" asp-for="NewReport.SenderName" />
+        <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
     @* Latitude input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Latitude"></label>
-        <input asp-for="NewCoordinate.Latitude" type="text" step="any" />
-        <span asp-validation-for="NewCoordinate.Latitude" class="text-danger"></span>
+        <label asp-for="NewReport.Latitude"></label>
+        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
+        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Longitude"></label>
-        <input asp-for="NewCoordinate.Longitude" type="text" step="any" />
-        <span asp-validation-for="NewCoordinate.Longitude" class="text-danger"></span>
+        <label asp-for="NewReport.Longitude"></label>
+        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
+        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
-    @* Danger type input *@
+    @* GeoJson *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.DangerType"></label>
-        <input asp-for="NewCoordinate.DangerType" class="form-control" />
+        <label asp-for="NewReport.GeoJson"></label>
+        <textarea asp-for="NewReport.GeoJson" class="form-control"></textarea>
+        <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
+    </div>
+
+
+    @* HeightInnMeters input *@
+    <div class="form-group">
+        <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>
+        <input asp-for="NewReport.HeightInnMeters" class="form-control" />
+        <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
+    </div>
+
+    @* DangerType radio buttons *@
+    <div class="mb-3">
+        <label class="form-label d-block">Obstacle Type</label>
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
+                       value="@((int)ReportModel.DangerTypeEnum.PowerLine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.PowerLine ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typePowerLine">PowerLine</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeTower"
+                       value="@((int)ReportModel.DangerTypeEnum.Tower)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Tower ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typeTower">Tower</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeWindTurbine"
+                       value="@((int)ReportModel.DangerTypeEnum.WindTurbine)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.WindTurbine ? "checked" : "")>
+                <label class="btn btn-outline-primary btn-lg w-100" for="typeWindTurbine">WindTurbine</label>
+            </div>
+            <div class="col-6 col-md-3">
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
+                       value="@((int)ReportModel.DangerTypeEnum.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "checked" : "")>
+                <label class="btn btn-outline-secondary btn-lg w-100" for="typeOther">Other</label>
+            </div>
+        </div>
+        <span class="text-danger" asp-validation-for="NewReport.Type"></span>
+    </div>
+
+    @* OtherDangerType input, shown only if "Other" is selected *@
+    <div id="otherTypeWrapper"
+         class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
+        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
+        <input asp-for="NewReport.OtherDangerType" class="form-control" />
+        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
     </div>
 
     @* Extra details textarea *@
     <div class="form-group">
-        <label asp-for="NewCoordinate.Details"></label>
-        <textarea asp-for="NewCoordinate.Details" class="form-control"></textarea>
+        <label asp-for="NewReport.Details"></label>
+        <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
+
+    @* AreLighted input *@
+    <div class="form-group">
+        <label asp-for="NewReport.AreLighted">Lighted</label>
+        <input asp-for="NewReport.AreLighted" type="checkbox" />
+    </div>
+
+
 
     @* Save and Cancel buttons *@
     <button type="submit" class="btn btn-success mt-3">Save</button>
     <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
-@* <!-- Makes button -->
-<br>
-<button id="btnAdd" class="btnSimple" type="button">Open Map</button>
- *@
+
+@*Script that makes the Others input field visible if Other is choosen*@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updateOtherVisibility() {
+          const wrap = document.getElementById('otherTypeWrapper');
+          const isOther = document.getElementById('typeOther').checked;
+          wrap.classList.toggle('d-none', !isOther);
+        }
+        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
+          r.addEventListener('change', updateOtherVisibility)
+        );
+        updateOtherVisibility();
+    </script>
+}
+
+
 <!-- Title for submitted coordinates -->
 
 <h3><br>Submitted Coordinates</h3>
 
 <!-- Variable "coord" will show for each instance -->
 <ul>
-    @foreach (var coord in Model.SubmittedCoordinates)
+    @foreach (var coord in Model.SubmittedReport)
     {
         <li>
             Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
@@ -98,86 +186,3 @@
         </li>
     }
 </ul>
-
-@* 
-<!-- Styling the map -->
-<div id="mapModal" style="
-            display:none;
-            position:fixed;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            width:80%;
-            height:80%;
-            background:white;
-            border:1px solid black;
-            padding:10px;
-            z-index:1000;
-        ">
-    <div id="map" style="width:100%; height:90%;"></div>
-    
-    <div id="buttonsGroup" style="display: flex; justify-content: center; gap: 10px; padding-top: 10px;">
-        <button id="btnSaveLocation" class="btnSimple">Save Location</button>
-        <button id="btnCloseMap" class="btnBack">Close</button>
-    </div>
-
-</div>
-
-<!-- Script to make map -->
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-
-
-    <!-- Import map through link (should be downloaded later) -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-
-
-    <script>
-
-        // Initialize map and marker
-
-        var map, marker;
-
-        // Button to add coordinates
-
-        document.getElementById("btnAdd").onclick = function() {
-            document.getElementById("mapModal").style.display = "block";
-
-            // Set view and zoom
-
-            if (!map) {
-                map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 13);
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(map);
-
-                // Add marker where the user clicks
-
-                map.on('click', function(e) {
-                    if (marker) marker.setLatLng(e.latlng);
-                    else marker = L.marker(e.latlng).addTo(map);
-                });
-            }
-        };
-
-        // Save location when clicked
-
-        document.getElementById("btnSaveLocation").onclick = function(e) {
-            e.preventDefault();
-            if (marker) {
-                document.getElementById("NewCoordinate_Latitude").value = marker.getLatLng().lat.toFixed(6);
-                document.getElementById("NewCoordinate_Longitude").value = marker.getLatLng().lng.toFixed(6);
-            }
-            document.getElementById("mapModal").style.display = "none";
-        };
-
-        // Close map when clicked. Does not save data.
-
-        document.getElementById("btnCloseMap").onclick = function(e) {
-            e.preventDefault();
-            document.getElementById("mapModal").style.display = "none";
-        };
-    </script> *@
-}
