@@ -22,18 +22,18 @@ namespace Gruppe4NLA.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        // NEW: delegation service (assign/unassign logic)
+       
         private readonly IReportAssignmentService _assigner;
 
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            IReportAssignmentService assigner // NEW
+            IReportAssignmentService assigner 
         )
         {
             _context = context;
             _userManager = userManager;
-            _assigner = assigner; // NEW
+            _assigner = assigner; 
         }
 
         
@@ -343,6 +343,7 @@ namespace Gruppe4NLA.Controllers
         
         /// Caseworker's personal queue: what is assigned to me and in progress.
         [Authorize(Roles = "Caseworker")]
+        [HttpGet("/MyQueue", Name = "MyQueueRoute")]
         public async Task<IActionResult> MyQueue()
         {
             var me = _userManager.GetUserId(User)!;
@@ -357,7 +358,7 @@ namespace Gruppe4NLA.Controllers
         }
     }
     
-    // NEW: ViewModels (lightweight)
+    
     // Place them here or in a separate file if you prefer.
     public class AssignReportVM
     {
