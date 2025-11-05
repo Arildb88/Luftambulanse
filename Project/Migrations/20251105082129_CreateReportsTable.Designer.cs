@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251030090518_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20251105082129_CreateReportsTable")]
+    partial class CreateReportsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,13 +100,13 @@ namespace Gruppe4NLA.Migrations
                     b.Property<bool>("AreLighted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("DangerType")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Details")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GeoJson")
                         .HasColumnType("longtext");
 
                     b.Property<double?>("HeightInnMeters")
@@ -118,9 +118,16 @@ namespace Gruppe4NLA.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("double");
 
+                    b.Property<string>("OtherDangerType")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("SenderName")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");

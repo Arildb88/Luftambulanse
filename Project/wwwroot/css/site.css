@@ -24,10 +24,13 @@
     border-bottom: 1px solid var(--accent-color);
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
     margin-bottom: 1rem;
+    font-weight: bold;
 }
 
     .navbar .nav-link {
         color: var(--text-color);
+        font-size: 1.3rem;
+        font-weight: bold;
     }
 
         .navbar .nav-link:hover {

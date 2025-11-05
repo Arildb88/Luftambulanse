@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gruppe4NLA.Migrations
 {
     /// <inheritdoc />
-    public partial class InitalCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,10 +79,13 @@ namespace Gruppe4NLA.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     SenderName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    DangerType = table.Column<string>(type: "longtext", nullable: true)
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    OtherDangerType = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DateSent = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Details = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    GeoJson = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     HeightInnMeters = table.Column<double>(type: "double", nullable: true),
                     AreLighted = table.Column<bool>(type: "tinyint(1)", nullable: false),
