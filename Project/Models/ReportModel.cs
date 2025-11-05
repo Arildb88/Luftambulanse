@@ -17,6 +17,7 @@ namespace Gruppe4NLA.Models
 
     public class ReportModel
     {
+
         public int Id { get; set; }
         public string? UserId { get; set; }
         //public string? CaseworkerGroupId { get; set; }

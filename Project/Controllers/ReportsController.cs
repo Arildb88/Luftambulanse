@@ -118,10 +118,10 @@ namespace Gruppe4NLA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePopUp(ReportModelWrapper model)
-        
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // Validate OtherDangerType if "Other" is selected
+            // Validate "Other"
             if (model.NewReport.Type == ReportModel.DangerType.Other
                 && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
             {
@@ -152,17 +152,44 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
+            // Draft vs Submit
+            if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
+            {
+                newReport.Status = ReportStatus.Submitted;
+                newReport.SubmittedAt = DateTime.UtcNow;
+
+                TempData["ToastType"] = "success";
+                TempData["ToastMessage"] = "Report submitted successfully.";
+            }
+            else
+            {
+                newReport.Status = ReportStatus.Draft;
+
+                TempData["ToastType"] = "info";
+                TempData["ToastMessage"] = "Draft saved successfully.";
+            }
+
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            model.NewReport = new ReportModel(); // Reset input
-            model.SubmittedReport = await _context.Reports
-                .OrderByDescending(r => r.DateSent)
-                .ToListAsync();
+            // ?? Viktig: gå tilbake til kartet (samme sted som brukeren kom fra)
+            // Har du en Map-side under Home? Bruk den:
+            return RedirectToAction("Map", "Home");
 
-            ViewBag.Message = "Submitted successfully!";
-            return View(model);
+            // Alternativt, hvis du vil tilbake til samme URL:
+            // var referer = Request.Headers["Referer"].ToString();
+            // if (!string.IsNullOrWhiteSpace(referer)) return Redirect(referer);
+            // return RedirectToAction("Map", "Home");
+
+            var referer = Request.Headers["Referer"].ToString();
+            if (!string.IsNullOrWhiteSpace(referer))
+                return Redirect(referer);
+
+            // fallback if referer is missing
+            return RedirectToAction("Index", "Home");
         }
+
+
 
 
         [HttpGet]
@@ -265,8 +292,8 @@ namespace Gruppe4NLA.Controllers
 
             if (report.Status == ReportStatus.Submitted)
             {
-                TempData["Error"] = "Cannot edit a submitted report.";
-                return RedirectToAction(nameof(Index));
+                if (report.Status != ReportStatus.Draft)
+                    return RedirectToAction(nameof(Details), new { id });
             }
 
             return View(report);

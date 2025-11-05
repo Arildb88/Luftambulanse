@@ -1,20 +1,150 @@
 @using Gruppe4NLA.Models
 @model ReportModel
 @{
-    ViewData["Title"] = "Edit Draft";
+    ViewData["Title"] = "Edit Report";
 }
 
-<h2>Edit Draft</h2>
+<h2>Edit Report</h2>
 
 <form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
 
-    @* Legg inn de samme feltene som i Create (SenderName readonly, Latitude, Longitude, HeightInnMeters, Type/OtherDangerType, Details, AreLighted, osv.) *@
+    <style>
+        /* Samme grunnstil som i CreatePopUp. Ingen media her (legg i site.css ved behov) */
+        .form-group {
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    <!-- --- NEW (Draft feature) START --- -->
-    <div class="d-flex gap-2 mt-3">
-        <button type="submit" name="action" value="save" class="btn btn-outline-secondary">Save Draft</button>
-        <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
+        .form-group label {
+            margin: 0;
+        }
+
+        .form-control-plaintext {
+            border: 0;
+            background: transparent;
+        }
+
+        /* Koble Edit til samme knappestil som CreatePopUp */
+        .btnRow {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.25rem;
+        }
+
+        .btnSubmit {
+            display: inline-block;
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 18px;
+            background: #198754; /* samme grønne */
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+            .btnSubmit:hover {
+                background: #157347;
+                box-shadow: 0 6px 16px rgba(0,0,0,.16);
+            }
+
+            .btnSubmit:active {
+                transform: translateY(1px);
+            }
+
+        /* Stor checkbox som i pop-up */
+        .checkbox-large {
+            transform: scale(1.7);
+            margin-left: 8px;
+            accent-color: #0d6efd;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="form-group">
+        <label asp-for="SenderName">Sender</label>
+        <input asp-for="SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" />
+        <span asp-validation-for="SenderName" class="text-danger"></span>
     </div>
-    <!-- --- NEW (Draft feature) END --- -->
+
+    <div class="form-group">
+        <label asp-for="Latitude"></label>
+        <input asp-for="Latitude" type="number" step="any" lang="en-US" inputmode="decimal" class="form-control" />
+        <span asp-validation-for="Latitude" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Longitude"></label>
+        <input asp-for="Longitude" type="number" step="any" lang="en-US" inputmode="decimal" class="form-control" />
+        <span asp-validation-for="Longitude" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="GeoJson">GeoJSON</label>
+        <textarea asp-for="GeoJson" rows="6" class="form-control" style="font-family:monospace;white-space:pre;"></textarea>
+        <span asp-validation-for="GeoJson" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="HeightInnMeters">Height In Meters</label>
+        <input asp-for="HeightInnMeters" class="form-control" />
+        <span asp-validation-for="HeightInnMeters" class="text-danger"></span>
+    </div>
+
+    <!-- Obstacle Type (identisk med CreatePopUp gjennom partialen) -->
+    <div class="mb-3">
+        <label class="form-label d-block">Obstacle Type</label>
+        @* VIKTIG: Partialen må ha de samme IMG-src som CreatePopUp *@
+        @await Html.PartialAsync("_ObstacleTypeCards", (Name: "Type", Selected: Model.Type))
+        <span class="text-danger" asp-validation-for="Type"></span>
+    </div>
+
+    @* “Other” feltet – vises bare når Type = Other *@
+    @{
+        var otherClass = Model.Type == ReportModel.DangerType.Other ? "" : "d-none";
+    }
+    <div id="otherTypeWrapper" class="form-group @otherClass">
+        <label asp-for="OtherDangerType">Obstacle Type</label>
+        <input asp-for="OtherDangerType" class="form-control" />
+        <span asp-validation-for="OtherDangerType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Details"></label>
+        <textarea asp-for="Details" class="form-control"></textarea>
+        <span asp-validation-for="Details" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="AreLighted">Lighted</label>
+        <input asp-for="AreLighted" type="checkbox" class="checkbox-large" />
+        <span asp-validation-for="AreLighted" class="text-danger"></span>
+    </div>
+
+    <div class="btnRow">
+        <button type="submit" name="action" value="save" class="btnSubmit">Save Draft</button>
+        <button type="submit" name="action" value="submit" class="btnSubmit">Submit</button>
+    </div>
+
 </form>
+
+@section Scripts {
+    <script>
+        // Viser/skjuler "Other"-feltet når man klikker radioknappen
+        function toggleOther() {
+          const wrap = document.getElementById('otherTypeWrapper');
+          const isOther = document.getElementById('typeOther')?.checked;
+          if (wrap) wrap.classList.toggle('d-none', !isOther);
+        }
+        document.querySelectorAll('input[name="Type"]').forEach(r => r.addEventListener('change', toggleOther));
+        toggleOther();
+    </script>
+}
