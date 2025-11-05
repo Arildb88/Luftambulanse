@@ -11,11 +11,11 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=""
           crossorigin="" />
 
     <!-- (Optional) your own stylesheet -->
-    <link rel="stylesheet" href="map.css">
+    <link rel="stylesheet" href="~/css/map.css">
 
     <style>
         html, body {
@@ -43,27 +43,37 @@
             pointer-events: none;
         }
 
-        /* Floating "Report Obstacle" button */
+        /* Centered bottom bar for "Report Obstacle" */
         #obstacleBox {
             position: absolute; /* relative to the #map container */
             bottom: 20px; /* distance from bottom of map */
-            right: 20px; /* distance from right side of map */
+            left: 50%; /* center horizontally */
+            right: auto;
+            transform: translateX(-50%);
             background: #1976d2;
             color: #fff;
-            font-weight: 600;
-            padding: 10px 16px;
-            border-radius: 8px;
+            font-weight: 700;
+            padding: 14px 22px;
+            border-radius: 12px;
             cursor: pointer;
             z-index: 1100; /* above the map but below modals */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.28);
             user-select: none;
-            transition: background 0.2s, transform 0.15s;
+            transition: background 0.18s, transform 0.12s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: min(720px, 80%);
+            min-width: 260px;
+            font-size: 18px;
+            text-align: center;
         }
 
-            #obstacleBox:hover {
-                background: #1565c0;
-                transform: translateY(-2px);
-            }
+        #obstacleBox:hover {
+            background: #1565c0;
+            transform: translateX(-50%) translateY(-2px);
+        }
 
         /* Dialog look */
         dialog#reportDialog {
@@ -100,7 +110,7 @@
     @* Old version; Gets online version of leaflet *@
     @* <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=""
             crossorigin=""></script> *@
 
     <!-- In-page modal that loads the Add Report page -->
@@ -127,23 +137,23 @@
         });
         
         // ---------------- Map init ----------------
-        window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
+        window.map = L.map('map', { minZoom:4 }).setView([58.1638332,7.9812789],16);
 
         const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
         const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-            minZoom: 0, maxZoom: 20, ext: 'png',
+            minZoom:0, maxZoom:20, ext: 'png',
             attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
         });
 
         const googleStreets = L.tileLayer('https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            maxZoom:20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
         const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            maxZoom:20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
 
         L.control.layers(
@@ -214,7 +224,7 @@
                 
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="http://www.w3.org/2000/svg" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
                 btn.dataset.mode = 'polyline';
                 btn.style.backgroundColor = 'white';
                 btn.style.width = '100px';
@@ -235,7 +245,7 @@
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
                 btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="red">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="http://www.w3.org/2000/svg" width="48px" fill="red">
                         <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
                     </svg>
                 `;
@@ -383,8 +393,8 @@
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
                 btn.title = 'Find me';
                 btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue">
-                        <path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="http://www.w3.org/2000/svg" width="48px" fill="blue">
+                        <path d="m300-300280-8080-280-28080-80280Zm180-120q-250-42.5-17.5T420-480q0-2517.5-42.5T480-540q25042.517.5T540-480q025-17.542.5T480-420Zm0340q-830-156-31.5T197-197q-54-54-85.5-127T80-480q0-8331.5-156T197-763q54-54127-85.5T480-880q83015631.5T763-763q545485.5127T880-480q083-31.5156T763-197q-5454-12785.5T480-80Z"/>
                     </svg>
                 `;
 

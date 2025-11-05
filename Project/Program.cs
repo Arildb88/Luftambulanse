@@ -72,22 +72,7 @@ using (var scope = app.Services.CreateScope())
     var logger = sp.GetRequiredService<ILogger<Program>>();
     var db = sp.GetRequiredService<AppDbContext>();
 
-    const int maxAttempts = 10;
-    for (int attempt = 1; attempt <= maxAttempts; attempt++)
-    {
-        try
-        {
-            await db.Database.MigrateAsync();   // applies all pending migrations
-            logger.LogInformation("Database migrated successfully.");
-            break;
-        }
-        catch (Exception ex)
-        {
-            if (attempt == maxAttempts) throw;
-            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s�", attempt, maxAttempts);
-            await Task.Delay(TimeSpan.FromSeconds(2));
-        }
-    }
+   
 
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
