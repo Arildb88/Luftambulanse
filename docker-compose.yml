@@ -14,7 +14,7 @@ services:
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
-    healthcheck:                           # optional but recommended
+    healthcheck:           
        test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MARIADB_ROOT_PASSWORD}"]
        interval: 5s
        timeout: 3s

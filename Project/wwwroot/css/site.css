@@ -116,6 +116,27 @@
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+.leaflet-control-layers {
+    font-size: 2vh;
+    padding: 10px 15px;
+  
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    color: var(--primary-color);
+    background-color: var(--primary-color);
+}
+
+    /* The text next to each checkbox/radio */
+    .leaflet-control-layers label {
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+.leaflet-control-layers input[type="checkbox"],
+.leaflet-control-layers input[type="radio"] {
+        width: 3vh;
+        height: 3vh;
+    }
 
 html {
   position: relative;
@@ -255,29 +276,40 @@ body {
     position: relative;
 }
 
+/* Floating "Report Obstacle" button */
 #obstacleBox {
     position: absolute;
-    right: 10px;
-    bottom: 10px;
-    z-index: 1000;
-    background: rgba(255,255,255,0.95);
-    padding: 8px 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.15);
-    font: 13px/1.2 system-ui, sans-serif;
+    bottom: 15px; /* distance from bottom */
+    left: 50%; /* horizontal center */
+    transform: translateX(-50%);
+    background: #1976d2;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 16px;
     cursor: pointer;
+    z-index: 1100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    user-select: none;
+    transition: background 0.2s, transform 0.15s;
+    width: 98%; /* fixed width for better centering */
+    height:10%;
+    text-align: center; /* center text inside button */
+    padding: 10px 0;
 
-    /* Size */
-    width: 85px;
-    height: 85px;
-
-
+    font-size: 5vh;
+    
     /* Center text */
     display: flex;
     align-items: center; /* vertical center */
     justify-content: center; /* horizontal center */
     text-align: center;
 }
+
+    #obstacleBox:hover {
+        background: #1565c0;
+        box-sizing: border-box;
+        
+    }
 
 /* Target the zoom control buttons */
 .leaflet-control-zoom a.leaflet-control-zoom-in,
@@ -286,6 +318,8 @@ body {
     height: 100px !important; /* default ~26px */
     font-size: 48px !important; /* make + and - bigger */
     line-height: 100px !important; /* vertically center the + / - */
+    Color: var(--text-color) !important;
+    background-color: var(--base-variant) !important;
 }
 .leaflet-control-zoom-in {
     margin-bottom: 5px; /* space between + and - */
