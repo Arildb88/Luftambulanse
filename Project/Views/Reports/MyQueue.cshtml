@@ -39,8 +39,8 @@ else
                 <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
                 <td>
-                    <span class="badge bg-@(report.Status == ReportStatus.Assigned ? "primary" : "warning")">
-                        @report.Status
+                    <span class="badge bg-@(report.StatusCase == ReportStatusCase.Assigned ? "primary" : "warning")">
+                        @report.StatusCase
                     </span>
                 </td>
                 <td>

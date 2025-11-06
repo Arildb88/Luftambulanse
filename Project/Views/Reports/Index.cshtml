@@ -28,7 +28,7 @@
                
             @foreach (var r in Model)
                 {
-                    var typeText = (r.Type == ReportModel.DangerType.Other)
+                    var typeText = (r.Type == ReportModel.DangerTypeEnum.Other)
                     ? (r.OtherDangerType ?? "Other")
                     : (r.Type?.ToString() ?? "");
 
