@@ -6,9 +6,9 @@
     @* Sets the page title *@
     ViewData["Title"] = "Report Details";
      
-     var typeText = Model.Type == ReportModel.DangerType.Other
+     var typeText = Model.Type == ReportModel.DangerTypeEnum.Other
         ? (Model.OtherDangerType ?? "Other")
-        : (Model.Type?.ToString() ?? "—");
+        : (Model.Type.ToString() ?? "â€“");
    
 }
 
@@ -25,7 +25,7 @@
     <p><strong>Longitude:</strong> @Model.Longitude</p>
 
     @* Display Height Inn Meters *@
-    <p><strong>Height (Meters):</strong> @Model.HeightInnMeters</p>
+    <p><strong>Height (Meters):</strong> @Model.HeightInMeters</p>
 
     @* Display ObstacleType and if "Other" show that*@
     <p><strong>Obstacle Type:</strong> @typeText</p>
