@@ -17,6 +17,8 @@ using Gruppe4NLA.ViewModels;
 
 namespace Gruppe4NLA.Controllers
 {
+    // Added AutoValidateAntiforgeryToken globally to all controllers who needs it, beter than forgetting to add later
+    [AutoValidateAntiforgeryToken]
     public class ReportsController : Controller
     {
         private readonly AppDbContext _context;
@@ -76,6 +78,12 @@ namespace Gruppe4NLA.Controllers
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
             }
 
+            // Konverter h�yde til meter hvis brukeren har valgt "feet"
+            if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
+            {
+                // 1 foot = 0.3048 meter
+                model.NewReport.HeightInMeters = model.NewReport.HeightInMeters * 0.3048;
+            }
 
             if (!ModelState.IsValid)
             {
@@ -84,6 +92,10 @@ namespace Gruppe4NLA.Controllers
                     .ToListAsync();
                 return View(model);
             }
+
+            double heightMeters = model.NewReport.HeightUnit == "feet"
+                ? (model.NewReport.HeightInMeters ?? 0) / 3.28084
+                : (model.NewReport.HeightInMeters ?? 0);
 
             var newReport = new ReportModel
             {

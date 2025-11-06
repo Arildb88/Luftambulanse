@@ -5,6 +5,7 @@
     --secondary-text: grey;
     --primary-color: #333333;
     --accent-color: lightblue;
+    --blueBtn-color: #0d6efd;
 }
 
 .darkmode {
@@ -59,30 +60,32 @@
     background-color: var(--base-variant);
     color: var(--text-color)
 }
-/* --- Login box --- */
-.login-container {
+
+
+/* --------------------------------------------- Login box --- NEEDED???*/
+/*.login-container {
     background: var(--base-variant);
     padding: 30px 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 340px;
-}
+}*/
 /* --- Login wrapping for better position --- */
-.login-wrapper {
+/*.login-wrapper {
     min-height: calc(100vh - 60px);
     display: flex;
     justify-content: center;
     align-items: center;
-}
+}*/
 
 /* --- Header --- */
-.login-container h2 {
+/*.login-container h2 {
     text-align: center;
     margin-bottom: 20px;
-}
+}*/
 
 /* --- Input fields (username + password) --- */
-.login-container input {
+/*.login-container input {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
@@ -90,10 +93,10 @@
     border-radius: 6px;
     font-size: 14px;
     box-sizing: border-box;
-}
+}*/
 
 /* --- Login button --- */
-.login-container button {
+/*.login-container button {
     width: 100%;
     padding: 12px;
     background: #007BFF;
@@ -108,7 +111,9 @@
 
 .login-container button:hover {
         background: #0056b3;
-    }
+    }*/
+
+/* ------------------------------------------------ */
 
 .btn:focus, .btn:active:focus, .btn-link
 
@@ -116,6 +121,7 @@
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
+/* --------------- Map --------------- */
 .leaflet-control-layers {
     font-size: 2vh;
     padding: 10px 15px;
@@ -159,7 +165,7 @@ body {
 }
 
 
-
+/* --------------- Place bottom --------------- */
 .footer {
     background-color: var(--base-variant);
     border-top: thin;
@@ -176,6 +182,8 @@ body {
     }
 }
 
+
+/* --------------- Report Form --------------- */
 .btnSubmit {
     background-color: #198754;
     border: none;
@@ -216,10 +224,10 @@ body {
     background-color: darkgrey;
 }
 
-.bgGreen {
+/*.bgGreen {
     background-image: url('/Content/Images/Topographic_green.png');
     background-size: cover;
-}
+}*/
 
 /* --- DARK MODE BUTTON --- */
 #theme-switch {
@@ -243,14 +251,14 @@ body {
 }
 
        /* Hide moon icon first */
-#theme-switch svg:last-child {
+/*#theme-switch svg:last-child {
     display: none;
-}
+}*/
 
 /* When darkmode is activ: show moon*/
-.darkmode #theme-switch svg:first-child {
+/*.darkmode #theme-switch svg:first-child {
     display: none;
-}
+}*/
 
 .darkmode #theme-switch svg:last-child {
     display: inline;
@@ -276,6 +284,8 @@ body {
     position: relative;
 }
 
+
+/* --------------- Buttons on  map --------------- */
 /* Floating "Report Obstacle" button */
 #obstacleBox {
     position: absolute;
@@ -341,6 +351,8 @@ body {
     color: var(--accent-color) !important;
 }
 
+
+/* --------------- Dropdown for users/login top right corner --------------- */
 .dropdown-menu {
     z-index: 2000 !important; /* To give the dropdown menu priority over other elements of the view, sign in element will stay on top*/
     background-color: var(--base-variant); /* white background */
@@ -359,6 +371,7 @@ body {
     color: var(--base-color);
 }
 
+/* --------------- Create Report Pop Up --------------- */
 /* ===== Obstacle option cards ===== */
 .obstacle-grid {
     margin-top: .25rem;
@@ -403,8 +416,8 @@ body {
 
 /* Checked state (paired with .btn-check radio) */
 .btn-check:checked + .obstacle-card {
-    background: #0d6efd; /* Bootstrap primary */
-    border-color: #0d6efd;
+    background: var(--blueBtn-color); /* Bootstrap primary */
+    border-color: var(--blueBtn-color);
     color: #fff;
     box-shadow: 0 6px 18px rgba(13,110,253,.35);
 }
@@ -426,5 +439,209 @@ body {
     border-color: #0b5ed7;
 }
 
+/* ===== Height unit switch (Meters / Feet) ===== */
+.height-inline {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Hide the radios */
+.unit-switch input[type="radio"] {
+    display: none;
+}
+
+/* Outer container */
+.unit-switch {
+    display: flex;
+    width: 220px;
+    height: 42px;
+    border: 2px solid var(--accent-color);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--base-variant);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    transition: all 0.15s ease;
+}
+
+    /* Labels fill exactly 50% each */
+    .unit-switch label.switch-option {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text-color);
+        background: transparent;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+        /* Hover glow */
+        .unit-switch label.switch-option:hover {
+            background: rgba(13,110,253,0.08);
+        }
+
+/* Checked states (fills exactly half the box) */
+#unitMeters:checked + label.switch-option {
+    background: var(--blueBtn-color);
+    color: #fff;
+    border-right: 1px solid var(--blueBtn-color);
+}
+
+#unitFeet:checked + label.switch-option {
+    background: var(--blueBtn-color);
+    color: #fff;
+    border-left: 1px solid var(--blueBtn-color);
+}
+
+/* Remove invisible middle border gap */
+.unit-switch label.switch-option:first-of-type,
+.unit-switch label.switch-option:last-of-type {
+    margin: 0;
+}
+
+/* Smooth focus effect */
+.unit-switch input[type="radio"]:focus + label.switch-option {
+    outline: 3px solid rgba(13,110,253,.4);
+    outline-offset: 2px;
+}
+
+/* Dark mode adjustments */
+.darkmode .unit-switch {
+    border-color: #424242;
+    background: var(--base-variant);
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.darkmode #unitMeters:checked + label.switch-option,
+.darkmode #unitFeet:checked + label.switch-option {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+}
+
+
+
+/* Reuse obstacle-card for the "Lighted" checkbox */
+.light-card-small {
+    width: 120px;
+    height: 100px;
+    padding: 15px 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+}
+
+/* Checked state */
+.btn-check:checked + .light-card-small {
+    border-color: var(--blueBtn-color);
+    background-color: var(--blueBtn-color);
+    color: #000;
+    box-shadow: 0 0 12px rgba(255, 221, 51, 0.4);
+}
+
+    /* Make the icon glow when active */
+    .btn-check:checked + .light-card-small .obstacle-emoji svg {
+        fill: #ffeb3b;
+        filter: drop-shadow(0 0 6px #ffea00);
+    }
+
+/* Slight hover effect for both states */
+.light-card-small:hover {
+    border-color: #ffd54f;
+}
+
+/* --- Align height input + light switch inline --- */
+.height-light-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.height-inline {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+/* Make sure the lighted box aligns neatly */
+.lighted-inline {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Shrink the light-card slightly for inline layout */
+.light-card-small {
+    width: 100px;
+    height: 85px;
+    padding: 12px 8px;
+}
+
+/* === Align height row elements visually (Height + Unit + Lighted) === */
+.height-light-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+/* Ensure everything in the row has consistent height */
+.height-inline {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+    height: 85px; /* match light-card-small height */
+}
+
+/* Match switch height */
+.unit-switch {
+    height: 85px;
+    border-radius: 12px;
+}
+
+    .unit-switch label.switch-option {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+/* Match input height and padding */
+#heightInput {
+    height: 85px;
+    border-radius: 12px;
+    font-size: 1rem;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+
+/* Lighted box sizing to align visually */
+.light-card-small {
+    width: 110px;
+    height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+}
+
+/* --- Responsive fallback for smaller screens --- */
+@media (max-width: 768px) {
+    .height-light-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .light-card-small,
+    #heightInput,
+    .unit-switch {
+        height: 70px;
+    }
+}
 
 
