@@ -7,8 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Gruppe4NLA.Services;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -31,8 +29,6 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.
     
     MySqlOptions => MySqlOptions.EnableRetryOnFailure()
     ));
-
-
 
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = false)
@@ -60,7 +56,6 @@ builder.Services.ConfigureApplicationCookie(o =>
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-
 var app = builder.Build();
 
 // Create roles and demo users
@@ -69,7 +64,7 @@ using (var scope = app.Services.CreateScope())
     var sp = scope.ServiceProvider;
 
     //Run migrations on startup with a simple retry in case DB container is not ready yet
-    var logger = sp.GetRequiredService<ILogger<Program>>();
+    /*var logger = sp.GetRequiredService<ILogger<Program>>();
     var db = sp.GetRequiredService<AppDbContext>();
 
     const int maxAttempts = 10;
@@ -87,7 +82,7 @@ using (var scope = app.Services.CreateScope())
             logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s�", attempt, maxAttempts);
             await Task.Delay(TimeSpan.FromSeconds(2));
         }
-    }
+    }*/
 
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
@@ -141,6 +136,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+
+     
 }
 
 // Needed to load local leaflet map

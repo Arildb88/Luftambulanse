@@ -1,47 +1,99 @@
+@using Gruppe4NLA.Models
 @model IEnumerable<ReportModel>
-@* This view lists multiple Report objects in a table *@
+
 
 @{
-    ViewData["Title"] = "Reports"; 
-    @* Sets the page title *@
+    ViewData["Title"] = "Reports";
+    var currentFilter = (ViewData["Filter"] as string ?? "all").ToLowerInvariant(); // --- NEW (Draft feature) ---
 }
 
 <h2>Reports</h2>
 
-@* Link to create a new report *@
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Report</a>
-</p>
+<div class="row">
+    <div class="col-md-8">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Height (m)</th>
+                    <th>Type</th>
+                    <th>Date Sent</th>
+                    <th><!-- Actions --></th>
+                    <th><!-- Status --></th> @* --- NEW (Draft feature) --- *@
+                </tr>
+            </thead>
+            <tbody>
+               
+            @foreach (var r in Model)
+                {
+                    var typeText = (r.Type == ReportModel.DangerType.Other)
+                    ? (r.OtherDangerType ?? "Other")
+                    : (r.Type?.ToString() ?? "");
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Sender</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th>Height (Meters)</th>
-        <th>Danger Type</th>
-        <th>DateSent</th>
-    </tr>
-    </thead>
-    <tbody>
-    @* Loop through reports and show them as rows *@
-    @foreach (var r in Model)
-    {
-        var typeText = r.DangerType ?? "";
+                    <tr>
+                        <td>@r.SenderName</td>
+                        <td>@r.Latitude</td>
+                        <td>@r.Longitude</td>
+                        <td>@r.HeightInMeters</td>
+                        <td>@typeText</td>
+                        <td>@r.DateSent</td>
+                        <td class="text-end">
+                            @* --- NEW (Draft feature) START: Draft actions --- *@
+                            @if (r.Status == ReportStatus.Draft)
+                            {
+                                <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <form asp-action="Submit" asp-route-id="@r.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success">Submit</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-info">Details</a>
+                            }
+                            @* --- NEW (Draft feature) END --- *@
+                        </td>
+                        <td>
+                            @* --- NEW (Draft feature) START: Status badge --- *@
+                            @if (r.Status == ReportStatus.Draft)
+                            {
+                                <span class="badge text-bg-secondary">Draft</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-success">Submitted</span>
+                            }
+                            @* --- NEW (Draft feature) END --- *@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-        <tr>
-            <td>@r.SenderName</td>
-            <td>@r.Latitude</td>
-            <td>@r.Longitude</td>
-            <td>@r.HeightInMeters</td>
-            <td>@typeText</td>
-            <td>@r.DateSent</td>
-            <td>
-                @* Link to details page *@
-                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-info btn-sm">Details</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+    <div class="col-md-4">
+        @* --- NEW (Draft feature) START: Filter panel --- *@
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Filter</h5>
+                <form method="get" asp-action="Index">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" id="filterAll" value="all" @(currentFilter == "all" ? "checked" : null)>
+                        <label class="form-check-label" for="filterAll">All</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" id="filterSubmitted" value="submitted" @(currentFilter == "submitted" ? "checked" : null)>
+                        <label class="form-check-label" for="filterSubmitted">Submitted</label>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="radio" name="filter" id="filterDrafts" value="drafts" @(currentFilter == "drafts" ? "checked" : null)>
+                        <label class="form-check-label" for="filterDrafts">Drafts</label>
+                    </div>
+                    <button type="submit" class="btn btn-outline-primary w-100">Apply</button>
+                </form>
+            </div>
+        </div>
+        @* --- NEW (Draft feature) END --- *@
+    </div>
+</div>

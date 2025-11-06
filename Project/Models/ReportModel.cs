@@ -4,8 +4,20 @@ using System.Collections.Generic;
 namespace Gruppe4NLA.Models
 {
     // Holds all information the users send in as a report
+
+    public enum ReportStatus
+    {
+        Draft = 0,
+        Submitted = 1
+
+        // Further statuses can be added here
+    }
+
+
+
     public class ReportModel
     {
+
         public int Id { get; set; }
 
         public string? UserId { get; set; }
@@ -31,6 +43,9 @@ namespace Gruppe4NLA.Models
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")]
         public double? HeightInMeters { get; set; }
 
+        [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
+        public double? HeightInMeters { get; set; }
+        
         public bool AreLighted { get; set; } = false;
 
         // Coordinates are needed
@@ -68,6 +83,11 @@ namespace Gruppe4NLA.Models
             Construction = 2,
             Other = 99
         }
+
+        public ReportStatus Status { get; set; } = ReportStatus.Draft;
+
+        public DateTime? SubmittedAt { get; set; }
+
     }
 
     // Wrapper to hold new coordinate and submitted list
