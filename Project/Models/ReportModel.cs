@@ -30,7 +30,7 @@ namespace Gruppe4NLA.Models
         public string? DangerType { get; set; }
 
         // Enum-backed selection used in views/controllers via "Type"
-        public DangerTypeEnum Type { get; set; } = DangerTypeEnum.Cable;
+        public DangerTypeEnum? Type { get; set; }
 
         // Free-text when Type == Other
         public string? OtherDangerType { get; set; }
@@ -41,9 +41,6 @@ namespace Gruppe4NLA.Models
 
        
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")]
-        public double? HeightInMeters { get; set; }
-
-        [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
         public double? HeightInMeters { get; set; }
         
         public bool AreLighted { get; set; } = false;
@@ -70,7 +67,9 @@ namespace Gruppe4NLA.Models
         public DateTime? AssignedAtUtc { get; set; }
 
         //Workflow status
-        public ReportStatus Status { get; set; } = ReportStatus.Submitted;
+        public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Submitted;
+
+        public ReportStatus Status { get; set; } = ReportStatus.Draft;
 
         //Last update timestamp
         public DateTime? UpdatedAtUtc { get; set; }
@@ -84,7 +83,7 @@ namespace Gruppe4NLA.Models
             Other = 99
         }
 
-        public ReportStatus Status { get; set; } = ReportStatus.Draft;
+        //public ReportStatus Status { get; set; } = ReportStatus.Draft;
 
         public DateTime? SubmittedAt { get; set; }
 
@@ -98,7 +97,7 @@ namespace Gruppe4NLA.Models
     }
 
     //status for reports
-    public enum ReportStatus
+    public enum ReportStatusCase
     {
         Draft = 0,
         Submitted = 1,

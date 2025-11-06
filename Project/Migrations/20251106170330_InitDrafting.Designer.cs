@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251106114320_InitMig")]
-    partial class InitMig
+    [Migration("20251106170330_InitDrafting")]
+    partial class InitDrafting
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,39 @@ namespace Gruppe4NLA.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Gruppe4NLA.Models.ReportAssignmentLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FromUserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("PerformedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PerformedByUserId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportAssignmentLogs");
+                });
+
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
                 {
                     b.Property<int>("Id")
@@ -99,6 +132,18 @@ namespace Gruppe4NLA.Migrations
 
                     b.Property<bool>("AreLighted")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("AssignedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("AssignedByUserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AssignedToUserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DangerType")
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
@@ -119,8 +164,7 @@ namespace Gruppe4NLA.Migrations
                         .HasColumnType("double");
 
                     b.Property<string>("OtherDangerType")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("SenderName")
                         .IsRequired()
@@ -129,11 +173,17 @@ namespace Gruppe4NLA.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatusCase")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("SubmittedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");

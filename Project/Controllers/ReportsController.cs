@@ -70,7 +70,7 @@ namespace Gruppe4NLA.Controllers
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
             // Validate "Other"
-            if (model.NewReport.Type == ReportModel.DangerType.Other
+            if (model.NewReport.Type == ReportModel.DangerTypeEnum.Other
                 && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
             {
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
@@ -413,7 +413,7 @@ namespace Gruppe4NLA.Controllers
 
             var items = await _context.Reports
                 .Where(r => r.AssignedToUserId == me &&
-                            (r.Status == ReportStatus.Assigned || r.Status == ReportStatus.InReview))
+                            (r.StatusCase == ReportStatusCase.Assigned || r.StatusCase == ReportStatusCase.InReview))
                 .OrderBy(r => r.AssignedAtUtc)
                 .ToListAsync();
 

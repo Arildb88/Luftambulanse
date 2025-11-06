@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gruppe4NLA.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialMirgation : Migration
+    public partial class InitDrafting : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,7 +104,7 @@ namespace Gruppe4NLA.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DangerType = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Type = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: true),
                     OtherDangerType = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     DateSent = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -121,8 +121,10 @@ namespace Gruppe4NLA.Migrations
                     AssignedByUserId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AssignedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    StatusCase = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true)
+                    UpdatedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
+                    SubmittedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

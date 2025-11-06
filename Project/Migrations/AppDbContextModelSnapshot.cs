@@ -170,10 +170,13 @@ namespace Gruppe4NLA.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<int>("StatusCase")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("SubmittedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("Type")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAtUtc")

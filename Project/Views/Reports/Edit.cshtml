@@ -87,7 +87,7 @@
         <label class="form-label d-block">Obstacle Type</label>
 
         <div class="obstacle-grid">
-            @foreach (var type in Enum.GetValues(typeof(ReportModel.DangerType)).Cast<ReportModel.DangerType>())
+            @foreach (var type in Enum.GetValues(typeof(ReportModel.DangerTypeEnum)).Cast<ReportModel.DangerTypeEnum>())
             {
                 <div class="col">
                     <input type="radio"
@@ -108,7 +108,7 @@
 
     <!-- Other obstacle textbox -->
     <div id="otherTypeWrapper"
-         class="form-group @(Model.Type == ReportModel.DangerType.Other ? "" : "d-none")">
+         class="form-group @(Model.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
         <label asp-for="OtherDangerType">Obstacle Type</label>
         <input asp-for="OtherDangerType" class="form-control" />
         <span asp-validation-for="OtherDangerType" class="text-danger"></span>
@@ -118,7 +118,7 @@
 
     @* “Other” feltet – vises bare når Type = Other *@
     @{
-        var otherClass = Model.Type == ReportModel.DangerType.Other ? "" : "d-none";
+        var otherClass = Model.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none";
     }
     <div id="otherTypeWrapper" class="form-group @otherClass">
         <label asp-for="OtherDangerType">Obstacle Type</label>
