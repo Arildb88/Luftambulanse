@@ -97,9 +97,6 @@ namespace Gruppe4NLA.Migrations
                     b.Property<bool>("AreLighted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
@@ -109,7 +106,7 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("GeoJson")
                         .HasColumnType("longtext");
 
-                    b.Property<double?>("HeightInnMeters")
+                    b.Property<double?>("HeightInMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")

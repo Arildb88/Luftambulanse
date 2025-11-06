@@ -79,7 +79,7 @@ namespace Gruppe4NLA.Controllers
                 Type = model.NewReport.Type,
                 OtherDangerType = model.NewReport.OtherDangerType,
                 Details = model.NewReport.Details,
-                HeightInnMeters = model.NewReport.HeightInnMeters,
+                HeightInMeters = model.NewReport.HeightInMeters,
                 AreLighted = model.NewReport.AreLighted,
                 DateSent = DateTime.Now
             };
@@ -88,7 +88,6 @@ namespace Gruppe4NLA.Controllers
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 newReport.Status = ReportStatus.Submitted;
-                newReport.SubmittedAt = DateTime.UtcNow;
             }
             else
             {
@@ -251,13 +250,13 @@ namespace Gruppe4NLA.Controllers
             report.Type = updated.Type;
             report.OtherDangerType = updated.OtherDangerType;
             report.Details = updated.Details;
-            report.HeightInnMeters = updated.HeightInnMeters;
+            report.HeightInMeters = updated.HeightInMeters;
             report.AreLighted = updated.AreLighted;
 
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.Status = ReportStatus.Submitted;
-                report.SubmittedAt = DateTime.UtcNow;
+                
             }
             else
             {
@@ -287,7 +286,7 @@ namespace Gruppe4NLA.Controllers
             }
 
             report.Status = ReportStatus.Submitted;
-            report.SubmittedAt = DateTime.UtcNow;
+            
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Report submitted.";

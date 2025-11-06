@@ -39,7 +39,7 @@ namespace Gruppe4NLA.Models
         public string? GeoJson { get; set; }
 
         [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500" )]
-        public double? HeightInnMeters { get; set; }
+        public double? HeightInMeters { get; set; }
         
         public bool AreLighted { get; set; } = false;
 
@@ -63,7 +63,6 @@ namespace Gruppe4NLA.Models
 
         public ReportStatus Status { get; set; } = ReportStatus.Draft;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? SubmittedAt { get; set; }
 
 

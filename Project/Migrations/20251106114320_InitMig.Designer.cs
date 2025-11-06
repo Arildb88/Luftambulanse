@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251030090518_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20251106114320_InitMig")]
+    partial class InitMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,16 +100,16 @@ namespace Gruppe4NLA.Migrations
                     b.Property<bool>("AreLighted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("DangerType")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Details")
                         .HasColumnType("longtext");
 
-                    b.Property<double?>("HeightInnMeters")
+                    b.Property<string>("GeoJson")
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("HeightInMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")
@@ -118,9 +118,22 @@ namespace Gruppe4NLA.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("double");
 
+                    b.Property<string>("OtherDangerType")
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
                     b.Property<string>("SenderName")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SubmittedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");
