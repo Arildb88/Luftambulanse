@@ -63,6 +63,22 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Leaflet">Map</a>
                             </li>
+                            
+                            @* Add this in your navigation section *@
+                            @if (User.IsInRole("CaseworkerAdm"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Reports" asp-action="Inbox">📥 Reports Inbox</a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Caseworker"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Reports" asp-action="MyQueue">📋 My Queue</a>
+                                </li>
+                            }
+                            
 
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Reports" asp-action="Index">Reports</a>

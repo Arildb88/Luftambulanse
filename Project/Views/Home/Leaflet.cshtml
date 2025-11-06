@@ -32,10 +32,10 @@
         /* Centered coordinate readout (non-blocking) */
         .coordinate {
             position: absolute;
-            bottom: 10px;
+            bottom: 1px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255,255,255,0.9);
+            background: var(--base-color);
             padding: 6px 10px;
             border-radius: 6px;
             font: 12px/1 system-ui, sans-serif;
@@ -43,27 +43,7 @@
             pointer-events: none;
         }
 
-        /* Floating "Report Obstacle" button */
-        #obstacleBox {
-            position: absolute; /* relative to the #map container */
-            bottom: 20px; /* distance from bottom of map */
-            right: 20px; /* distance from right side of map */
-            background: #1976d2;
-            color: #fff;
-            font-weight: 600;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            z-index: 1100; /* above the map but below modals */
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            user-select: none;
-            transition: background 0.2s, transform 0.15s;
-        }
-
-            #obstacleBox:hover {
-                background: #1565c0;
-                transform: translateY(-2px);
-            }
+        
 
         /* Dialog look */
         dialog#reportDialog {
@@ -89,7 +69,7 @@
 <body>
     <div id="map">
         <div class="coordinate leaflet-control"></div>
-        <div id="obstacleBox" class="leaflet-control">Report Obstacle</div>
+        <div id="obstacleBox" class="leaflet-control">Report</div>
     </div>
 
     <!-- Downloaded version of Leaflet; wwwroot/lib/LeafletMap -->
@@ -138,10 +118,6 @@
             attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
         });
 
-        const googleStreets = L.tileLayer('https://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        });
-
         const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
             maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         });
@@ -151,6 +127,7 @@
             {},
             { collapsed: false }
         ).addTo(map);
+
 
         // ---------------- Marker placement ----------------
         let marker = null;
@@ -168,7 +145,8 @@
         // update button colors
         document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
             const btnMode = btn.dataset.mode;
-        btn.style.backgroundColor = (btnMode === currentMode) ? '#a3e635' : 'white';
+            btn.style.backgroundColor = (btnMode === currentMode) ? 'green' : 'var(--base-variant)';
+    
         });
 
         // reset state when leaving polyline mode
@@ -214,9 +192,9 @@
                 
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
                 btn.dataset.mode = 'polyline';
-                btn.style.backgroundColor = 'white';
+                btn.style.backgroundColor = 'var(--base-variant)';
                 btn.style.width = '100px';
                 btn.style.height = '100px';
                 btn.style.cursor = 'pointer';
@@ -241,12 +219,13 @@
                 `;
 
                 btn.dataset.mode = 'marker';
-                btn.style.backgroundColor = 'white';
+                btn.style.backgroundColor = 'var(--base-variant)';
                 btn.style.width = '100px';
                 btn.style.height = '100px';
                 btn.style.cursor = 'pointer';
                 btn.style.padding = '5px';
                 btn.title = 'Click to start/stop placing markers';
+                
 
                 L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
                           .on(btn, 'click', () => setMode('marker'));
@@ -382,17 +361,14 @@
             onAdd: function () {
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
                 btn.title = 'Find me';
-                btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue">
-                        <path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/>
-                    </svg>
-                `;
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="blue"><path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>';
 
                 btn.style.width = '100px';
                 btn.style.height = '100px';
                 btn.style.padding = '5px';
                 btn.style.cursor = 'pointer';
-                btn.style.background = 'white';
+                btn.style.backgroundColor = 'var(--base-variant)';
+                
 
                 L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
                           .on(btn, 'click', () => setFollowing(!following));
@@ -404,8 +380,8 @@
             setUi: function (isOn) {
                 if (!this._btn) return;
                 this._btn.title = isOn ? 'Following (click to pause)' : 'Find me';
-                this._btn.style.background = isOn ? '#1e88e5' : 'white';
-                this._btn.style.color = isOn ? '#fff' : '#000';
+                this._btn.style.background = isOn ? 'var(--base-color)' : 'var(--base-variant)';
+                this._btn.style.color = isOn ? 'var(--base-color)' : 'var(--base-variant)';
             }
         });
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);

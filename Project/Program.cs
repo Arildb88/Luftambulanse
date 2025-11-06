@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-
-
+using Gruppe4NLA.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +30,13 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.
     MySqlOptions => MySqlOptions.EnableRetryOnFailure()
     ));
 
-
-
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
+
+// Delegation business logic (used by CaseworkerAdmin to assign/unassign reports)
+builder.Services.AddScoped<IReportAssignmentService, ReportAssignmentService>();
 
 // Arild: Users need to login to use our application
 builder.Services.AddAuthorization(options =>
@@ -44,6 +44,9 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
+    
+    // Delegation policy: only users with the CaseworkerAdm role can assign/unassign reports
+    options.AddPolicy("CanAssignReports", p => p.RequireRole("CaseworkerAdm"));
 });
 
 // Optional: cookie paths so redirects go to Identity pages
@@ -53,7 +56,6 @@ builder.Services.ConfigureApplicationCookie(o =>
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-
 var app = builder.Build();
 
 // Create roles and demo users
@@ -62,10 +64,25 @@ using (var scope = app.Services.CreateScope())
     var sp = scope.ServiceProvider;
 
     //Run migrations on startup with a simple retry in case DB container is not ready yet
-    var logger = sp.GetRequiredService<ILogger<Program>>();
+    /*var logger = sp.GetRequiredService<ILogger<Program>>();
     var db = sp.GetRequiredService<AppDbContext>();
 
-   
+    const int maxAttempts = 10;
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();   // applies all pending migrations
+            logger.LogInformation("Database migrated successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            if (attempt == maxAttempts) throw;
+            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s�", attempt, maxAttempts);
+            await Task.Delay(TimeSpan.FromSeconds(2));
+        }
+    }*/
 
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
