@@ -19,7 +19,8 @@
 
 <br>
 <form asp-action="Create" method="post">
-    
+    @Html.AntiForgeryToken()
+
     @* Adding spacing and changing the style *@
     <style>
         .form-group {

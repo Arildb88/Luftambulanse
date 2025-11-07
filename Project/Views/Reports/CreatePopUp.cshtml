@@ -20,7 +20,8 @@
 @* Form that posts data to the Create action in ReportsController *@
 <br>
 <form asp-action="CreatePopUp" method="post">
-    
+    @Html.AntiForgeryToken()
+
     @* Adding spacing and changing the style *@
     <style>
         .form-group {

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gruppe4NLA.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     [Authorize(Roles = "Admin")]
     public class AdminUsersController : Controller
     {

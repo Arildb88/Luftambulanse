@@ -1,16 +1,20 @@
 using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.DataContext;
+using Gruppe4NLA.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Gruppe4NLA.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods)
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 // Arild: Allows access to login/register pages without being logged in
 builder.Services.AddRazorPages(options =>
