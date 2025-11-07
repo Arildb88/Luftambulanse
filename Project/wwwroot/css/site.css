@@ -177,6 +177,32 @@ body {
 
 
 /* --------------- Report Form --------------- */
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        width: 100px;
+        margin-right: 10px;
+        margin-left: 10px;
+        text-align: left;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        flex: 1;
+        padding: 5px;
+    }
+
+        .form-group input[type="checkbox"] {
+            flex: 0;
+            margin-left: 10px;
+            transform: scale(2.5);
+            cursor: pointer;
+        }
+
 .btnSubmit {
     background-color: #198754;
     border: none;
@@ -691,5 +717,32 @@ dialog::backdrop {
     width: 100%;
 }
 
+/*Submit and Draft button*/
+/* Whatever wraps the buttons (e.g., the dialog body or form) */
+/* remove the global absolute positioning on .btn ! */
+.report-form, .dialog-body, form {
+    position: static;
+}
 
+/* layout the row */
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
 
+    /* size each button */
+    .form-group .btn {
+        height: 60px;
+        min-width: 200px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    /*---------------------------------Submit and Draft button-------------------*/
