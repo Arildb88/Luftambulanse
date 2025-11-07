@@ -18,6 +18,7 @@ using Gruppe4NLA.ViewModels;
 namespace Gruppe4NLA.Controllers
 {
     // Added AutoValidateAntiforgeryToken globally to all controllers who needs it, beter than forgetting to add later
+    // You can still override per-controller or per-action if needed.
     [AutoValidateAntiforgeryToken]
     public class ReportsController : Controller
     {

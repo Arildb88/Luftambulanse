@@ -114,15 +114,19 @@ using (var scope = app.Services.CreateScope())
     }
 
     await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user
+    await EnsureUserInRole("admin1@test.com", "Test123!", "Admin");      // Admin user
     await EnsureUserInRole("admin2@test.com", "Test123!", "Admin");      // Admin user
 
     await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user
+    await EnsureUserInRole("caseworker1@test.com", "Test123!", "Caseworker"); // Caseworker user
     await EnsureUserInRole("caseworker2@test.com", "Test123!", "Caseworker"); // Caseworker user
 
     await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
+    await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
     await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
 
     await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot");      // Pilot user
+    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot");      // Pilot user
     await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot");      // Pilot user
     await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot");      // Pilot user
 
