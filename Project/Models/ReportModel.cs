@@ -31,6 +31,7 @@ namespace Gruppe4NLA.Models
         public string? DangerType { get; set; }
 
         // Enum-backed selection used in views/controllers via "Type"
+        [Required(ErrorMessage = "You need to select an ObstacleType")]
         public DangerTypeEnum? Type { get; set; }
 
         // Free-text when Type == Other
