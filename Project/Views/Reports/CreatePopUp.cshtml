@@ -68,14 +68,14 @@
     </div>
 
     @* Latitude input *@
-    <div class="form-group">
+    <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Latitude"></label>
         <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
     @* Longitude input *@
-    <div class="form-group">
+    <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Longitude"></label>
         <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
@@ -92,11 +92,47 @@
         <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
     </div>
 
-    @* HeightInnMeters input *@
-    <div class="form-group">
-        <label asp-for="NewReport.HeightInMeters">Height In Meters</label>
-        <input asp-for="NewReport.HeightInMeters" class="form-control" />
+    @* HeightInMeters input *@
+    <!-- Height + Lighted inline row -->
+    <div class="form-group height-light-row">
+        <label></label>
+
+
+        <div class="height-inline flex-grow-1">
+            <div class="unit-switch">
+                <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
+                       @(Model.NewReport.HeightUnit == "meters" ? "checked" : "")>
+                <label for="unitMeters" class="switch-option">Meters</label>
+
+                <input type="radio" id="unitFeet" name="NewReport.HeightUnit" value="feet"
+                       @(Model.NewReport.HeightUnit == "feet" ? "checked" : "")>
+                <label for="unitFeet" class="switch-option">Feet</label>
+            </div>
+
+            <input asp-for="NewReport.HeightInMeters"
+                   type="number"
+                   step="any"
+                   id="heightInput"
+                   class="form-control"
+                   placeholder="Height in meters"
+                   min="0"
+                   max="500" />
+        </div>
+
         <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
+        <!-- Lighted box -->
+        <div class="lighted-inline">
+            <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
+            <label class="obstacle-card light-card-small" for="lightSwitch" aria-label="Lighted">
+                <span class="obstacle-emoji" id="lightIcon">
+                    <!-- default: light off -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" fill="var(--text-color)">
+                        <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Zm0-480q-17 0-28.5-11.5T440-760v-80h80v80q0 17-11.5 28.5T480-720Z" />
+                    </svg>
+                </span>
+                <span class="light-text">Lighted</span>
+            </label>
+        </div>
     </div>
 
     <!-- Obstacle Type cards -->
@@ -171,11 +207,11 @@
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    @* AreLighted input *@ 
-    <div class="form-group">
+    @* AreLighted input KEEP for later, but replaced with switch above *@
+    @* <div class="form-group">
         <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
-    </div>
+    </div> *@
 
     @* Save and Cancel buttons *@
     <div class="btnRow">
@@ -188,6 +224,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+         // --- Show/Hide "Other" input-field---
         function updateOtherVisibility() {
           const wrap = document.getElementById('otherTypeWrapper');
           const isOther = document.getElementById('typeOther').checked;
@@ -197,6 +234,55 @@
           r.addEventListener('change', updateOtherVisibility)
         );
         updateOtherVisibility();
-   
+
+        // --- Resets and oppdates placeholder for height ---
+        const heightInput = document.getElementById('heightInput');
+        const unitMeters = document.getElementById('unitMeters');
+        const unitFeet = document.getElementById('unitFeet');
+
+        function resetInput() {
+            heightInput.value = ''; // Resets Field
+        }
+
+        function updateValidation() {
+            if (unitMeters.checked) {
+                heightInput.placeholder = "Height in meters";
+                heightInput.min = 0;
+                heightInput.max = 500; // 0-500 meters
+            } else {
+                heightInput.placeholder = "Height in feet";
+                heightInput.min = 0;
+                heightInput.max = 1640; // ~500 meters in feet
+            }
+        }
+
+        // Event listeners
+        unitMeters.addEventListener('change', () => { resetInput(); updateValidation(); });
+        unitFeet.addEventListener('change', () => { resetInput(); updateValidation(); });
+
+        // Initial setup
+        updateValidation();
+
+
+                // --- Lighted icon switch ---
+        const lightSwitch = document.getElementById('lightSwitch');
+        const lightIcon = document.getElementById('lightIcon');
+
+        function updateLightBulb() {
+            if (lightSwitch.checked) {
+                lightIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#ffeb3b">
+                    <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Z"/>
+                </svg>`;
+            } else {
+                lightIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="var(--text-color)">
+                    <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Z"/>
+                </svg>`;
+            }
+        }
+        lightSwitch.addEventListener('change', updateLightBulb);
+        updateLightBulb();
+
     </script>
 }

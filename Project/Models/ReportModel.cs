@@ -1,5 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gruppe4NLA.Models
 {
@@ -40,9 +41,12 @@ namespace Gruppe4NLA.Models
         public string? Details { get; set; }
 
        
-        [Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")]
+        //[Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")] KEEP, but maybe delete later -jonas
         public double? HeightInMeters { get; set; }
-        
+
+        [NotMapped] // Not stored in DB, only for view/model binding
+        public string HeightUnit { get; set; } = "meters"; // Either "meters" Or "feet"
+
         public bool AreLighted { get; set; } = false;
 
         // Coordinates are needed
