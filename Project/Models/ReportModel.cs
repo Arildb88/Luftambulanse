@@ -34,6 +34,7 @@ namespace Gruppe4NLA.Models
         public DangerTypeEnum? Type { get; set; }
 
         // Free-text when Type == Other
+        [Required(ErrorMessage = "You need to write ObstacleType")]
         public string? OtherDangerType { get; set; }
 
         public DateTime DateSent { get; set; }

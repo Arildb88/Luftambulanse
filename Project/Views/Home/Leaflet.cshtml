@@ -60,9 +60,7 @@
         dialog::backdrop {
             background: rgba(0,0,0,0.35);
         }
-
-        
-
+                
     </style>
 </head>
 
@@ -75,14 +73,7 @@
     <!-- Downloaded version of Leaflet; wwwroot/lib/LeafletMap -->
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
-
-
-    @* Old version; Gets online version of leaflet *@
-    @* <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script> *@
-
+     
     <!-- In-page modal that loads the Add Report page -->
     <dialog id="reportDialog">
         <div style="display:flex;flex-direction:column;height:100%;background:var(--base-variant);border-radius:10px;overflow:hidden">
@@ -134,6 +125,8 @@
         let latlngs = [];
         let polyline = null;
         let currentMode = null;
+        let redDot = [];
+        let redDotLayer = L.layerGroup().addTo(map);
 
         function setMode(mode) {
             if (currentMode === mode) {
@@ -143,20 +136,21 @@
             }   
 
         // update button colors
-        document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
-            const btnMode = btn.dataset.mode;
-            btn.style.backgroundColor = (btnMode === currentMode) ? 'green' : 'var(--base-variant)';
-    
-        });
+            document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
+                btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? '#a3e635' : 'white';
+              });
 
-        // reset state when leaving polyline mode
-            if (currentMode !== 'polyline') {
+            // leaving polyline mode → clear line + vertices
+              if (currentMode !== 'polyline') {
                 latlngs = [];
-            if (polyline) {
-                map.removeLayer(polyline);
-                polyline = null;
-            }
-        }
+                if (polyline) {
+                  map.removeLayer(polyline);
+                  polyline = null;
+                }
+                // clear all vertex dots in one go
+                redDotLayer.clearLayers();
+                redDot = [];
+              }
         // reset state when leaving marker mode
             if (currentMode !== 'marker') {
                 latlngs = [];
@@ -167,44 +161,75 @@
         }
     }
 
-        // --- Map click handling ---
-        map.on('click', (e) => {
+            // --- Map click handling ---
+         map.on('click', (e) => {
+            const { lat, lng } = e.latlng;
+
+            // get the css color, since its written in CSS
+            const polyColor = getComputedStyle(document.documentElement)
+            .getPropertyValue('--polyline-color')
+            .trim();
+
+            // shows your coordinate when you click the map
+            const el = document.querySelector('.coordinate');
+            if (el) el.textContent = `lat: ${lat.toFixed(6)}, lng: ${lng.toFixed(6)}`;
+
             if (currentMode === 'polyline') {
+              // create / extend the line
+              if (!polyline) {
+                latlngs = [e.latlng];
+                polyline = L.polyline(latlngs, { color: polyColor }).addTo(map);
+              } else {
                 latlngs.push(e.latlng);
-                if (polyline) polyline.setLatLngs(latlngs);
-                else polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
-                return;
+                polyline.setLatLngs(latlngs);
+              }
+
+             // addEventListener for red dot on every click
+              const dot = L.circleMarker(e.latlng, {
+                radius: 4,
+                   color: polyColor,
+                   fillColor:polyColor,
+                fillOpacity: 1,
+                weight: 0
+              }).addTo(redDotLayer);
+              dot.bringToFront();
+              redDot.push(dot);
+
+            } else if (currentMode === 'marker') {
+              if (!marker) {
+                marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+
+                // Updates the cordinate when marker is dragged
+                marker.on('drag', (event) => {
+                  const pos = event.target.getLatLng();
+                  const el = document.querySelector('.coordinate');
+                  if (el) el.textContent = `lat: ${pos.lat.toFixed(6)}, lng: ${pos.lng.toFixed(6)}`;
+                });
+              } else {
+                marker.setLatLng(e.latlng);
+              }
             }
+            });
 
-            if (currentMode === 'marker') {
-                if (marker) marker.setLatLng(e.latlng);
-                else marker = L.marker(e.latlng, { draggable: true }).addTo(map);
-            }
+                // --- Polyline button ---
+                const DrawPolylineControl = L.Control.extend({
+                    onAdd: function () {
 
-            const el = document.querySelector(".coordinate");
-            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
+                        const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
-        });
-
-        // --- Polyline button ---
-        const DrawPolylineControl = L.Control.extend({
-            onAdd: function () {
-                
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-
-                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
-                btn.dataset.mode = 'polyline';
-                btn.style.backgroundColor = 'var(--base-variant)';
-                btn.style.width = '100px';
-                btn.style.height = '100px';
-                btn.style.cursor = 'pointer';
-                btn.style.padding = '5px';
-                btn.title = 'Click to start/stop drawing a polyline';
-                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                          .on(btn, 'click', (e) => setMode('polyline'));
-                return btn;
-            }
-        });
+                        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="black"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
+                        btn.dataset.mode = 'polyline';
+                        btn.style.backgroundColor = 'white';
+                        btn.style.width = '100px';
+                        btn.style.height = '100px';
+                        btn.style.cursor = 'pointer';
+                        btn.style.padding = '5px';
+                        btn.title = 'Click to start/stop drawing a polyline';
+                        L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                                  .on(btn, 'click', (e) => setMode('polyline'));
+                        return btn;
+                    }
+                });
 
         // --- Marker button ---
 
@@ -213,7 +238,7 @@
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
                 btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="red">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#EA4335">
                         <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
                     </svg>
                 `;
@@ -238,37 +263,8 @@
         // Add the button to the map
         map.addControl(new DrawPolylineControl({ position: 'topleft' }));
         map.addControl(new DrawMarkerControl({ position: 'topleft' }));
-
-        /*// Optional: double-click anywhere to stop drawing mode
-        map.on('dblclick', () => {
-            drawing = false;
-            const btn = document.querySelector('.leaflet-control-custom');
-            if (btn) btn.style.backgroundColor = 'white';
-        });*/
-
-
-        /*// Event handling when a layer is drawn on the map
-        map.on(L.Draw.Event.CREATED, function (e) {
-                 layer = e.layer;
-
-             drawnItems.addLayer(layer);
-
-             // Get the GeoJSON representation of the drawn layer
-             var geoJsonData = layer.toGeoJSON();
-             var geoJsonString = JSON.stringify(geoJsonData);
-
-             // Set the GeoJSON string into the hidden input field in the form
-             document.getElementById('GeometryGeoJson').value = geoJsonString;
-             document.getElementById('CoordinatesPreview').value = geoJsonString;
-        });
-
-
-            // Update coordinate readout
-            const el = document.querySelector(".coordinate");
-            if (el) el.textContent = `lat: ${e.latlng.lat.toFixed(6)}, lng: ${e.latlng.lng.toFixed(6)}`;
-        });*/
-
-        // ---------------- Geolocation follow (optional) ----------------
+                
+        // ---------------- Geolocation follow ----------------
         let watchId = null;
         let following = false;
         let userMarker = null;
