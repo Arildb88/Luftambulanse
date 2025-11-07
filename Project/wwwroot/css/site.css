@@ -637,4 +637,59 @@ body {
     }
 }
 
+/* Center the dialog on screen (safe cross-browser) */
+dialog#reportDialog {
+    padding: 0;
+    border: none;
+    width: 70vw;
+    height: 80vh;
+    max-width: 900px;
+    max-height: 850px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+}
+
+dialog::backdrop {
+    background: rgba(0,0,0,.35);
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--base-variant);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Header: 3 columns → center ADD REPORT title perfectly */
+.dialog-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* left spacer | title | right (close) */
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+    .dialog-header .formTitle {
+        grid-column: 2; /* center column */
+        justify-self: center;
+        font-weight: 700;
+    }
+
+#reportClose {
+    grid-column: 3; /* right column */
+    justify-self: end;
+}
+
+/* Make the iframe fill the remaining space */
+#reportFrame {
+    flex: 1;
+    border: 0;
+    width: 100%;
+}
+
+
 
