@@ -10,6 +10,9 @@ namespace Gruppe4NLA.Services
         Task AssignAsync(int reportId, string toUserId, string performedByUserId, CancellationToken ct = default);
 
         // Remove assignment (returns report to unassigned state)
-        Task UnassignAsync(int reportId, string performedByUserId, CancellationToken ct = default);
+        Task UnassignAsync(int reportId, string performedByUserId, CancellationToken ct = default); 
+        
+        // Self assign cases for caseworker
+        Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default);
     }
 }

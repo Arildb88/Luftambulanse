@@ -76,5 +76,39 @@ namespace Gruppe4NLA.Services
 
             await _db.SaveChangesAsync(ct);
         }
-    }
+        
+        public async Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default)
+        {
+            var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
+                         ?? throw new KeyNotFoundException("Report not found");
+
+            // Check if report is already assigned
+            if (report.AssignedToUserId != null)
+            {
+                throw new InvalidOperationException("Report is already assigned to someone");
+            }
+
+            report.AssignedToUserId = userId;
+            report.AssignedByUserId = userId; // Self-assigned
+            report.AssignedAtUtc = DateTime.UtcNow;
+            report.StatusCase = ReportStatusCase.Assigned;
+            report.UpdatedAtUtc = DateTime.UtcNow;
+
+            if (_db.ReportAssignmentLogs != null)
+            {
+                _db.ReportAssignmentLogs.Add(new ReportAssignmentLog
+                {
+                    ReportId = reportId,
+                    FromUserId = null,
+                    ToUserId = userId,
+                    PerformedByUserId = userId,
+                    PerformedAtUtc = DateTime.UtcNow,
+                    Action = "Self-Assigned"
+                });
+            }
+
+            await _db.SaveChangesAsync(ct);
+        }
+        
+    } 
 }

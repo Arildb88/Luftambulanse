@@ -66,7 +66,7 @@ namespace Gruppe4NLA.Controllers
             return View(reports);
         }
 
-        // === CreatePopUp (POST) � save/submit from the map popup, stay on same view and show green message ===
+        // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
@@ -78,7 +78,7 @@ namespace Gruppe4NLA.Controllers
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
             }
 
-            // Konverter h�yde til meter hvis brukeren har valgt "feet"
+            // Konverter høyde til meter hvis brukeren har valgt "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
             {
                 // 1 foot = 0.3048 meter
@@ -325,7 +325,7 @@ namespace Gruppe4NLA.Controllers
         
         /// Admin inbox: list all reports with assignment/status info.
         /// Only CaseworkerAdm can open this page.
-        [Authorize(Roles = "CaseworkerAdm")]
+        [Authorize(Roles = "CaseworkerAdm,Caseworker")]
         public async Task<IActionResult> Inbox()
         {
             var data = await _context.Reports
@@ -337,7 +337,12 @@ namespace Gruppe4NLA.Controllers
                     DangerType = r.DangerType,
                     DateSent = r.DateSent,
                     Status = r.Status.ToString(),      // requires ReportStatus on your model
-                    AssignedTo = r.AssignedToUserId    // shows Id; can be mapped to username later
+                    AssignedTo = r.AssignedToUserId != null
+                        ? _context.Users
+                            .Where(u => u.Id == r.AssignedToUserId)
+                            .Select(u => u.Email ?? u.UserName ?? u.Id)
+                            .FirstOrDefault()
+                        : null
                 })
                 .ToListAsync();
 
@@ -416,9 +421,36 @@ namespace Gruppe4NLA.Controllers
             TempData["Ok"] = "Assignment removed.";
             return RedirectToAction(nameof(Inbox));
         }
+
+        /// Caseworker self-assigns an unassigned report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> SelfAssign(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.SelfAssignAsync(id, userId);
+                TempData["Ok"] = "Case successfully assigned to you!";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Inbox));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
         
         /// Caseworker's personal queue: what is assigned to me and in progress.
-        [Authorize(Roles = "Caseworker")]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
         public async Task<IActionResult> MyQueue()
         {
