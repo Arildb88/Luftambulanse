@@ -1,16 +1,20 @@
 using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.DataContext;
+using Gruppe4NLA.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Gruppe4NLA.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods)
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 // Arild: Allows access to login/register pages without being logged in
 builder.Services.AddRazorPages(options =>
@@ -114,15 +118,19 @@ using (var scope = app.Services.CreateScope())
     }
 
     await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user
+    await EnsureUserInRole("admin1@test.com", "Test123!", "Admin");      // Admin user
     await EnsureUserInRole("admin2@test.com", "Test123!", "Admin");      // Admin user
 
     await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user
+    await EnsureUserInRole("caseworker1@test.com", "Test123!", "Caseworker"); // Caseworker user
     await EnsureUserInRole("caseworker2@test.com", "Test123!", "Caseworker"); // Caseworker user
 
     await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
+    await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
     await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
 
     await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot");      // Pilot user
+    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot");      // Pilot user
     await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot");      // Pilot user
     await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot");      // Pilot user
 

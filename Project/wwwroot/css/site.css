@@ -1,21 +1,27 @@
 ﻿:root {
     --base-color: white;
     --base-variant: white;
+    --selected-color: #003261;
+    --unselected-color: white;
     --text-color: black;
     --secondary-text: grey;
     --primary-color: #333333;
     --accent-color: lightblue;
     --blueBtn-color: #0d6efd;
+    --polyline-color: #EA4335;
+    --marker-color: #EA4335;
 }
 
 .darkmode {
     --base-color: #080808;
     --base-variant: #1a1a1a;
-    --icon-color: #d3d6de;
+    --selected-color: #080808;
+    --unselected-color: #1a1a1a;
     --text-color: #edf3ff;
     --secondary-text: white;
     --primary-color: #333333;
     --accent-color: #5f6570;
+    --polyline-color: #EA4335;
 }
 .navbar {
     background-color: var(--base-variant); 
@@ -39,9 +45,6 @@
         color: var(--accent-color);
     }
 
-
-
-
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -61,7 +64,6 @@
     color: var(--text-color)
 }
 
-
 /* --------------------------------------------- Login box --- NEEDED???*/
 /*.login-container {
     background: var(--base-variant);
@@ -77,13 +79,11 @@
     justify-content: center;
     align-items: center;
 }*/
-
 /* --- Header --- */
 /*.login-container h2 {
     text-align: center;
     margin-bottom: 20px;
 }*/
-
 /* --- Input fields (username + password) --- */
 /*.login-container input {
     width: 100%;
@@ -94,7 +94,6 @@
     font-size: 14px;
     box-sizing: border-box;
 }*/
-
 /* --- Login button --- */
 /*.login-container button {
     width: 100%;
@@ -112,13 +111,11 @@
 .login-container button:hover {
         background: #0056b3;
     }*/
-
 /* ------------------------------------------------ */
-
 .btn:focus, .btn:active:focus, .btn-link
 
 :focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 /* --------------- Map --------------- */
@@ -184,6 +181,32 @@ body {
 
 
 /* --------------- Report Form --------------- */
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        width: 100px;
+        margin-right: 10px;
+        margin-left: 10px;
+        text-align: left;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        flex: 1;
+        padding: 5px;
+    }
+
+        .form-group input[type="checkbox"] {
+            flex: 0;
+            margin-left: 10px;
+            transform: scale(2.5);
+            cursor: pointer;
+        }
+
 .btnSubmit {
     background-color: #198754;
     border: none;
@@ -644,4 +667,86 @@ body {
     }
 }
 
+/* Center the dialog on screen (safe cross-browser) */
+dialog#reportDialog {
+    padding: 0;
+    border: none;
+    width: 70vw;
+    height: 80vh;
+    max-width: 900px;
+    max-height: 850px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+}
 
+dialog::backdrop {
+    background: rgba(0,0,0,.35);
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--base-variant);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Header: 3 columns → center ADD REPORT title perfectly */
+.dialog-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* left spacer | title | right (close) */
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+    .dialog-header .formTitle {
+        grid-column: 2; /* center column */
+        justify-self: center;
+        font-weight: 700;
+    }
+
+#reportClose {
+    grid-column: 3; /* right column */
+    justify-self: end;
+}
+
+/* Make the iframe fill the remaining space */
+#reportFrame {
+    flex: 1;
+    border: 0;
+    width: 100%;
+}
+
+/*Submit and Draft button*/
+/* Whatever wraps the buttons (e.g., the dialog body or form) */
+/* remove the global absolute positioning on .btn ! */
+.report-form, .dialog-body, form {
+    position: static;
+}
+
+/* layout the row */
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+    /* size each button */
+    .form-group .btn {
+        height: 60px;
+        min-width: 200px;
+        padding: 0 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    /*---------------------------------Submit and Draft button-------------------*/

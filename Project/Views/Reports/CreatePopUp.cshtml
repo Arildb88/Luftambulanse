@@ -11,7 +11,6 @@
     @* Sets the page title *@
 }
 
-<h2><br>Add a new Report</h2>
 @if (ViewBag.Message != null)
 {
     <p style="color:green">@ViewBag.Message</p>
@@ -20,39 +19,11 @@
 @* Form that posts data to the Create action in ReportsController *@
 <br>
 <form asp-action="CreatePopUp" method="post">
-    
-    @* Adding spacing and changing the style *@
-    <style>
-        .form-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            width: 100px;
-            margin-right: 10px;
-            margin-left: 10px;
-            text-align: left;
-        }
-
-        .form-group input,
-        .form-group textarea{
-            flex: 1; 
-            padding: 5px;
-        }
-
-        .form-group input[type="checkbox"] {
-            flex: 0;
-            margin-left: 10px;
-            transform: scale(2.5);
-            cursor: pointer;
-        }
-    </style>
+    @Html.AntiForgeryToken()
 
     @* Sender name input *@
     <div class="form-group">
-        <label asp-for="NewReport.SenderName">Sender</label>
+        <label asp-for="NewReport.SenderName">SENDER</label>
 
         <!-- Shows as text, but cannot be edited -->
         <input asp-for="NewReport.SenderName"
@@ -95,9 +66,7 @@
     @* HeightInMeters input *@
     <!-- Height + Lighted inline row -->
     <div class="form-group height-light-row">
-        <label></label>
-
-
+        
         <div class="height-inline flex-grow-1">
             <div class="unit-switch">
                 <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
@@ -137,7 +106,7 @@
 
     <!-- Obstacle Type cards -->
     <div class="mb-3">
-        <label class="form-label d-block">Obstacle Type</label>
+        <label class="form-label d-block">OBSTACLE TYPE</label>
 
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
@@ -196,27 +165,22 @@
     <!-- Other obstacle textbox -->
     <div id="otherTypeWrapper"
          class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
-        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
+        <label asp-for="NewReport.OtherDangerType">OBSTACLE TYPE</label>
         <input asp-for="NewReport.OtherDangerType" class="form-control" />
         <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
     </div>
 
     @* Extra details textarea *@
     <div class="form-group">
-        <label asp-for="NewReport.Details"></label>
+        <label asp-for="NewReport.Details">DETAILS</label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    @* AreLighted input KEEP for later, but replaced with switch above *@
-    @* <div class="form-group">
-        <label asp-for="NewReport.AreLighted">Lighted</label>
-        <input asp-for="NewReport.AreLighted" type="checkbox" />
-    </div> *@
-
+    
     @* Save and Cancel buttons *@
-    <div class="btnRow">
-  <button type="submit" name="action" value="save" class="btn btn-success">Save Draft</button>
-  <button type="submit" name="action" value="submit" class="btn btn-success">Submit</button>
+    <div class="form-group">
+  <button type="submit" name="action" value="save" class="btn btn-success">SAVE DRAFT</button>
+  <button type="submit" name="action" value="submit" class="btn btn-success">SUBMIT</button>
     </div>
 
 </form>
