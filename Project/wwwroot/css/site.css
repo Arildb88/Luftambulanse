@@ -1,18 +1,22 @@
 ﻿:root {
     --base-color: white;
     --base-variant: white;
+    --selected-color: #003261;
+    --unselected-color: white;
     --text-color: black;
     --secondary-text: grey;
     --primary-color: #333333;
     --accent-color: lightblue;
     --blueBtn-color: #0d6efd;
     --polyline-color: #EA4335;
+    --marker-color: #EA4335;
 }
 
 .darkmode {
     --base-color: #080808;
     --base-variant: #1a1a1a;
-    --icon-color: #d3d6de;
+    --selected-color: #080808;
+    --unselected-color: #1a1a1a;
     --text-color: #edf3ff;
     --secondary-text: white;
     --primary-color: #333333;

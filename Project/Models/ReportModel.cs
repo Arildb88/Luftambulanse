@@ -32,17 +32,16 @@ namespace Gruppe4NLA.Models
 
         // Enum-backed selection used in views/controllers via "Type"
         [Required(ErrorMessage = "You need to select an ObstacleType")]
-        public DangerTypeEnum? Type { get; set; }
+        public DangerTypeEnum? Type { get; set; } 
 
         // Free-text when Type == Other
-        [Required(ErrorMessage = "You need to write ObstacleType")]
+        [RequiredIfOtherType(ErrorMessage = "You need to write ObstacleType")]
         public string? OtherDangerType { get; set; }
 
         public DateTime DateSent { get; set; }
 
         public string? Details { get; set; }
 
-       
         //[Range(0, 500, ErrorMessage = "Height in meters must range between 0 and 500")] KEEP, but maybe delete later -jonas
         public double? HeightInMeters { get; set; }
 
@@ -93,6 +92,21 @@ namespace Gruppe4NLA.Models
 
         public DateTime? SubmittedAt { get; set; }
 
+    }
+
+    public class RequiredIfOtherTypeAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            var model = (ReportModel)validationContext.ObjectInstance;
+
+            if (model.Type == ReportModel.DangerTypeEnum.Other && string.IsNullOrWhiteSpace(model.OtherDangerType))
+            {
+                return new ValidationResult("Please specify the obstacle type.");
+            }
+
+            return ValidationResult.Success;
+        }
     }
 
     // Wrapper to hold new coordinate and submitted list
