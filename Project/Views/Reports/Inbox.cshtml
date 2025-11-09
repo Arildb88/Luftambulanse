@@ -46,7 +46,9 @@ else
                                                item.Status == "Assigned" ? "primary" : 
                                                item.Status == "InReview" ? "warning" : 
                                                item.Status == "Completed" ? "success" : "danger")">
-                            @item.Status
+                            @(item.Status == "Completed" ? "Approved" : 
+                              item.Status == "Rejected" ? "Rejected" : 
+                              item.Status)
                         </span>
                     </td>
                     <td>@(item.AssignedTo ?? "Unassigned")</td>

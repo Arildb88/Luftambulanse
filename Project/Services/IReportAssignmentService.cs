@@ -14,5 +14,11 @@ namespace Gruppe4NLA.Services
         
         // Self assign cases for caseworker
         Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default);
+        
+        // Approve cases
+        Task ApproveAsync(int reportId, string performedByUserId, CancellationToken ct = default);
+        
+        // Deny cases
+        Task RejectAsync(int reportId, string performedByUserId, CancellationToken ct = default);
     }
 }

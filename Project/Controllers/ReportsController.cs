@@ -449,6 +449,60 @@ namespace Gruppe4NLA.Controllers
             }
         }
         
+        // Caseworker approves a report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.ApproveAsync(id, userId);
+                TempData["Ok"] = "Report approved successfully";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // Caseworker rejects a report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> Reject(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.RejectAsync(id, userId);
+                TempData["Ok"] = "Report rejected";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         /// Caseworker's personal queue: what is assigned to me and in progress.
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
