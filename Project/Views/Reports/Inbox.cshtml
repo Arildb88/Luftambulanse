@@ -3,11 +3,16 @@
     ViewData["Title"] = "Reports Inbox";
 }
 
-<h2>Reports Inbox (Admin)</h2>
+<h2>Reports Inbox</h2>
 
 @if (TempData["Ok"] != null)
 {
     <div class="alert alert-success">@TempData["Ok"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
 @if (!Model.Any())
@@ -41,7 +46,9 @@ else
                                                item.Status == "Assigned" ? "primary" : 
                                                item.Status == "InReview" ? "warning" : 
                                                item.Status == "Completed" ? "success" : "danger")">
-                            @item.Status
+                            @(item.Status == "Completed" ? "Approved" : 
+                              item.Status == "Rejected" ? "Rejected" : 
+                              item.Status)
                         </span>
                     </td>
                     <td>@(item.AssignedTo ?? "Unassigned")</td>
@@ -50,19 +57,42 @@ else
                         
                         @if (string.IsNullOrEmpty(item.AssignedTo))
                         {
-                            <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Assign</a>
+                            @* Admin can assign to anyone *@
+                            @if (User.IsInRole("CaseworkerAdm"))
+                            {
+                                <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Assign</a>
+                            }
+                            
+                            @* Caseworker can self-assign *@
+                            @if (User.IsInRole("Caseworker"))
+                            {
+                                <form asp-action="SelfAssign" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Take This Case
+                                    </button>
+                                </form>
+                            }
                         }
                         else
                         {
-                            <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Reassign</a>
-                            
-                            <form asp-action="Unassign" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-danger" 
-                                        onclick="return confirm('Remove assignment?')">
-                                    Unassign
-                                </button>
-                            </form>
+                            @* Only admin can reassign or unassign *@
+                            @if (User.IsInRole("CaseworkerAdm"))
+                            {
+                                <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Reassign</a>
+                                
+                                <form asp-action="Unassign" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger" 
+                                            onclick="return confirm('Remove assignment?')">
+                                        Unassign
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Assigned</span>
+                            }
                         }
                     </td>
                 </tr>

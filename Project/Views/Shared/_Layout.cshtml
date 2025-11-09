@@ -7,8 +7,6 @@
 @using Gruppe4NLA.Areas.Identity.Data
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,19 +63,6 @@
                             </li>
                             
                             @* Add this in your navigation section *@
-                            @if (User.IsInRole("CaseworkerAdm"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Reports" asp-action="Inbox">📥 Reports Inbox</a>
-                                </li>
-                            }
-
-                            @if (User.IsInRole("Caseworker"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Reports" asp-action="MyQueue">📋 My Queue</a>
-                                </li>
-                            }
                             
 
                             <li class="nav-item">
@@ -106,6 +91,22 @@
                                 </li>
                             }
 
+                            @* Reports Inbox - Both Caseworkers and Admins *@
+                            @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Reports" asp-action="Inbox">Reports Inbox</a>
+                                </li>
+                            }
+
+                            @* My Queue - Both Caseworkers and Admins *@
+                            @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-route="MyQueueRoute">My Queue</a>
+                                </li>
+                            }
+                            
                             <li class="nav-item dropdown">
                                 @if (SignInManager.IsSignedIn(User))
                                 {

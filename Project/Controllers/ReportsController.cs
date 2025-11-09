@@ -25,18 +25,18 @@ namespace Gruppe4NLA.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        // NEW: delegation service (assign/unassign logic)
+       
         private readonly IReportAssignmentService _assigner;
 
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            IReportAssignmentService assigner // NEW
+            IReportAssignmentService assigner 
         )
         {
             _context = context;
             _userManager = userManager;
-            _assigner = assigner; // NEW
+            _assigner = assigner; 
         }
 
         public async Task<IActionResult> Index(string? filter)
@@ -67,7 +67,7 @@ namespace Gruppe4NLA.Controllers
             return View(reports);
         }
 
-        // === CreatePopUp (POST) � save/submit from the map popup, stay on same view and show green message ===
+        // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
@@ -79,7 +79,7 @@ namespace Gruppe4NLA.Controllers
                 ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
             }
 
-            // Konverter h�yde til meter hvis brukeren har valgt "feet"
+            // Konverter høyde til meter hvis brukeren har valgt "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
             {
                 // 1 foot = 0.3048 meter
@@ -206,12 +206,24 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
+        // Shows detailed information about a specific report
         public async Task<IActionResult> Details(int id)
         {
             var report = await _context.Reports.FindAsync(id);
             if (report == null)
             {
                 return NotFound();
+            }
+
+            // Load the assigned user's email if report is assigned
+            if (!string.IsNullOrEmpty(report.AssignedToUserId))
+            {
+                var assignedUser = await _userManager.FindByIdAsync(report.AssignedToUserId);
+                if (assignedUser != null)
+                {
+                    // Store the email in ViewBag to display in the view
+                    ViewBag.AssignedToEmail = assignedUser.Email ?? assignedUser.UserName ?? report.AssignedToUserId;
+                }
             }
 
             return View(report);
@@ -324,9 +336,8 @@ namespace Gruppe4NLA.Controllers
         // === /Draft feature ===
         
         
-        /// Admin inbox: list all reports with assignment/status info.
-        /// Only CaseworkerAdm can open this page.
-        [Authorize(Roles = "CaseworkerAdm")]
+        // Admin inbox: list all reports with assignment/status info
+        [Authorize(Roles = "CaseworkerAdm,Caseworker")]
         public async Task<IActionResult> Inbox()
         {
             var data = await _context.Reports
@@ -337,15 +348,20 @@ namespace Gruppe4NLA.Controllers
                     SenderName = r.SenderName,
                     DangerType = r.DangerType,
                     DateSent = r.DateSent,
-                    Status = r.Status.ToString(),      // requires ReportStatus on your model
-                    AssignedTo = r.AssignedToUserId    // shows Id; can be mapped to username later
+                    Status = r.Status.ToString(),
+                    AssignedTo = r.AssignedToUserId != null
+                        ? _context.Users
+                            .Where(u => u.Id == r.AssignedToUserId)
+                            .Select(u => u.Email ?? u.UserName ?? u.Id)
+                            .FirstOrDefault()
+                        : null
                 })
                 .ToListAsync();
 
             return View(data);
         }
         
-        /// Show assignment dialog to choose a Caseworker.
+        // Show assignment dialog to choose a Caseworker
         [Authorize(Roles = "CaseworkerAdm")]
         public async Task<IActionResult> Assign(int id)
         {
@@ -376,7 +392,7 @@ namespace Gruppe4NLA.Controllers
             return View(vm);
         }
         
-        /// Perform the assignment 
+        // Perform the assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -399,14 +415,14 @@ namespace Gruppe4NLA.Controllers
                 return View(vm);
             }
 
-            var me = _userManager.GetUserId(User)!; // admin performing the assignment
+            var me = _userManager.GetUserId(User)!;
             await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!, me);
 
             TempData["Ok"] = "Report assigned.";
             return RedirectToAction(nameof(Inbox));
         }
         
-        /// Remove assignment 
+        // Remove assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -417,9 +433,91 @@ namespace Gruppe4NLA.Controllers
             TempData["Ok"] = "Assignment removed.";
             return RedirectToAction(nameof(Inbox));
         }
+
+        // Caseworker self-assigns an unassigned report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> SelfAssign(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.SelfAssignAsync(id, userId);
+                TempData["Ok"] = "Case successfully assigned to you!";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Inbox));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
         
-        /// Caseworker's personal queue: what is assigned to me and in progress.
-        [Authorize(Roles = "Caseworker")]
+        // Caseworker approves a report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.ApproveAsync(id, userId);
+                TempData["Ok"] = "Report approved successfully";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // Caseworker rejects a report
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        public async Task<IActionResult> Reject(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                if (userId == null)
+                    return Unauthorized();
+
+                await _assigner.RejectAsync(id, userId);
+                TempData["Ok"] = "Report rejected";
+                return RedirectToAction(nameof(MyQueue));
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Details), new { id });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // Caseworker's personal queue: what is assigned to me and in progress
+        [Authorize(Roles = "Caseworker,CaseworkerAdm")]
+        [HttpGet("/MyQueue", Name = "MyQueueRoute")]
         public async Task<IActionResult> MyQueue()
         {
             var me = _userManager.GetUserId(User)!;
@@ -434,8 +532,7 @@ namespace Gruppe4NLA.Controllers
         }
     }
     
-    // NEW: ViewModels (lightweight)
-    // Place them here or in a separate file if you prefer.
+    
     public class AssignReportVM
     {
         [Required] public int ReportId { get; set; }

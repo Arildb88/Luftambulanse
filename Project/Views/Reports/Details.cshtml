@@ -1,171 +1,117 @@
-@using Gruppe4NLA.Models
-@model ReportModel
-@* This view displays details of a single Report object *@
+@model Gruppe4NLA.Models.ReportModel
 
 @{
-    @* Sets the page title *@
-    ViewData["Title"] = "Report Details";
-     
-     var typeText = Model.Type == ReportModel.DangerTypeEnum.Other
-        ? (Model.OtherDangerType ?? "Other")
-        : (Model.Type.ToString() ?? "–");
-   
+ViewData["Title"] = "Report Details";
 }
 
 <h2>Report Details</h2>
 
-<div class="fullPage">
-    @* Display sender name *@
-    <p><strong>Sender:</strong> @Model.SenderName</p>
-
-    @* Display latitude *@
-    <p><strong>Latitude:</strong> @Model.Latitude</p>
-
-    @* Display longitude *@
-    <p><strong>Longitude:</strong> @Model.Longitude</p>
-
-    @* Display Height Inn Meters *@
-    <p><strong>Height (Meters):</strong> @Model.HeightInMeters</p>
-
-    @* Display ObstacleType and if "Other" show that*@
-    <p><strong>Obstacle Type:</strong> @typeText</p>
-
-    @* Display extra details *@
-    <p><strong>Details:</strong> @Model.Details</p>
-
-    @* Display Are lighted (Boolean) *@
-    <p><strong>Lights:</strong> @Model.AreLighted</p>
-
-    @* Display date *@
-    <p><strong>Date sent:</strong> @Model.DateSent</p>
-</div>
-
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="map.css">
-
-<!-- Styling the map -->
-<div id="mapModal" style="
-            display:none;
-            position:absolute;
-            top:50%;
-            left:50%;
-            transform:translate(-50%, -50%);
-            width:70%;
-            height:80%;
-            background:DarkGreen;
-            border:4px solid black;
-            padding:10px;
-            z-index:1000;
-        ">
-    <div id="map" style="width:100%; height:90%;"></div>
-    
-    <div id="buttonsGroup" style="display: flex; justify-content: center; gap: 10px; padding-top: 10px;">
-            <button id="btnCloseMap" class="btnBack">Close</button>
-            <button id="btnMoveModal" class="btnSimple" type="button">Move Map</button>
-    </div>
-
-</div>
-
-<!-- Button to show coords -->
-<button id="btnShowCoords" class="btnSimple" type="button">Show coordinates on map</button>
-
-<!-- Script to make map -->
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    
-    <!-- Import map through link (should be downloaded later) -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-    <script>
-    
-            var map, obstacleMarker, osm;
-            let isDraggable = false;
-
-            // "modal" gets "mapModal"
-            const modal = document.getElementById("mapModal");
-            
-            // Show map when button is clicked
-            document.getElementById("btnShowCoords").onclick = function() {
-                document.getElementById("mapModal").style.display = "block";
-
-            // Set view and zoom
-        if (!map) {
-                map = L.map('map', { minZoom: 4 }).setView([@Model.Latitude, @Model.Longitude], 13);
-            
-            // Makes marker with dangertype
-            obstacleMarker = L.marker([@Model.Latitude, @Model.Longitude], { draggable: false })
-            .bindPopup("@typeText").addTo(map);
-                
-            osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
-
-            L.control.layers(
-                { 'OSM': osm },
-                { 'Marker': obstacleMarker },
-                { collapsed: false }
-            ).addTo(map);
-
-        } else {
-            
-                map.invalidateSize();
-        }
-
-    };
-
-            document.getElementById("btnCloseMap").onclick = function() {
-                document.getElementById("mapModal").style.display = "none";
-            };
-
-            document.getElementById("btnMoveModal").onclick = function () {
-                isDraggable = !isDraggable;
-                this.textContent = isDraggable ? "Lock Map" : "Move Map";
-            };
-
-            // Makes a draggable element
-
-            dragElement(modal);
-
-            function dragElement(elmnt) {
-                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-
-                elmnt.onmousedown = dragMouseDown;
-
-                // Activates if the mouse button is pushed down
-                function dragMouseDown(e) {
-                    if (!isDraggable) return;
-                    e.preventDefault();
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    document.onmousemove = elementDrag;
-
-                }
-
-                // Lets the user move the element
-                function elementDrag(e) {
-                    e.preventDefault();
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-
-                    if (map) map.invalidateSize();
-                }
-
-                // Clears the moving when mouse is up or not moving
-                function closeDragElement() {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
-        }
-
-    </script>  
-
+@if (TempData["Ok"] != null)
+{
+<div class="alert alert-success">@TempData["Ok"]</div>
 }
-@* Back to list link *@
-<a asp-action="Index" class="btnBack">Back to Reports</a>
+
+@if (TempData["Error"] != null)
+{
+<div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Report ID</dt>
+            <dd class="col-sm-9">@Model.Id</dd>
+
+            <dt class="col-sm-3">Sender</dt>
+            <dd class="col-sm-9">@Model.SenderName</dd>
+
+            <dt class="col-sm-3">Type</dt>
+            <dd class="col-sm-9">@Model.DangerType</dd>
+
+            @if (Model.Type == Gruppe4NLA.Models.ReportModel.DangerTypeEnum.Other && !string.IsNullOrEmpty(Model.OtherDangerType))
+            {
+            <dt class="col-sm-3">Other Type Description</dt>
+            <dd class="col-sm-9">@Model.OtherDangerType</dd>
+            }
+
+            <dt class="col-sm-3">Details</dt>
+            <dd class="col-sm-9">@(Model.Details ?? "N/A")</dd>
+
+            <dt class="col-sm-3">Height</dt>
+            <dd class="col-sm-9">@(Model.HeightInMeters?.ToString("F2") ?? "N/A") meters</dd>
+
+            <dt class="col-sm-3">Lighted</dt>
+            <dd class="col-sm-9">@(Model.AreLighted ? "Yes" : "No")</dd>
+
+            <dt class="col-sm-3">Coordinates</dt>
+            <dd class="col-sm-9">
+                Lat: @Model.Latitude?.ToString("F6"), Lng: @Model.Longitude?.ToString("F6")
+            </dd>
+
+            <dt class="col-sm-3">Date Sent</dt>
+            <dd class="col-sm-9">@Model.DateSent.ToString("yyyy-MM-dd HH:mm")</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">
+                <span class="badge bg-@(Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
+                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                    @Model.StatusCase
+                </span>
+            </dd>
+
+            @if (!string.IsNullOrEmpty(Model.AssignedToUserId))
+            {
+                <dt class="col-sm-3">Assigned To</dt>
+                <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
+            }
+
+        @* Show approve/reject buttons for assigned caseworker only *@
+        @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
+        Model.AssignedToUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value &&
+        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Completed &&
+        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Rejected)
+        {
+        <hr />
+        <div class="mt-3">
+            <h5>Review Actions</h5>
+
+            <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
+                    Approve Report
+                </button>
+            </form>
+
+            <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
+                    Reject Report
+                </button>
+            </form>
+        </div>
+        }
+
+        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
+        {
+        <div class="alert alert-success mt-3">
+            This report has been approved.
+        </div>
+        }
+        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
+        {
+        <div class="alert alert-danger mt-3">
+            This report has been rejected.
+        </div>
+        }
+    </div>
+</div>
+
+<div class="mt-3">
+    @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
+    {
+    <a asp-action="MyQueue" class="btn btn-secondary">Back to My Queue</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back to Reports</a>
+</div>
