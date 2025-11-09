@@ -205,12 +205,24 @@ namespace Gruppe4NLA.Controllers
             return View(model);
         }
 
+        // Shows detailed information about a specific report
         public async Task<IActionResult> Details(int id)
         {
             var report = await _context.Reports.FindAsync(id);
             if (report == null)
             {
                 return NotFound();
+            }
+
+            // Load the assigned user's email if report is assigned
+            if (!string.IsNullOrEmpty(report.AssignedToUserId))
+            {
+                var assignedUser = await _userManager.FindByIdAsync(report.AssignedToUserId);
+                if (assignedUser != null)
+                {
+                    // Store the email in ViewBag to display in the view
+                    ViewBag.AssignedToEmail = assignedUser.Email ?? assignedUser.UserName ?? report.AssignedToUserId;
+                }
             }
 
             return View(report);
@@ -323,8 +335,7 @@ namespace Gruppe4NLA.Controllers
         // === /Draft feature ===
         
         
-        /// Admin inbox: list all reports with assignment/status info.
-        /// Only CaseworkerAdm can open this page.
+        // Admin inbox: list all reports with assignment/status info
         [Authorize(Roles = "CaseworkerAdm,Caseworker")]
         public async Task<IActionResult> Inbox()
         {
@@ -336,7 +347,7 @@ namespace Gruppe4NLA.Controllers
                     SenderName = r.SenderName,
                     DangerType = r.DangerType,
                     DateSent = r.DateSent,
-                    Status = r.Status.ToString(),      // requires ReportStatus on your model
+                    Status = r.Status.ToString(),
                     AssignedTo = r.AssignedToUserId != null
                         ? _context.Users
                             .Where(u => u.Id == r.AssignedToUserId)
@@ -349,7 +360,7 @@ namespace Gruppe4NLA.Controllers
             return View(data);
         }
         
-        /// Show assignment dialog to choose a Caseworker.
+        // Show assignment dialog to choose a Caseworker
         [Authorize(Roles = "CaseworkerAdm")]
         public async Task<IActionResult> Assign(int id)
         {
@@ -380,7 +391,7 @@ namespace Gruppe4NLA.Controllers
             return View(vm);
         }
         
-        /// Perform the assignment 
+        // Perform the assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -403,14 +414,14 @@ namespace Gruppe4NLA.Controllers
                 return View(vm);
             }
 
-            var me = _userManager.GetUserId(User)!; // admin performing the assignment
+            var me = _userManager.GetUserId(User)!;
             await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!, me);
 
             TempData["Ok"] = "Report assigned.";
             return RedirectToAction(nameof(Inbox));
         }
         
-        /// Remove assignment 
+        // Remove assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -422,7 +433,7 @@ namespace Gruppe4NLA.Controllers
             return RedirectToAction(nameof(Inbox));
         }
 
-        /// Caseworker self-assigns an unassigned report
+        // Caseworker self-assigns an unassigned report
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
@@ -503,7 +514,7 @@ namespace Gruppe4NLA.Controllers
             }
         }
 
-        /// Caseworker's personal queue: what is assigned to me and in progress.
+        // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
         public async Task<IActionResult> MyQueue()
@@ -521,7 +532,6 @@ namespace Gruppe4NLA.Controllers
     }
     
     
-    // Place them here or in a separate file if you prefer.
     public class AssignReportVM
     {
         [Required] public int ReportId { get; set; }

@@ -63,10 +63,9 @@ ViewData["Title"] = "Report Details";
 
             @if (!string.IsNullOrEmpty(Model.AssignedToUserId))
             {
-            <dt class="col-sm-3">Assigned To</dt>
-            <dd class="col-sm-9">@Model.AssignedToUserId</dd>
+                <dt class="col-sm-3">Assigned To</dt>
+                <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
             }
-        </dl>
 
         @* Show approve/reject buttons for assigned caseworker only *@
         @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
