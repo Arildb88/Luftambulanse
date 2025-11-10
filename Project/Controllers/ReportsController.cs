@@ -339,7 +339,7 @@ namespace Gruppe4NLA.Controllers
                 {
                     Id = r.Id,
                     SenderName = r.SenderName,
-                    DangerType = r.DangerType,
+                    Type = r.Type.ToString(),
                     DateSent = r.DateSent,
                     Status = r.Status.ToString(),
                     AssignedTo = r.AssignedToUserId != null
@@ -541,7 +541,7 @@ namespace Gruppe4NLA.Controllers
     {
         public int Id { get; set; }
         public string? SenderName { get; set; }
-        public string? DangerType { get; set; }
+        public string? Type { get; set; }
         public DateTime DateSent { get; set; }
         public string Status { get; set; } = "";
         public string? AssignedTo { get; set; }

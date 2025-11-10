@@ -31,7 +31,7 @@ else
                 <tr>
                     <td>@report.Id</td>
                     <td>@report.SenderName</td>
-                    <td>@report.Type</td>
+                    <td>@report.Type.ToString()</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
                     <td>

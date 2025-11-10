@@ -1,7 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
+﻿#nullable disable
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc.Rendering; // <— NEW
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Gruppe4NLA.Areas.Identity.Pages.Account
 {
@@ -47,105 +44,113 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
             _emailSender = emailSender;
         }
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [BindProperty] public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        // === NEW: roles available to choose at self-registration (used by asp-items) ===
+        // Drop-down data
         public IEnumerable<SelectListItem> RegisterableRoles { get; private set; } = Array.Empty<SelectListItem>();
+        public IEnumerable<SelectListItem> AvailableOrganizations { get; private set; } = Array.Empty<SelectListItem>();
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required, EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [Required, StringLength(100, ErrorMessage = "Password must be between {2} and {1} characters.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Compare("Password", ErrorMessage = "Passwords do not match.")]
             public string ConfirmPassword { get; set; }
 
-            // === NEW: the role picked in the dropdown (optional if you want Unassigned fallback) ===
-            // Add [Required] if you want to force a choice.
+            [Required]
             [Display(Name = "Role")]
             public string SelectedRole { get; set; }
+
+            [Display(Name = "Organization (for pilots)")]
+            public string SelectedOrganization { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            RegisterableRoles = GetRegisterableRoles(); // NEW
+            RegisterableRoles = GetRegisterableRoles();
+            AvailableOrganizations = GetAvailableOrganizations();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            RegisterableRoles = GetRegisterableRoles(); // NEW
+            RegisterableRoles = GetRegisterableRoles();
+            AvailableOrganizations = GetAvailableOrganizations();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return Page();
+
+            // Require organization if role is Pilot
+            if (Input.SelectedRole == "Pilot" && string.IsNullOrWhiteSpace(Input.SelectedOrganization))
             {
-                var user = CreateUser();
+                ModelState.AddModelError("Input.SelectedOrganization", "Please select an organization for pilots.");
+                return Page();
+            }
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+            var user = CreateUser();
 
-                if (result.Succeeded)
+            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+            // Add organization only if Pilot
+            if (Input.SelectedRole == "Pilot")
+                user.Organization = Input.SelectedOrganization;
+
+            var result = await _userManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                // Safe server-side role assignment
+                var allowedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                { "Pilot", "Caseworker" };
+
+                if (allowedRoles.Contains(Input.SelectedRole))
+                    await _userManager.AddToRoleAsync(user, Input.SelectedRole);
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    // ===== NEW: safe server-side role assignment =====
-                    var allowedAtSignup = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                    { "Pilot", "Caseworker" };
-
-                    var roleToGive = allowedAtSignup.Contains(Input.SelectedRole ?? string.Empty)
-                        ? Input.SelectedRole
-                        : "(no role)"; // fallback if empty or tampered
-
-                    await _userManager.AddToRoleAsync(user, roleToGive);
-                    // =================================================
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+
             return Page();
         }
 
@@ -157,13 +162,11 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'.");
             }
         }
 
-        // Select between the role Pilot or Caseworker
+        // Roles shown in dropdown
         private static IEnumerable<SelectListItem> GetRegisterableRoles() =>
             new[]
             {
@@ -171,12 +174,20 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
                 new SelectListItem("Caseworker", "Caseworker")
             };
 
+        // Organizations shown for pilots
+        private static IEnumerable<SelectListItem> GetAvailableOrganizations() =>
+            new[]
+            {
+                new SelectListItem("NLA Reg Sør", "AvdSør"),
+                new SelectListItem("NLA Reg SørØst", "AvdSørØst"),
+                new SelectListItem("NLA Reg Nord", "AvdNord"),
+                new SelectListItem("NLA Reg Vest", "AvdVest")
+            };
+
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
-            {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
             return (IUserEmailStore<ApplicationUser>)_userStore;
         }
     }

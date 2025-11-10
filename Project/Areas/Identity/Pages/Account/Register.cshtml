@@ -21,10 +21,24 @@
 
                 <div class="mb-3">
                     <label asp-for="Input.SelectedRole" class="form-label"></label>
-                    <select asp-for="Input.SelectedRole" asp-items="Model.RegisterableRoles" class="form-select">
+                    <select asp-for="Input.SelectedRole"
+                            asp-items="Model.RegisterableRoles"
+                            class="form-select"
+                            id="roleSelect">
                         <option value="">-- choose role --</option>
                     </select>
                     <span asp-validation-for="Input.SelectedRole" class="text-danger"></span>
+                </div>
+
+                <!-- Organization (only visible for pilots) -->
+                <div class="mb-3" id="orgSelectWrapper" style="display:none;">
+                    <label asp-for="Input.SelectedOrganization" class="form-label"></label>
+                    <select asp-for="Input.SelectedOrganization"
+                            asp-items="Model.AvailableOrganizations"
+                            class="form-select">
+                        <option value="">-- choose organization --</option>
+                    </select>
+                    <span asp-validation-for="Input.SelectedOrganization" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
@@ -51,4 +65,15 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        const roleSelect = document.getElementById('roleSelect');
+        const orgSelectWrapper = document.getElementById('orgSelectWrapper');
+
+        function toggleOrgDropdown() {
+            orgSelectWrapper.style.display = roleSelect.value === 'Pilot' ? 'block' : 'none';
+        }
+
+        roleSelect.addEventListener('change', toggleOrgDropdown);
+        toggleOrgDropdown();
+    </script>
 }

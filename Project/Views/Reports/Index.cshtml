@@ -59,7 +59,7 @@ else
                     <td>@report.Latitude?.ToString("F6")</td>
                     <td>@report.Longitude?.ToString("F6")</td>
                     <td>@report.HeightInMeters?.ToString("F2")</td>
-                    <td>@report.Type</td>
+                    <td>@report.Type.ToString()</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
                         <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
