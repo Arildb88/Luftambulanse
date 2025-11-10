@@ -3,65 +3,54 @@
 @{
     ViewData["Title"] = "Reports";
     var filter = ViewData["Filter"]?.ToString() ?? "all";
-    var sortOrder = ViewData["SortOrder"]?.ToString() ?? "recent"; // "recent" eller "oldest"
+    var sortOrder = ViewData["SortOrder"]?.ToString() ?? "date_desc";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Reports</h2>
 
-    <div class="d-flex align-items-center gap-2">
-        <!-- Eksisterende status-filter (All / Submitted / Drafts) -->
-        <div class="btn-group me-2" role="group">
-            <a asp-action="Index"
-               asp-route-filter="all"
-               asp-route-sortOrder="@sortOrder"
-               class="btn @(filter == "all" ? "btn-primary" : "btn-outline-primary")">
-                All Reports
-            </a>
-            <a asp-action="Index"
-               asp-route-filter="submitted"
-               asp-route-sortOrder="@sortOrder"
-               class="btn @(filter == "submitted" ? "btn-primary" : "btn-outline-primary")">
-                Submitted
-            </a>
-            <a asp-action="Index"
-               asp-route-filter="drafts"
-               asp-route-sortOrder="@sortOrder"
-               class="btn @(filter == "drafts" ? "btn-primary" : "btn-outline-primary")">
-                Drafts
-            </a>
-        </div>
-
-        <!-- NY: sorterings-knapp oppe til høyre -->
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle"
-                    type="button"
-                    id="sortDropdown"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                Sortér: @(sortOrder == "oldest" ? "Eldst først" : "Nyest først")
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-filter="@filter"
-                       asp-route-sortOrder="recent">
-                        Nyest først
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-action="Index"
-                       asp-route-filter="@filter"
-                       asp-route-sortOrder="oldest">
-                        Eldst først
-                    </a>
-                </li>
-            </ul>
-        </div>
+    <div class="btn-group" role="group">
+        <a asp-action="Index"
+           asp-route-filter="all"
+           asp-route-sortOrder="@sortOrder"
+           class="btn @(filter == "all" ? "btn-primary" : "btn-outline-primary")">
+            All
+        </a>
+        <a asp-action="Index"
+           asp-route-filter="submitted"
+           asp-route-sortOrder="@sortOrder"
+           class="btn @(filter == "submitted" ? "btn-primary" : "btn-outline-primary")">
+            Submitted
+        </a>
+        <a asp-action="Index"
+           asp-route-filter="drafts"
+           asp-route-sortOrder="@sortOrder"
+           class="btn @(filter == "drafts" ? "btn-primary" : "btn-outline-primary")">
+            Drafts
+        </a>
     </div>
 </div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
 
 @if (TempData["Message"] != null)
 {
@@ -81,17 +70,53 @@ else
 {
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>Sender</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Height (m)</th>
-            <th>Type</th>
-            <th>Date Sent</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+            <tr>
+                <th>Sender</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Height (m)</th>
+
+                <!-- Klikkbar Type-kolonne -->
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-sortOrder="@(sortOrder == "type_asc" ? "type_desc" : "type_asc")"
+                       class="text-decoration-none text-dark">
+                        Type
+                        @if (sortOrder == "type_asc")
+                        {
+                            <span>?</span>
+                        }
+                        else if (sortOrder == "type_desc")
+                        {
+                            <span>?</span>
+                        }
+                    </a>
+                </th>
+
+                <!-- Klikkbar Date Sent-kolonne -->
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-sortOrder="@(sortOrder == "date_desc" ? "date_asc" : "date_desc")"
+                       class="text-decoration-none text-dark">
+                        Date Sent
+                        @if (sortOrder == "date_asc")
+                        {
+                            <span>?</span>
+                        }
+                        else if (sortOrder == "date_desc")
+                        {
+                            <span>?</span>
+                        }
+                    </a>
+                </th>
+
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
+
         <tbody>
         @foreach (var report in Model)
         {

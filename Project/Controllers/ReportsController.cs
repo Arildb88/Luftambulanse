@@ -50,12 +50,11 @@ namespace Gruppe4NLA.Controllers
                 var me = await _userManager.GetUserAsync(User);
                 var email = me?.Email;
 
-                // Either same Identity UserId, or legacy rows matched by email
                 q = q.Where(r => r.UserId == myId
                               || (r.UserId == null && r.SenderName == email));
             }
 
-            // Eksisterende status-filter (all / submitted / drafts)
+            // Status-filter (all / submitted / drafts)
             var f = (filter ?? "all").ToLowerInvariant();
             if (f == "submitted")
                 q = q.Where(r => r.Status == ReportStatus.Submitted);
@@ -64,27 +63,43 @@ namespace Gruppe4NLA.Controllers
 
             ViewData["Filter"] = f;
 
-            // NYTT: sorteringsvalg
+            // Sorteringsvalg:
+            //  - date_desc (default)
+            //  - date_asc
+            //  - type_asc
+            //  - type_desc
             var sort = string.IsNullOrWhiteSpace(sortOrder)
-                ? "recent"                  // default: nyest først
+                ? "date_desc"
                 : sortOrder.ToLowerInvariant();
 
             ViewData["SortOrder"] = sort;
 
-            if (sort == "oldest")
+            switch (sort)
             {
-                // Eldst først
-                q = q.OrderBy(r => r.DateSent);
-            }
-            else
-            {
-                // Nyest først
-                q = q.OrderByDescending(r => r.DateSent);
+                case "date_asc":
+                    q = q.OrderBy(r => r.DateSent);
+                    break;
+
+                case "type_asc":
+                    q = q.OrderBy(r => r.Type)
+                         .ThenByDescending(r => r.DateSent);
+                    break;
+
+                case "type_desc":
+                    q = q.OrderByDescending(r => r.Type)
+                         .ThenByDescending(r => r.DateSent);
+                    break;
+
+                default: // "date_desc"
+                    q = q.OrderByDescending(r => r.DateSent);
+                    break;
             }
 
             var reports = await q.ToListAsync();
             return View(reports);
         }
+
+
 
         // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
