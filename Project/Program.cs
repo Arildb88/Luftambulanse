@@ -28,6 +28,12 @@ builder.Services.AddRazorPages(options =>
 });
 
 
+// Hide "Server" header from Kestrel
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
     new MariaDbServerVersion(new Version(11, 8, 3)),
     
