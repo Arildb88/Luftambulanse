@@ -57,21 +57,21 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required, EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "*Email")]
             public string Email { get; set; }
 
             [Required, StringLength(100, ErrorMessage = "Password must be between {2} and {1} characters.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "*Password")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "*Confirm password")]
             [Compare("Password", ErrorMessage = "Passwords do not match.")]
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [Display(Name = "Role")]
+            [Display(Name = "Role, keep blank unless Pilot")]
             public string SelectedRole { get; set; }
 
             [Display(Name = "Organization (for pilots)")]
@@ -120,7 +120,7 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
 
                 // Safe server-side role assignment
                 var allowedRoles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                { "Pilot", "Caseworker" };
+                { "Pilot" };
 
                 if (allowedRoles.Contains(Input.SelectedRole))
                     await _userManager.AddToRoleAsync(user, Input.SelectedRole);
@@ -171,7 +171,7 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
             new[]
             {
                 new SelectListItem("Pilot", "Pilot"),
-                new SelectListItem("Caseworker", "Caseworker")
+                
             };
 
         // Organizations shown for pilots
