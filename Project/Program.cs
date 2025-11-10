@@ -10,6 +10,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods)
 builder.Services.AddControllersWithViews(o =>
 {
