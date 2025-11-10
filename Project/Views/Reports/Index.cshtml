@@ -40,61 +40,52 @@ else
 {
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>Sender</th>
-            <th>Latitude</th>
-            <th>Longitude</th>
-            <th>Height (m)</th>
-            <th>Type</th>
-            <th>Date Sent</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+            <tr>
+                <th>Sender</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Height (m)</th>
+                <th>Type</th>
+                <th>Date Sent</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var report in Model)
-        {
-            <tr>
-                <td>@report.SenderName</td>
-                <td>@report.Latitude?.ToString("F6")</td>
-                <td>@report.Longitude?.ToString("F6")</td>
-                <td>@report.HeightInMeters?.ToString("F2")</td>
-                <td>
-                    @if (report.Type == Gruppe4NLA.Models.ReportModel.DangerTypeEnum.Other)
-                    {
-                        <span>@report.OtherDangerType</span>
-                    }
-                    else
-                    {
-                        <span>@report.Type</span>
-                    }
-                </td>
-                <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>
-                    <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" : 
-                                           report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" : 
-                                           report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" : 
-                                           report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
-                        @(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "Approved" : 
-                          report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected ? "Rejected" : 
-                          report.StatusCase.ToString())
-                    </span>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.SenderName</td>
+                    <td>@report.Latitude?.ToString("F6")</td>
+                    <td>@report.Longitude?.ToString("F6")</td>
+                    <td>@report.HeightInMeters?.ToString("F2")</td>
+                    <td>@report.Type</td>
+                    <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                            @(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "Approved" :
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected ? "Rejected" :
+                                                report.StatusCase.ToString())
+                </span>
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
 
-                    @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
-                    {
-                        <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
+                @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
+                        {
+                            <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
 
-                        <form asp-action="Submit" asp-route-id="@report.Id" method="post" style="display:inline;">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-sm btn-success">Submit</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
+                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-success">Submit</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }

@@ -7,13 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Gruppe4NLA.Areas.Identity.Data;   
-using Gruppe4NLA.DataContext;           
-using Gruppe4NLA.Models;                
-using Gruppe4NLA.Services;             
+using Gruppe4NLA.Areas.Identity.Data;
+using Gruppe4NLA.DataContext;
+using Gruppe4NLA.Models;
+using Gruppe4NLA.Services;
 using Gruppe4NLA.ViewModels;
-
-
 
 namespace Gruppe4NLA.Controllers
 {
@@ -25,18 +23,18 @@ namespace Gruppe4NLA.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-       
+
         private readonly IReportAssignmentService _assigner;
 
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
-            IReportAssignmentService assigner 
+            IReportAssignmentService assigner
         )
         {
             _context = context;
             _userManager = userManager;
-            _assigner = assigner; 
+            _assigner = assigner;
         }
 
         public async Task<IActionResult> Index(string? filter)
@@ -72,12 +70,7 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // Validate "Other"
-            if (model.NewReport.Type == ReportModel.DangerTypeEnum.Other
-                && string.IsNullOrWhiteSpace(model.NewReport.OtherDangerType))
-            {
-                ModelState.AddModelError(nameof(model.NewReport.OtherDangerType), "Please describe the obstacle.");
-            }
+            // (Removed: validation for OtherDangerType — no longer used)
 
             // Konverter høyde til meter hvis brukeren har valgt "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
@@ -106,7 +99,7 @@ namespace Gruppe4NLA.Controllers
                 GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
-                OtherDangerType = model.NewReport.OtherDangerType,
+                // (Removed: OtherDangerType mapping)
                 Details = model.NewReport.Details,
                 HeightInMeters = model.NewReport.HeightInMeters,
                 AreLighted = model.NewReport.AreLighted,
@@ -289,7 +282,7 @@ namespace Gruppe4NLA.Controllers
             report.Longitude = updated.Longitude;
             report.GeoJson = updated.GeoJson;
             report.Type = updated.Type;
-            report.OtherDangerType = updated.OtherDangerType;
+            // (Removed: OtherDangerType update)
             report.Details = updated.Details;
             report.HeightInMeters = updated.HeightInMeters;
             report.AreLighted = updated.AreLighted;
@@ -297,7 +290,7 @@ namespace Gruppe4NLA.Controllers
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.Status = ReportStatus.Submitted;
-                
+
             }
             else
             {
@@ -327,15 +320,15 @@ namespace Gruppe4NLA.Controllers
             }
 
             report.Status = ReportStatus.Submitted;
-            
+
             await _context.SaveChangesAsync();
 
             TempData["Message"] = "Report submitted.";
             return RedirectToAction(nameof(Index), new { filter = "submitted" });
         }
         // === /Draft feature ===
-        
-        
+
+
         // Admin inbox: list all reports with assignment/status info
         [Authorize(Roles = "CaseworkerAdm,Caseworker")]
         public async Task<IActionResult> Inbox()
@@ -360,7 +353,7 @@ namespace Gruppe4NLA.Controllers
 
             return View(data);
         }
-        
+
         // Show assignment dialog to choose a Caseworker
         [Authorize(Roles = "CaseworkerAdm")]
         public async Task<IActionResult> Assign(int id)
@@ -391,7 +384,7 @@ namespace Gruppe4NLA.Controllers
 
             return View(vm);
         }
-        
+
         // Perform the assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -421,7 +414,7 @@ namespace Gruppe4NLA.Controllers
             TempData["Ok"] = "Report assigned.";
             return RedirectToAction(nameof(Inbox));
         }
-        
+
         // Remove assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -460,7 +453,7 @@ namespace Gruppe4NLA.Controllers
                 return NotFound();
             }
         }
-        
+
         // Caseworker approves a report
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -531,8 +524,8 @@ namespace Gruppe4NLA.Controllers
             return View(items);
         }
     }
-    
-    
+
+
     public class AssignReportVM
     {
         [Required] public int ReportId { get; set; }

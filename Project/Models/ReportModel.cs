@@ -14,8 +14,6 @@ namespace Gruppe4NLA.Models
         // Further statuses can be added here
     }
 
-
-
     public class ReportModel
     {
 
@@ -32,11 +30,9 @@ namespace Gruppe4NLA.Models
 
         // Enum-backed selection used in views/controllers via "Type"
         [Required(ErrorMessage = "You need to select an ObstacleType")]
-        public DangerTypeEnum? Type { get; set; } 
+        public DangerTypeEnum? Type { get; set; }
 
-        // Free-text when Type == Other
-        [RequiredIfOtherType(ErrorMessage = "You need to write ObstacleType")]
-        public string? OtherDangerType { get; set; }
+        // (Removed: OtherDangerType and its validation attribute)
 
         public DateTime DateSent { get; set; }
 
@@ -58,10 +54,10 @@ namespace Gruppe4NLA.Models
         [Required(ErrorMessage = "Longitude is required")]
         [Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
         public double? Longitude { get; set; }
-    
+
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
-        
+
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
 
@@ -94,20 +90,7 @@ namespace Gruppe4NLA.Models
 
     }
 
-    public class RequiredIfOtherTypeAttribute : ValidationAttribute
-    {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
-        {
-            var model = (ReportModel)validationContext.ObjectInstance;
-
-            if (model.Type == ReportModel.DangerTypeEnum.Other && string.IsNullOrWhiteSpace(model.OtherDangerType))
-            {
-                return new ValidationResult("Please specify the obstacle type.");
-            }
-
-            return ValidationResult.Success;
-        }
-    }
+    // (Removed: RequiredIfOtherTypeAttribute class)
 
     // Wrapper to hold new coordinate and submitted list
     public class ReportModelWrapper

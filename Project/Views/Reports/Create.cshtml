@@ -1,11 +1,7 @@
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
-@* This tells the view it will receive and bind to a single Report object *@
-
 @{
-    ViewData["Title"] = "Add Report"; 
-    
-    @* Sets the page title *@
+    ViewData["Title"] = "Add Report";
 }
 
 <h2>Add a new Report</h2>
@@ -15,13 +11,10 @@
     <p style="color:green">@ViewBag.Message</p>
 }
 
-@* Form that posts data to the Create action in ReportsController *@
-
 <br>
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 
-    @* Adding spacing and changing the style *@
     <style>
         .form-group {
             display: flex;
@@ -29,73 +22,63 @@
             margin-bottom: 15px;
         }
 
-        .form-group label {
-            width: 100px;
-            margin-right: 10px;
-            margin-left: 10px;
-            text-align: left;
-        }
+            .form-group label {
+                width: 100px;
+                margin-right: 10px;
+                margin-left: 10px;
+                text-align: left;
+            }
 
-        .form-group input,
-        .form-group textarea{
-            flex: 1; 
-            padding: 5px;
-        }
+            .form-group input,
+            .form-group textarea {
+                flex: 1;
+                padding: 5px;
+            }
 
-        .form-group input[type="checkbox"] {
-            flex: 0;
-            margin-left: 10px;
-            transform: scale(2.5);
-            cursor: pointer;
-        }
+                .form-group input[type="checkbox"] {
+                    flex: 0;
+                    margin-left: 10px;
+                    transform: scale(2.5);
+                    cursor: pointer;
+                }
     </style>
-       
+
     <div class="form-group">
         <label asp-for="NewReport.SenderName">Sender</label>
-
-        <!-- Shows as text, but cannot be edited -->
         <input asp-for="NewReport.SenderName"
                class="form-control-plaintext"
                readonly
                tabindex="-1"
                onfocus="this.blur()"
                style="user-select: none; color: var(--text-color);" />
-
-        <!-- hidden field that sends to backend -->
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
-    @* Latitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Latitude"></label>
         <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
-    @* Longitude input *@
     <div class="form-group">
         <label asp-for="NewReport.Longitude"></label>
         <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
-    @* GeoJson *@
     <div class="form-group">
         <label asp-for="NewReport.GeoJson"></label>
         <textarea asp-for="NewReport.GeoJson" class="form-control"></textarea>
         <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
     </div>
 
-
-    @* HeightInMeters input *@
     <div class="form-group">
         <label asp-for="NewReport.HeightInMeters">Height In Meters</label>
         <input asp-for="NewReport.HeightInMeters" class="form-control" />
         <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
     </div>
 
-    @* DangerType radio buttons *@
     <div class="mb-3">
         <label class="form-label d-block">Obstacle Type</label>
         <div class="row g-2">
@@ -127,55 +110,23 @@
         <span class="text-danger" asp-validation-for="NewReport.Type"></span>
     </div>
 
-    @* OtherDangerType input, shown only if "Other" is selected *@
-    <div id="otherTypeWrapper"
-         class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
-        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
-        <input asp-for="NewReport.OtherDangerType" class="form-control" />
-        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
-    </div>
+    <!-- Removed 'OtherDangerType' field -->
 
-    @* Extra details textarea *@
     <div class="form-group">
         <label asp-for="NewReport.Details"></label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    @* AreLighted input *@
     <div class="form-group">
         <label asp-for="NewReport.AreLighted">Lighted</label>
         <input asp-for="NewReport.AreLighted" type="checkbox" />
     </div>
 
-    @* Save and Cancel buttons *@
     <button type="submit" class="btn btn-success mt-3">Save</button>
     <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
 </form>
 
-
-@*Script that makes the Others input field visible if Other is choosen*@
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        function updateOtherVisibility() {
-          const wrap = document.getElementById('otherTypeWrapper');
-          const isOther = document.getElementById('typeOther').checked;
-          wrap.classList.toggle('d-none', !isOther);
-        }
-        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
-          r.addEventListener('change', updateOtherVisibility)
-        );
-        updateOtherVisibility();
-    </script>
-}
-
-
-<!-- Title for submitted coordinates -->
-
 <h3><br>Submitted Coordinates</h3>
-
-<!-- Variable "coord" will show for each instance -->
 <ul>
     @foreach (var coord in Model.SubmittedReport)
     {

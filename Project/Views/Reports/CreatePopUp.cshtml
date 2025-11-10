@@ -1,14 +1,9 @@
-
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
-@* This tells the view it will receive and bind to a single Report object *@
-
 @{
-    
-    ViewData["Title"] = "Add Report"; 
+    ViewData["Title"] = "Add Report";
     ViewData["ShowNavbar"] = false;
     ViewData["ShowFooter"] = false;
-    @* Sets the page title *@
 }
 
 @if (ViewBag.Message != null)
@@ -16,57 +11,37 @@
     <p style="color:green">@ViewBag.Message</p>
 }
 
-@* Form that posts data to the Create action in ReportsController *@
 <br>
 <form asp-action="CreatePopUp" method="post">
     @Html.AntiForgeryToken()
 
-    @* Sender name input *@
     <div class="form-group">
         <label asp-for="NewReport.SenderName">SENDER</label>
-
-        <!-- Shows as text, but cannot be edited -->
-        <input asp-for="NewReport.SenderName"
-               class="form-control-plaintext"
-               readonly
-               tabindex="-1"
-               onfocus="this.blur()"
-               style="user-select: none; color: var(--text-color);" />
-
-        <!-- hidden field that sends to backend -->
+        <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
-    @* Latitude input *@
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Latitude"></label>
         <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
-    @* Longitude input *@
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Longitude"></label>
         <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
-    @* GeoJson *@
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.GeoJson">GeoJSON</label>
-        <textarea asp-for="NewReport.GeoJson"
-                  rows="6"
-                  class="form-control"
-                  readonly
-                  style="font-family: monospace; white-space: pre;"></textarea>
+        <textarea asp-for="NewReport.GeoJson" rows="6" class="form-control" readonly style="font-family: monospace; white-space: pre;"></textarea>
         <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
     </div>
 
-    @* HeightInMeters input *@
     <!-- Height + Lighted inline row -->
     <div class="form-group height-light-row">
-        
         <div class="height-inline flex-grow-1">
             <div class="unit-switch">
                 <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
@@ -89,12 +64,11 @@
         </div>
 
         <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
-        <!-- Lighted box -->
+
         <div class="lighted-inline">
             <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
             <label class="obstacle-card light-card-small" for="lightSwitch" aria-label="Lighted">
                 <span class="obstacle-emoji" id="lightIcon">
-                    <!-- default: light off -->
                     <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" fill="var(--text-color)">
                         <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Zm0-480q-17 0-28.5-11.5T440-760v-80h80v80q0 17-11.5 28.5T480-720Z" />
                     </svg>
@@ -114,10 +88,11 @@
                        value="@((int)ReportModel.DangerTypeEnum.Cable)"
                        @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Cable ? "checked" : "")>
                 <label class="obstacle-card" for="typeCable" aria-label="Cable">
-                    <!-- Prefer an SVG/PNG in wwwroot; fallback emoji below -->
-                    @* <img src="~/Content/Images/obstacles/powerline.svg" alt="" /> *@
-                    <span class="obstacle-emoji"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
-                        <path d="M760-120q-39 0-70-22.5T647-200H440q-66 0-113-47t-47-113q0-66 47-113t113-47h80q33 0 56.5-23.5T600-600q0-33-23.5-56.5T520-680H313q-13 35-43.5 57.5T200-600q-50 0-85-35t-35-85q0-50 35-85t85-35q39 0 69.5 22.5T313-760h207q66 0 113 47t47 113q0 66-47 113t-113 47h-80q-33 0-56.5 23.5T360-360q0 33 23.5 56.5T440-280h207q13-35 43.5-57.5T760-360q50 0 85 35t35 85q0 50-35 85t-85 35ZM200-680q17 0 28.5-11.5T240-720q0-17-11.5-28.5T200-760q-17 0-28.5 11.5T160-720q0 17 11.5 28.5T200-680Z" /></svg></span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M760-120q-39 0-70-22.5T647-200H440q-66 0-113-47t-47-113q0-66 47-113t113-47h80q33 0 56.5-23.5T600-600q0-33-23.5-56.5T520-680H313q-13 35-43.5 57.5T200-600q-50 0-85-35t-35-85q0-50 35-85t85-35q39 0 69.5 22.5T313-760h207q66 0 113 47t47 113q0 66-47 113t-113 47h-80q-33 0-56.5 23.5T360-360q0 33 23.5 56.5T440-280h207q13-35 43.5-57.5T760-360q50 0 85 35t35 85q0 50-35 85t-85 35ZM200-680q17 0 28.5-11.5T240-720q0-17-11.5-28.5T200-760q-17 0-28.5 11.5T160-720q0 17 11.5 28.5T200-680Z" />
+                        </svg>
+                    </span>
                     <span>PowerLine</span>
                 </label>
             </div>
@@ -127,9 +102,11 @@
                        value="@((int)ReportModel.DangerTypeEnum.Pole)"
                        @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Pole ? "checked" : "")>
                 <label class="obstacle-card" for="typePole" aria-label="Pole">
-                    @* <img src="~/Content/Images/obstacles/pole.svg" alt="" /> *@
-                    <span class="obstacle-emoji"><svg xmlns=" http: //www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
-                        <path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z" /></svg></span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns=" http: //www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z" />
+                        </svg>
+                    </span>
                     <span>Pole</span>
                 </label>
             </div>
@@ -139,9 +116,11 @@
                        value="@((int)ReportModel.DangerTypeEnum.Construction)"
                        @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Construction ? "checked" : "")>
                 <label class="obstacle-card" for="typeConstruction" aria-label="Construction">
-                    @* <img src="~/Content/Images/obstacles/construction.svg" alt="" /> *@
-                    <span class="obstacle-emoji"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
-                        <path d="M200-120v-160h-80v-80h80v-166L88-440l-48-64 440-336 440 336-48 64-112-86v166h80v80h-80v160h-80v-160H520v160h-80v-160H280v160h-80Zm80-240h160v-349L280-587v227Zm240 0h160v-227L520-709v349Z" /></svg></span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-120v-160h-80v-80h80v-166L88-440l-48-64 440-336 440 336-48 64-112-86v166h80v80h-80v160h-80v-160H520v160h-80v-160H280v160h-80Zm80-240h160v-349L280-587v227Zm240 0h160v-227L520-709v349Z" />
+                        </svg>
+                    </span>
                     <span>Construction</span>
                 </label>
             </div>
@@ -151,9 +130,11 @@
                        value="@((int)ReportModel.DangerTypeEnum.Other)"
                        @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "checked" : "")>
                 <label class="obstacle-card" for="typeOther" aria-label="Other">
-                    @* <img src="~/Content/Images/obstacles/other.svg" alt="" /> *@
-                    <span class="obstacle-emoji"><svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
-                        <path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h160v80H200Zm560 0H600v-80h160v-160h80v160q0 33-23.5 56.5T760-120ZM120-760q0-33 23.5-56.5T200-840h160v80H200v160h-80v-160Zm720 0v160h-80v-160H600v-80h160q33 0 56.5 23.5T840-760ZM480-240q21 0 35.5-14.5T530-290q0-21-14.5-35.5T480-340q-21 0-35.5 14.5T430-290q0 21 14.5 35.5T480-240Zm-36-153h73q0-34 8-52t35-45q35-35 46.5-56.5T618-598q0-54-39-88t-99-34q-50 0-86 26t-52 74l66 27q7-26 26.5-42.5T480-652q29 0 46.5 15.5T544-595q0 20-9.5 37.5T502-521q-33 29-45.5 56T444-393Z" /></svg></span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h160v80H200Zm560 0H600v-80h160v-160h80v160q0 33-23.5 56.5T760-120ZM120-760q0-33 23.5-56.5T200-840h160v80H200v160h-80v-160Zm720 0v160h-80v-160H600v-80h160q33 0 56.5 23.5T840-760ZM480-240q21 0 35.5-14.5T530-290q0-21-14.5-35.5T480-340q-21 0-35.5 14.5T430-290q0 21 14.5 35.5T480-240Zm-36-153h73q0-34 8-52t35-45q35-35 46.5-56.5T618-598q0-54-39-88t-99-34q-50 0-86 26t-52 74l66 27q7-26 26.5-42.5T480-652q29 0 46.5 15.5T544-595q0 20-9.5 37.5T502-521q-33 29-45.5 56T444-393Z" />
+                        </svg>
+                    </span>
                     <span>Other</span>
                 </label>
             </div>
@@ -162,76 +143,44 @@
         <span class="text-danger" asp-validation-for="NewReport.Type"></span>
     </div>
 
-    <!-- Other obstacle textbox -->
-    <div id="otherTypeWrapper"
-         class="form-group @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
-        <label asp-for="NewReport.OtherDangerType">OBSTACLE TYPE</label>
-        <input asp-for="NewReport.OtherDangerType" class="form-control" />
-        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
-    </div>
+    <!-- Removed 'OtherDangerType' field -->
 
-    @* Extra details textarea *@
     <div class="form-group">
         <label asp-for="NewReport.Details">DETAILS</label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    
-    @* Save and Cancel buttons *@
     <div class="form-group">
-  <button type="submit" name="action" value="save" class="btn btn-success">SAVE DRAFT</button>
-  <button type="submit" name="action" value="submit" class="btn btn-success">SUBMIT</button>
+        <button type="submit" name="action" value="save" class="btn btn-success">SAVE DRAFT</button>
+        <button type="submit" name="action" value="submit" class="btn btn-success">SUBMIT</button>
     </div>
-
 </form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-         // --- Show/Hide "Other" input-field---
-        function updateOtherVisibility() {
-          const wrap = document.getElementById('otherTypeWrapper');
-          const isOther = document.getElementById('typeOther').checked;
-          wrap.classList.toggle('d-none', !isOther);
-        }
-        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
-          r.addEventListener('change', updateOtherVisibility)
-        );
-        updateOtherVisibility();
-
-        // --- Resets and oppdates placeholder for height ---
+        // Height unit + validation (kept)
         const heightInput = document.getElementById('heightInput');
         const unitMeters = document.getElementById('unitMeters');
         const unitFeet = document.getElementById('unitFeet');
 
-        function resetInput() {
-            heightInput.value = ''; // Resets Field
-        }
-
+        function resetInput() { heightInput.value = ''; }
         function updateValidation() {
             if (unitMeters.checked) {
                 heightInput.placeholder = "Height in meters";
-                heightInput.min = 0;
-                heightInput.max = 500; // 0-500 meters
+                heightInput.min = 0; heightInput.max = 500;
             } else {
                 heightInput.placeholder = "Height in feet";
-                heightInput.min = 0;
-                heightInput.max = 1640; // ~500 meters in feet
+                heightInput.min = 0; heightInput.max = 1640;
             }
         }
-
-        // Event listeners
         unitMeters.addEventListener('change', () => { resetInput(); updateValidation(); });
         unitFeet.addEventListener('change', () => { resetInput(); updateValidation(); });
-
-        // Initial setup
         updateValidation();
 
-
-                // --- Lighted icon switch ---
+        // Light icon switch (kept)
         const lightSwitch = document.getElementById('lightSwitch');
         const lightIcon = document.getElementById('lightIcon');
-
         function updateLightBulb() {
             if (lightSwitch.checked) {
                 lightIcon.innerHTML = `
@@ -247,6 +196,5 @@
         }
         lightSwitch.addEventListener('change', updateLightBulb);
         updateLightBulb();
-
     </script>
 }
