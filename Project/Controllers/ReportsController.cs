@@ -13,6 +13,8 @@ using Gruppe4NLA.Models;
 using Gruppe4NLA.Services;
 using Gruppe4NLA.ViewModels;
 
+using InboxRowVM = Gruppe4NLA.ViewModels.ReportListItemVM;
+
 namespace Gruppe4NLA.Controllers
 {
     // Added AutoValidateAntiforgeryToken globally to all controllers who needs it, beter than forgetting to add later
@@ -98,7 +100,6 @@ namespace Gruppe4NLA.Controllers
                 GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
-                // (Removed: OtherDangerType mapping)
                 Details = model.NewReport.Details,
                 HeightInMeters = model.NewReport.HeightInMeters,
                 AreLighted = model.NewReport.AreLighted,
@@ -334,7 +335,7 @@ namespace Gruppe4NLA.Controllers
         {
             var data = await _context.Reports
                 .OrderByDescending(r => r.DateSent)
-                .Select(r => new ReportListItemVM
+                .Select(r => new InboxRowVM
                 {
                     Id = r.Id,
                     SenderName = r.SenderName,
@@ -346,7 +347,17 @@ namespace Gruppe4NLA.Controllers
                             .Where(u => u.Id == r.AssignedToUserId)
                             .Select(u => u.Email ?? u.UserName ?? u.Id)
                             .FirstOrDefault()
-                        : null
+                        : null,
+                    // Gets organization of the user
+                    Organization =
+                _context.Users
+                    .Where(u => u.Id == r.UserId)
+                    .Select(u => u.Organization)
+                    .FirstOrDefault()
+                ?? _context.Users
+                    .Where(u => u.Email == r.SenderName)
+                    .Select(u => u.Organization)
+                    .FirstOrDefault()
                 })
                 .ToListAsync();
 
@@ -540,6 +551,7 @@ namespace Gruppe4NLA.Controllers
     {
         public int Id { get; set; }
         public string? SenderName { get; set; }
+        public string? Organization { get; set; }
         public string? Type { get; set; }
         public DateTime DateSent { get; set; }
         public string Status { get; set; } = "";
