@@ -502,6 +502,37 @@ body {
     transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
 }
 
+/* Skjul "på"-ikonet som standard */
+.icon-on {
+    display: none;
+}
+
+/* Når checkboxen er trykket (checked), bytt ikon */
+.btn-check:checked + .light-card-small .icon-off {
+    display: none;
+}
+
+.btn-check:checked + .light-card-small .icon-on {
+    display: inline-block;
+}
+
+/* Juster størrelse og utseende */
+.light-icon svg {
+    width: 36px;
+    height: 36px;
+    transition: fill 0.2s ease, filter 0.2s ease;
+}
+
+/* Når aktiv: glød-effekt på "på"-ikonet */
+.btn-check:checked + .light-card-small .icon-on svg {
+    filter: drop-shadow(0 0 6px #ffeb3b);
+}
+
+/* Hover-effekt */
+.light-card-small:hover svg {
+    filter: drop-shadow(0 0 4px var(--accent-color));
+}
+
     /* Hover-effekt (samme som obstacle-card) */
     .light-card-small:hover {
         transform: translateY(-2px);
