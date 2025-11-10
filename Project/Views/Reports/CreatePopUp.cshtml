@@ -200,5 +200,16 @@
         }
         lightSwitch.addEventListener('change', updateLightBulb);
         updateLightBulb();
+
+        function clearReportForm() {
+            console.log("?? clearReportForm() called inside iframe");
+            const lat = document.querySelector('input[name="NewReport.Latitude"]');
+            const lng = document.querySelector('input[name="NewReport.Longitude"]');
+            const geo = document.querySelector('textarea[name="NewReport.GeoJson"]');
+            if (lat) lat.value = "";
+            if (lng) lng.value = "";
+            if (geo) geo.value = "";
+        }
+        window.clearReportForm = clearReportForm;
     </script>
 }
