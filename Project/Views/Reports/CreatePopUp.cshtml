@@ -11,12 +11,11 @@
     <p style="color:green">@ViewBag.Message</p>
 }
 
-<br>
 <form asp-action="CreatePopUp" method="post">
     @Html.AntiForgeryToken()
 
     <div class="form-group">
-        <label asp-for="NewReport.SenderName">SENDER</label>
+        <label asp-for="NewReport.SenderName">SENDER:</label>
         <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
@@ -41,8 +40,8 @@
     </div>
 
     <!-- Height + Lighted inline row -->
-    <div class="form-group height-light-row">
-        <div class="height-inline flex-grow-1">
+    <div class="height-light-row">
+        <div class="height-inline">
             <div class="unit-switch">
                 <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
                        @(Model.NewReport.HeightUnit == "meters" ? "checked" : "")>
@@ -61,13 +60,11 @@
                    placeholder="Height in meters"
                    min="0"
                    max="500" />
-        </div>
 
         <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
 
-        <div class="lighted-inline">
+            <label class="light-card-small" for="lightSwitch" aria-label="Lighted">
             <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
-            <label class="obstacle-card light-card-small" for="lightSwitch" aria-label="Lighted">
                 <span class="obstacle-emoji" id="lightIcon">
                     <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" fill="var(--text-color)">
                         <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Zm0-480q-17 0-28.5-11.5T440-760v-80h80v80q0 17-11.5 28.5T480-720Z" />
@@ -75,13 +72,13 @@
                 </span>
                 <span class="light-text">Lighted</span>
             </label>
+
         </div>
     </div>
 
     <!-- Obstacle Type cards -->
     <div class="mb-3">
-        <label class="form-label d-block">OBSTACLE TYPE</label>
-
+        <label class="form-label d-block">OBSTACLE TYPE:</label>
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeCable"
@@ -144,9 +141,8 @@
     </div>
 
     <!-- Removed 'OtherDangerType' field -->
-
     <div class="form-group">
-        <label asp-for="NewReport.Details">DETAILS</label>
+        <label asp-for="NewReport.Details">DETAILS:</label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
