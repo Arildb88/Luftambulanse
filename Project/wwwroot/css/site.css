@@ -661,8 +661,9 @@ dialog::backdrop {
 
     /* size each button */
     .form-group .btn {
-        height: 60px;
-        min-width: 200px;
+        height: 130px;
+        min-width: 150px;
+        font-size: 1.15rem;
         padding: 0 16px;
         display: inline-flex;
         align-items: center;

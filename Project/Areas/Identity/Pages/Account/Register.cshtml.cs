@@ -70,7 +70,7 @@ namespace Gruppe4NLA.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "Passwords do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
+            
             [Display(Name = "Role, keep blank unless Pilot")]
             public string SelectedRole { get; set; }
 

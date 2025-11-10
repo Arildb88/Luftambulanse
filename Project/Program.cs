@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System.Security.Cryptography;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,31 +71,44 @@ builder.Services.ConfigureApplicationCookie(o =>
 
 var app = builder.Build();
 
+// Content security policy CSP
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Referrer-Policy"] = "no-referrer";
+    context.Response.Headers["X-XSS-Protection"] = "0";
+    context.Response.Headers.Remove("Server"); //Already removed with the addServerHeader=false, but now within the security measures. Unacecerry but not harmful
+
+    if (context.Request.IsHttps)
+        context.Response.Headers["Strict-Transport-Security"] =
+            "max-age=31536000; includeSubDomains; preload";
+
+    // Allow Leaflet + the tile hosts you actually use
+    context.Response.Headers["Content-Security-Policy"] =
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
+        "style-src  'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
+        // <-- IMPORTANT: tile/image sources
+        "img-src 'self' data: blob: " +
+            "https://tile.openstreetmap.org " +        // no-subdomain OSM
+            "https://*.tile.openstreetmap.org " +      // subdomain OSM (a/b/c)
+            "https://tiles.stadiamaps.com " +          // your dark tiles
+            "https://*.google.com; " +                 // mt0..mt3.google.com/vt
+        "connect-src 'self'; " +
+        "font-src 'self' data:; " +
+        "frame-src 'self'; " +                     // allows <iframe src="..."> within same origin
+        "frame-ancestors 'self'; " +               // prevents embedding by *other* sites
+        "base-uri 'self'; form-action 'self'";
+
+    // Add other headers as needed
+    await next();
+});
+
 // Create roles and demo users
 using (var scope = app.Services.CreateScope())
 {
     var sp = scope.ServiceProvider;
-
-    //Run migrations on startup with a simple retry in case DB container is not ready yet
-    /*var logger = sp.GetRequiredService<ILogger<Program>>();
-    var db = sp.GetRequiredService<AppDbContext>();
-
-    const int maxAttempts = 10;
-    for (int attempt = 1; attempt <= maxAttempts; attempt++)
-    {
-        try
-        {
-            await db.Database.MigrateAsync();   // applies all pending migrations
-            logger.LogInformation("Database migrated successfully.");
-            break;
-        }
-        catch (Exception ex)
-        {
-            if (attempt == maxAttempts) throw;
-            logger.LogWarning(ex, "Migration attempt {Attempt}/{Max} failed. Retrying in 2s�", attempt, maxAttempts);
-            await Task.Delay(TimeSpan.FromSeconds(2));
-        }
-    }*/
 
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
