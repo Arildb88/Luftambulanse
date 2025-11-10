@@ -3,9 +3,65 @@
 @{
     ViewData["Title"] = "Reports";
     var filter = ViewData["Filter"]?.ToString() ?? "all";
+    var sortOrder = ViewData["SortOrder"]?.ToString() ?? "recent"; // "recent" eller "oldest"
 }
 
-<h2>Reports</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Reports</h2>
+
+    <div class="d-flex align-items-center gap-2">
+        <!-- Eksisterende status-filter (All / Submitted / Drafts) -->
+        <div class="btn-group me-2" role="group">
+            <a asp-action="Index"
+               asp-route-filter="all"
+               asp-route-sortOrder="@sortOrder"
+               class="btn @(filter == "all" ? "btn-primary" : "btn-outline-primary")">
+                All Reports
+            </a>
+            <a asp-action="Index"
+               asp-route-filter="submitted"
+               asp-route-sortOrder="@sortOrder"
+               class="btn @(filter == "submitted" ? "btn-primary" : "btn-outline-primary")">
+                Submitted
+            </a>
+            <a asp-action="Index"
+               asp-route-filter="drafts"
+               asp-route-sortOrder="@sortOrder"
+               class="btn @(filter == "drafts" ? "btn-primary" : "btn-outline-primary")">
+                Drafts
+            </a>
+        </div>
+
+        <!-- NY: sorterings-knapp oppe til høyre -->
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle"
+                    type="button"
+                    id="sortDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                Sortér: @(sortOrder == "oldest" ? "Eldst først" : "Nyest først")
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-sortOrder="recent">
+                        Nyest først
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-sortOrder="oldest">
+                        Eldst først
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 @if (TempData["Message"] != null)
 {
@@ -16,21 +72,6 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
-
-<div class="btn-group mb-3" role="group">
-    <a asp-action="Index" asp-route-filter="all"
-       class="btn @(filter == "all" ? "btn-primary" : "btn-outline-primary")">
-        All Reports
-    </a>
-    <a asp-action="Index" asp-route-filter="submitted"
-       class="btn @(filter == "submitted" ? "btn-primary" : "btn-outline-primary")">
-        Submitted
-    </a>
-    <a asp-action="Index" asp-route-filter="drafts"
-       class="btn @(filter == "drafts" ? "btn-primary" : "btn-outline-primary")">
-        Drafts
-    </a>
-</div>
 
 @if (!Model.Any())
 {

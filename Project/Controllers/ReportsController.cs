@@ -39,7 +39,7 @@ namespace Gruppe4NLA.Controllers
             _assigner = assigner; 
         }
 
-        public async Task<IActionResult> Index(string? filter)
+        public async Task<IActionResult> Index(string? filter, string? sortOrder)
         {
             IQueryable<ReportModel> q = _context.Reports;
 
@@ -55,6 +55,7 @@ namespace Gruppe4NLA.Controllers
                               || (r.UserId == null && r.SenderName == email));
             }
 
+            // Eksisterende status-filter (all / submitted / drafts)
             var f = (filter ?? "all").ToLowerInvariant();
             if (f == "submitted")
                 q = q.Where(r => r.Status == ReportStatus.Submitted);
@@ -63,7 +64,25 @@ namespace Gruppe4NLA.Controllers
 
             ViewData["Filter"] = f;
 
-            var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
+            // NYTT: sorteringsvalg
+            var sort = string.IsNullOrWhiteSpace(sortOrder)
+                ? "recent"                  // default: nyest først
+                : sortOrder.ToLowerInvariant();
+
+            ViewData["SortOrder"] = sort;
+
+            if (sort == "oldest")
+            {
+                // Eldst først
+                q = q.OrderBy(r => r.DateSent);
+            }
+            else
+            {
+                // Nyest først
+                q = q.OrderByDescending(r => r.DateSent);
+            }
+
+            var reports = await q.ToListAsync();
             return View(reports);
         }
 
