@@ -481,41 +481,61 @@ body {
     border-color: #0b5ed7;
 }
 
-
-/* Lighted box  */
+/* Lighted box (samme stil som obstacle-card) */
 .light-card-small {
-    width: 120px; /*-------------*/
+    width: 120px;
     height: 85px;
     display: flex;
-    flex-direction: column; /* plasser ikon over tekst */
-    align-items: center; /* midtstill horisontalt */
-    justify-content: center; /* midtstill vertikalt */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 10px 8px;
-    border: 2px solid #ffd54f; /* valgfri gul ramme */
+    border: 2px solid var(--accent-color);
     border-radius: 16px;
-    gap: 6px; /* avstand mellom ikon og tekst */
-    margin-left: auto; /* skyv hele boksen til høyre */
-    transition: all 0.2s ease;
+    gap: 6px;
+    margin-left: auto;
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
 }
+
+    /* Hover-effekt (samme som obstacle-card) */
+    .light-card-small:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
 
 /* Checked state */
 .btn-check:checked + .light-card-small {
+    background: var(--blueBtn-color) ;
     border-color: var(--blueBtn-color);
-    background-color: var(--blueBtn-color);
-    color: #000;
-    box-shadow: 0 0 12px rgba(255, 221, 51, 0.4);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,110,253,.35);
 }
 
-    /* Make the icon glow when active */
+    /* Glødende ikon når aktiv */
     .btn-check:checked + .light-card-small .obstacle-emoji svg {
         fill: #ffeb3b;
         filter: drop-shadow(0 0 6px #ffea00);
     }
 
-/* Slight hover effect for both states */
-.light-card-small:hover {
-    border-color: #ffd54f;
+/* Dark mode tilpasning */
+.darkmode .light-card-small {
+    border-color: #424242;
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
 }
+
+.darkmode .btn-check:checked + .light-card-small {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+    color: #fff;
+}
+
 
 /* Match switch height */
 .unit-switch {
@@ -533,7 +553,7 @@ body {
 /* Match input height and padding */
 #heightInput {
     height: 85px;
-    width: 150px;
+    width: 30%;
     border-radius: 12px;
     font-size: 1rem;
     padding: 0px;

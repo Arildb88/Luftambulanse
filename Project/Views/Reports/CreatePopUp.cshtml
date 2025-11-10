@@ -62,15 +62,17 @@
              max="500" />
 
 
-        <label class="light-card-small" for="lightSwitch" aria-label="Lighted">
-            <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
+        <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
+            <label class="light-card-small" for="lightSwitch" aria-label="Lighted">
                 <span class="obstacle-emoji" id="lightIcon">
                     <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" fill="var(--text-color)">
                         <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Zm0-480q-17 0-28.5-11.5T440-760v-80h80v80q0 17-11.5 28.5T480-720Z" />
                     </svg>
                 </span>
-                <span class="light-text">Lighted</span>
-        </label>
+                <span 
+                    class="light-text">Lighted
+                </span>
+            </label>
     </div>
     <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
 
