@@ -64,54 +64,6 @@
     color: var(--text-color)
 }
 
-/* --------------------------------------------- Login box --- NEEDED???*/
-/*.login-container {
-    background: var(--base-variant);
-    padding: 30px 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 340px;
-}*/
-/* --- Login wrapping for better position --- */
-/*.login-wrapper {
-    min-height: calc(100vh - 60px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}*/
-/* --- Header --- */
-/*.login-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}*/
-/* --- Input fields (username + password) --- */
-/*.login-container input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    box-sizing: border-box;
-}*/
-/* --- Login button --- */
-/*.login-container button {
-    width: 100%;
-    padding: 12px;
-    background: #007BFF;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-
-.login-container button:hover {
-        background: #0056b3;
-    }*/
-/* ------------------------------------------------ */
 .btn:focus, .btn:active:focus, .btn-link
 
 :focus, .form-control:focus, .form-check-input:focus {
@@ -161,7 +113,6 @@ body {
   text-align: start;
 }
 
-
 /* --------------- Place bottom --------------- */
 .footer {
     background-color: var(--base-variant);
@@ -179,29 +130,29 @@ body {
     }
 }
 
-
 /* --------------- Report Form --------------- */
 .form-group {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+/*    margin-bottom: 5px;*/
 }
 
     .form-group label {
-        width: 100px;
+        width: 50px;
         margin-right: 10px;
-        margin-left: 10px;
+/*        margin-left: 10px;*/
         text-align: left;
     }
 
     .form-group input,
-    .form-group textarea {
+    .form-group textarea,
+    .form-group number {
         flex: 1;
         padding: 5px;
     }
 
         .form-group input[type="checkbox"] {
-            flex: 0;
+            flex: 1;
             margin-left: 10px;
             transform: scale(2.5);
             cursor: pointer;
@@ -247,11 +198,6 @@ body {
     background-color: darkgrey;
 }
 
-/*.bgGreen {
-    background-image: url('/Content/Images/Topographic_green.png');
-    background-size: cover;
-}*/
-
 /* --- DARK MODE BUTTON --- */
 #theme-switch {
     background: transparent;
@@ -272,16 +218,6 @@ body {
     width: 22px;
     height: 22px;
 }
-
-       /* Hide moon icon first */
-/*#theme-switch svg:last-child {
-    display: none;
-}*/
-
-/* When darkmode is activ: show moon*/
-/*.darkmode #theme-switch svg:first-child {
-    display: none;
-}*/
 
 .darkmode #theme-switch svg:last-child {
     display: inline;
@@ -570,48 +506,6 @@ body {
         filter: drop-shadow(0 0 6px #ffea00);
     }
 
-/* Slight hover effect for both states */
-.light-card-small:hover {
-    border-color: #ffd54f;
-}
-
-/* --- Align height input + light switch inline --- */
-.height-light-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.height-inline {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    flex-grow: 1;
-}
-
-/* Make sure the lighted box aligns neatly */
-.lighted-inline {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-/* Shrink the light-card slightly for inline layout */
-.light-card-small {
-    width: 100px;
-    height: 85px;
-    padding: 12px 8px;
-}
-
-/* === Align height row elements visually (Height + Unit + Lighted) === */
-.height-light-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-}
-
 /* Ensure everything in the row has consistent height */
 .height-inline {
     display: flex;
@@ -619,6 +513,42 @@ body {
     gap: 12px;
     flex-grow: 1;
     height: 85px; /* match light-card-small height */
+}
+/* === Align height row elements visually (Height + Unit + Lighted) === */
+.height-light-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+/* Make sure the lighted box aligns neatly */
+.lighted-inline {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+/* Lighted box sizing to align visually */
+.light-card-small {
+    width: 110px;
+    height: 85px;
+    display: flex;
+    flex-direction: column; /* plasser ikon over tekst */
+    align-items: center; /* midtstill horisontalt */
+    justify-content: center; /* midtstill vertikalt */
+    padding: 10px 8px;
+    border: 2px solid #ffd54f; /* valgfri gul ramme */
+    border-radius: 16px;
+    gap: 6px; /* avstand mellom ikon og tekst */
+    margin-left: auto; /* skyv hele boksen til høyre */
+    transition: all 0.2s ease;
+}
+
+/* Slight hover effect for both states */
+.light-card-small:hover {
+    border-color: #ffd54f;
 }
 
 /* Match switch height */
@@ -637,20 +567,11 @@ body {
 /* Match input height and padding */
 #heightInput {
     height: 85px;
+    width: 150px;
     border-radius: 12px;
     font-size: 1rem;
-    padding: 0 16px;
+    padding: 0px;
     box-sizing: border-box;
-}
-
-/* Lighted box sizing to align visually */
-.light-card-small {
-    width: 110px;
-    height: 85px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 8px;
 }
 
 /* --- Responsive fallback for smaller screens --- */
@@ -726,6 +647,7 @@ dialog::backdrop {
 /* remove the global absolute positioning on .btn ! */
 .report-form, .dialog-body, form {
     position: static;
+
 }
 
 /* layout the row */
@@ -750,3 +672,4 @@ dialog::backdrop {
     }
 
     /*---------------------------------Submit and Draft button-------------------*/
+
