@@ -28,6 +28,12 @@ builder.Services.AddRazorPages(options =>
 });
 
 
+// Hide "Server" header from Kestrel
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
     new MariaDbServerVersion(new Version(11, 8, 3)),
     
@@ -98,7 +104,7 @@ using (var scope = app.Services.CreateScope())
             await roleMgr.CreateAsync(new IdentityRole(role));
 
     // 2) Demo users to try to login to our application
-    async Task EnsureUserInRole(string email, string password, string role)
+    async Task EnsureUserInRole(string email, string password, string role, string organization = null)
     {
         var user = await userMgr.FindByEmailAsync(email);
         if (user is null)
@@ -107,7 +113,7 @@ using (var scope = app.Services.CreateScope())
             {
                 UserName = email,
                 Email = email,
-                EmailConfirmed = true
+                Organization = organization
             };
             var create = await userMgr.CreateAsync(user, password);
             if (!create.Succeeded)
@@ -129,10 +135,10 @@ using (var scope = app.Services.CreateScope())
     await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
     await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
 
-    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot");      // Pilot user
-    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot");      // Pilot user
-    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot");      // Pilot user
-    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot");      // Pilot user
+    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot", "Avd Nord");      // Pilot user
+    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "Avd SørØst");      // Pilot user
+    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "Avd SørVest");      // Pilot user
+    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "Avd Sør");      // Pilot user
 
 
 }

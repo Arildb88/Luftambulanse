@@ -106,26 +106,7 @@
         <span class="text-danger" asp-validation-for="Type"></span>
     </div>
 
-    <!-- Other obstacle textbox -->
-    <div id="otherTypeWrapper"
-         class="form-group @(Model.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none")">
-        <label asp-for="OtherDangerType">Obstacle Type</label>
-        <input asp-for="OtherDangerType" class="form-control" />
-        <span asp-validation-for="OtherDangerType" class="text-danger"></span>
-    </div>
-
-   
-
-    @* “Other” feltet – vises bare når Type = Other *@
-    @{
-        var otherClass = Model.Type == ReportModel.DangerTypeEnum.Other ? "" : "d-none";
-    }
-    <div id="otherTypeWrapper" class="form-group @otherClass">
-        <label asp-for="OtherDangerType">Obstacle Type</label>
-        <input asp-for="OtherDangerType" class="form-control" />
-        <span asp-validation-for="OtherDangerType" class="text-danger"></span>
-    </div>
-
+      
     <div class="form-group">
         <label asp-for="Details"></label>
         <textarea asp-for="Details" class="form-control"></textarea>

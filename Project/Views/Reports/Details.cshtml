@@ -1,19 +1,19 @@
 @model Gruppe4NLA.Models.ReportModel
 
 @{
-ViewData["Title"] = "Report Details";
+    ViewData["Title"] = "Report Details";
 }
 
 <h2>Report Details</h2>
 
 @if (TempData["Ok"] != null)
 {
-<div class="alert alert-success">@TempData["Ok"]</div>
+    <div class="alert alert-success">@TempData["Ok"]</div>
 }
 
 @if (TempData["Error"] != null)
 {
-<div class="alert alert-danger">@TempData["Error"]</div>
+    <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
 <div class="card">
@@ -26,13 +26,7 @@ ViewData["Title"] = "Report Details";
             <dd class="col-sm-9">@Model.SenderName</dd>
 
             <dt class="col-sm-3">Type</dt>
-            <dd class="col-sm-9">@Model.DangerType</dd>
-
-            @if (Model.Type == Gruppe4NLA.Models.ReportModel.DangerTypeEnum.Other && !string.IsNullOrEmpty(Model.OtherDangerType))
-            {
-            <dt class="col-sm-3">Other Type Description</dt>
-            <dd class="col-sm-9">@Model.OtherDangerType</dd>
-            }
+            <dd class="col-sm-9">@Model.Type</dd>
 
             <dt class="col-sm-3">Details</dt>
             <dd class="col-sm-9">@(Model.Details ?? "N/A")</dd>
@@ -54,9 +48,9 @@ ViewData["Title"] = "Report Details";
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
                 <span class="badge bg-@(Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
-                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
-                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
-                Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
                     @Model.StatusCase
                 </span>
             </dd>
@@ -67,51 +61,51 @@ ViewData["Title"] = "Report Details";
                 <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
             }
 
-        @* Show approve/reject buttons for assigned caseworker only *@
-        @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
-        Model.AssignedToUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value &&
-        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Completed &&
-        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Rejected)
-        {
-        <hr />
-        <div class="mt-3">
-            <h5>Review Actions</h5>
+            @* Show approve/reject buttons for assigned caseworker only *@
+            @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
+                        Model.AssignedToUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value &&
+                        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Completed &&
+                        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Rejected)
+            {
+                <hr />
+                <div class="mt-3">
+                    <h5>Review Actions</h5>
 
-            <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
-                    Approve Report
-                </button>
-            </form>
+                    <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
+                            Approve Report
+                        </button>
+                    </form>
 
-            <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
-                    Reject Report
-                </button>
-            </form>
-        </div>
-        }
+                    <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
+                            Reject Report
+                        </button>
+                    </form>
+                </div>
+            }
 
-        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
-        {
-        <div class="alert alert-success mt-3">
-            This report has been approved.
-        </div>
-        }
-        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
-        {
-        <div class="alert alert-danger mt-3">
-            This report has been rejected.
-        </div>
-        }
+            @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
+            {
+                <div class="alert alert-success mt-3">
+                    This report has been approved.
+                </div>
+            }
+            else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
+            {
+                <div class="alert alert-danger mt-3">
+                    This report has been rejected.
+                </div>
+            }
     </div>
 </div>
 
 <div class="mt-3">
     @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
     {
-    <a asp-action="MyQueue" class="btn btn-secondary">Back to My Queue</a>
+        <a asp-action="MyQueue" class="btn btn-secondary">Back to My Queue</a>
     }
     <a asp-action="Index" class="btn btn-secondary">Back to Reports</a>
 </div>

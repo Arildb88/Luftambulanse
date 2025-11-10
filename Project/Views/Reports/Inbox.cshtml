@@ -1,4 +1,4 @@
-@model List<Gruppe4NLA.Controllers.ReportListItemVM>
+@model List<Gruppe4NLA.ViewModels.ReportListItemVM>
 @{
     ViewData["Title"] = "Reports Inbox";
 }
@@ -26,10 +26,12 @@ else
             <tr>
                 <th>ID</th>
                 <th>Sender</th>
+                <th>Organization</th>
                 <th>Type</th>
                 <th>Date Sent</th>
                 <th>Status</th>
                 <th>Assigned To</th>
+                
                 <th>Actions</th>
             </tr>
         </thead>
@@ -39,7 +41,8 @@ else
                 <tr>
                     <td>@item.Id</td>
                     <td>@item.SenderName</td>
-                    <td>@item.DangerType</td>
+                    <td>@(item.Organization ?? "—")</td>
+                    <td>@item.Type</td>
                     <td>@item.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
                         <span class="badge bg-@(item.Status == "Submitted" ? "secondary" : 
@@ -52,6 +55,7 @@ else
                         </span>
                     </td>
                     <td>@(item.AssignedTo ?? "Unassigned")</td>
+                    
                     <td>
                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
                         

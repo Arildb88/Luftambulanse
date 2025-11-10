@@ -15,39 +15,36 @@ else
 {
     <table class="table table-striped">
         <thead>
-        <tr>
-            <th>ID</th>
-            <th>Sender</th>
-            <th>Type</th>
-            <th>Date Sent</th>
-            <th>Assigned At</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+            <tr>
+                <th>ID</th>
+                <th>Sender</th>
+                <th>Organization</th>
+                <th>Type</th>
+                <th>Date Sent</th>
+                <th>Assigned At</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
-        @foreach (var report in Model)
-        {
-            var typeText = report.Type == ReportModel.DangerTypeEnum.Other
-                ? (report.OtherDangerType ?? "Other")
-                : report.Type.ToString();
-                    
-            <tr>
-                <td>@report.Id</td>
-                <td>@report.SenderName</td>
-                <td>@typeText</td>
-                <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
-                <td>
-                    <span class="badge bg-@(report.StatusCase == ReportStatusCase.Assigned ? "primary" : "warning")">
-                        @report.StatusCase
-                    </span>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">View Details</a>
-                </td>
-            </tr>
-        }
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@report.SenderName</td>
+                    <td>@report.Type.ToString()</td>
+                    <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
+                    <td>
+                        <span class="badge bg-@(report.StatusCase == ReportStatusCase.Assigned ? "primary" : "warning")">
+                            @report.StatusCase
+                        </span>
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">View Details</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }
