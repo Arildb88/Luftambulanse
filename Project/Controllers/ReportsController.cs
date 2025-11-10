@@ -70,7 +70,6 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // (Removed: validation for OtherDangerType — no longer used)
 
             // Konverter høyde til meter hvis brukeren har valgt "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
