@@ -399,6 +399,12 @@ body {
     border-color: #0b5ed7;
 }
 
+/* ---------- Height + Light row ----------*/
+.height-light-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
 
 /* Hide the radios */
 .unit-switch input[type="radio"] {
@@ -475,12 +481,6 @@ body {
     border-color: #0b5ed7;
 }
 
-/* ---------- Height + Light row ----------*/
-.height-light-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
 
 /* Lighted box  */
 .light-card-small {
@@ -543,7 +543,7 @@ body {
 /* --- Responsive fallback for smaller screens --- */
 @media (max-width: 768px) {
     .height-light-row {
-        flex-direction: column;
+        flex-direction: row;
         align-items: stretch;
     }
 
