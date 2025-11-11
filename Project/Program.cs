@@ -3,23 +3,21 @@ using Gruppe4NLA.DataContext;
 using Gruppe4NLA.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using System.Security.Cryptography;
-using System.Text;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServerVersion
 
 
+// Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods)
+// Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods for MVC controllers Post/Put/Patch/Delete)
 builder.Services.AddControllersWithViews(o =>
 {
     o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
-// Arild: Allows access to login/register pages without being logged in
+// Allows access to login/register pages without being logged in
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
@@ -30,19 +28,20 @@ builder.Services.AddRazorPages(options =>
 
 });
 
-
-// Hide "Server" header from Kestrel
+// Hide "Server" header from Kestrel, security measures. Also added to the group of security measures below
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.AddServerHeader = false;
 });
 
+// Builds/connects the webapplication to our database using appsettings.json "OurDbConnection", new MariaDbServerversion (to make it work in our study group (specified version, no update conflicts from different versions in our group)
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
     new MariaDbServerVersion(new Version(11, 8, 3)),
     
     MySqlOptions => MySqlOptions.EnableRetryOnFailure()
     ));
 
+// AddsRoles, EntityFramework, and makes requireconfirmed account set to false, in a live published version this would be set to true
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
@@ -51,7 +50,7 @@ builder.Services
 // Delegation business logic (used by CaseworkerAdmin to assign/unassign reports)
 builder.Services.AddScoped<IReportAssignmentService, ReportAssignmentService>();
 
-// Arild: Users need to login to use our application
+// Adds Authorizations to our project. Users need to login to use our application
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
@@ -63,19 +62,20 @@ builder.Services.AddAuthorization(options =>
 });
 
 // Optional: cookie paths so redirects go to Identity pages
+// Users trying to access a restricted page will be redirected to the login page
 builder.Services.ConfigureApplicationCookie(o =>
 {
     o.LoginPath = "/Identity/Account/Login";
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
+// Builds the app
 var app = builder.Build();
 
 // Content security policy CSP
 app.Use(async (context, next) =>
 {
     context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-    context.Response.Headers["X-Frame-Options"] = "DENY";
     context.Response.Headers["Referrer-Policy"] = "no-referrer";
     context.Response.Headers["X-XSS-Protection"] = "0";
     context.Response.Headers.Remove("Server"); //Already removed with the addServerHeader=false, but now within the security measures. Unacecerry but not harmful
@@ -84,21 +84,22 @@ app.Use(async (context, next) =>
         context.Response.Headers["Strict-Transport-Security"] =
             "max-age=31536000; includeSubDomains; preload";
 
+    // Needs to be "whitelisted" to allow Leaflet to function properly
     // Allow Leaflet + the tile hosts you actually use
     context.Response.Headers["Content-Security-Policy"] =
         "default-src 'self'; " +
         "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
         "style-src  'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
-        // <-- IMPORTANT: tile/image sources
+        // IMPORTANT: tile/image sources. Add the ones you actually use in your app!
         "img-src 'self' data: blob: " +
-            "https://tile.openstreetmap.org " +        // no-subdomain OSM
-            "https://*.tile.openstreetmap.org " +      // subdomain OSM (a/b/c)
-            "https://tiles.stadiamaps.com " +          // your dark tiles
-            "https://*.google.com; " +                 // mt0..mt3.google.com/vt
+            "https://tile.openstreetmap.org " +        
+            "https://*.tile.openstreetmap.org " +      
+            "https://tiles.stadiamaps.com " +          
+            "https://*.google.com; " +                 
         "connect-src 'self'; " +
         "font-src 'self' data:; " +
-        "frame-src 'self'; " +                     // allows <iframe src="..."> within same origin
-        "frame-ancestors 'self'; " +               // prevents embedding by *other* sites
+        "frame-src 'self'; " +                     
+        "frame-ancestors 'self'; " +               
         "base-uri 'self'; form-action 'self'";
 
     // Add other headers as needed
@@ -113,13 +114,13 @@ using (var scope = app.Services.CreateScope())
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // 1) Roles in our project
+    // Defines the roles in our project
     string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
     foreach (var role in roles)
         if (!await roleMgr.RoleExistsAsync(role))
             await roleMgr.CreateAsync(new IdentityRole(role));
 
-    // 2) Demo users to try to login to our application
+    // Demo users to try to login to our application, pilot users have different organizations
     async Task EnsureUserInRole(string email, string password, string role, string organization = null)
     {
         var user = await userMgr.FindByEmailAsync(email);
@@ -141,7 +142,6 @@ using (var scope = app.Services.CreateScope())
 
     await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user
     await EnsureUserInRole("admin1@test.com", "Test123!", "Admin");      // Admin user
-    await EnsureUserInRole("admin2@test.com", "Test123!", "Admin");      // Admin user
 
     await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user
     await EnsureUserInRole("caseworker1@test.com", "Test123!", "Caseworker"); // Caseworker user
@@ -155,16 +155,13 @@ using (var scope = app.Services.CreateScope())
     await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "Avd SørØst");      // Pilot user
     await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "Avd SørVest");      // Pilot user
     await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "Avd Sør");      // Pilot user
-
-
 }
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // The default HSTS value is 30 days.
     app.UseHsts();
 
      
@@ -181,14 +178,13 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
-
-
-
+// Sets the default route pattern for controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Sets the route pattern for areas (like Identity)
 app.MapControllerRoute(
     name: "Areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
@@ -197,8 +193,5 @@ app.MapControllerRoute(
 // Needed for Razor Pages-routing
 app.MapRazorPages();
 
-
-
-
-
+// Runs the app with the configurations above
 app.Run();
