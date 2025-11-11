@@ -177,6 +177,7 @@ using (var scope = app.Services.CreateScope())
     await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "AvdSørØst");      // Pilot user
     await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "AvdSørVest");      // Pilot user
     await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "AvdSør");      // Pilot user
+    await EnsureUserInRole("pilot23@test.com", "Test123!", "Pilot", "AvdSørVest");      // Pilot user
 }
 
 // Configure the HTTP request pipeline.
