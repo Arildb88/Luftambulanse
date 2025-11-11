@@ -1,94 +1,113 @@
-@model List<Gruppe4NLA.ViewModels.ReportListItemVM>
+﻿@model List<Gruppe4NLA.ViewModels.ReportListItemVM>
 @{
-    ViewData["Title"] = "Reports Inbox";
+    var isort = (ViewBag.ISort as string) ?? "DateSent";
+    var idir = (ViewBag.IDir as string) ?? "desc";
+
+    Func<string, string> NextI = c => (isort.Equals(c, StringComparison.OrdinalIgnoreCase) && idir == "asc") ? "desc" : "asc";
+    Func<string, string> ArrowI = c => isort.Equals(c, StringComparison.OrdinalIgnoreCase) ? (idir == "asc" ? "▲" : "▼") : "";
 }
+<style>
+    .isort-link {
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .isort-link .caret {
+            margin-left: .25rem;
+            font-size: .8rem;
+        }
+</style>
 
 <h2>Reports Inbox</h2>
 
-@if (TempData["Ok"] != null)
-{
-    <div class="alert alert-success">@TempData["Ok"]</div>
-}
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
-
-@if (!Model.Any())
-{
-    <p>No reports found.</p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="Sender" asp-route-idir="@NextI("Sender")" class="isort-link">
+                    Sender <span class="caret">@ArrowI("Sender")</span>
+                </a>
+            </th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="Organization" asp-route-idir="@NextI("Organization")" class="isort-link">
+                    Organization <span class="caret">@ArrowI("Organization")</span>
+                </a>
+            </th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="Type" asp-route-idir="@NextI("Type")" class="isort-link">
+                    Type <span class="caret">@ArrowI("Type")</span>
+                </a>
+            </th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="DateSent" asp-route-idir="@NextI("DateSent")" class="isort-link">
+                    Date Sent <span class="caret">@ArrowI("DateSent")</span>
+                </a>
+            </th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="Status" asp-route-idir="@NextI("Status")" class="isort-link">
+                    Status <span class="caret">@ArrowI("Status")</span>
+                </a>
+            </th>
+            <th>
+                <a asp-action="Inbox" asp-route-isort="AssignedTo" asp-route-idir="@NextI("AssignedTo")" class="isort-link">
+                    Assigned To <span class="caret">@ArrowI("AssignedTo")</span>
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>ID</th>
-                <th>Sender</th>
-                <th>Organization</th>
-                <th>Type</th>
-                <th>Date Sent</th>
-                <th>Status</th>
-                <th>Assigned To</th>
-                
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.SenderName</td>
-                    <td>@(item.Organization ?? "�")</td>
-                    <td>@item.Type</td>
-                    <td>@item.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>
-                        <span class="badge bg-@(item.Status == "Submitted" ? "secondary" : 
-                                               item.Status == "Assigned" ? "primary" : 
-                                               item.Status == "InReview" ? "warning" : 
-                                               item.Status == "Completed" ? "success" : "danger")">
-                            @(item.Status == "Completed" ? "Approved" : 
-                              item.Status == "Rejected" ? "Rejected" : 
-                              item.Status)
-                        </span>
-                    </td>
-                    <td>@(item.AssignedTo ?? "Unassigned")</td>
-                    
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
-                        
-                        @if (string.IsNullOrEmpty(item.AssignedTo))
+                <td>@item.Id</td>
+                <td>@item.SenderName</td>
+                <td>@(item.Organization ?? "—")</td>
+                <td>@item.Type</td>
+                <td>@item.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <span class="badge bg-@(
+                          item.Status == "Submitted" ? "secondary" :
+                          item.Status == "Assigned" ? "primary" :
+                          item.Status == "InReview" ? "warning" :
+                          item.Status == "Completed" ? "success" : "danger")">
+                    @(item.Status == "Completed" ? "Approved" :
+                            item.Status == "Rejected" ? "Rejected" : item.Status)
+                </span>
+            </td>
+            <td>@(item.AssignedTo ?? "Unassigned")</td>
+            <td>
+                <div class="d-flex gap-2 flex-wrap">
+                    <!-- Always show View -->
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+
+                    @if (string.IsNullOrEmpty(item.AssignedTo))
                         {
                             @* Admin can assign to anyone *@
                             @if (User.IsInRole("CaseworkerAdm"))
                             {
                                 <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Assign</a>
                             }
-                            
+
                             @* Caseworker can self-assign *@
                             @if (User.IsInRole("Caseworker"))
                             {
-                                <form asp-action="SelfAssign" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <form asp-action="SelfAssign" asp-route-id="@item.Id" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-success">
-                                        Take This Case
-                                    </button>
+                                    <button type="submit" class="btn btn-sm btn-success">Take This Case</button>
                                 </form>
                             }
                         }
                         else
                         {
-                            @* Only admin can reassign or unassign *@
+                            @* Already assigned *@
                             @if (User.IsInRole("CaseworkerAdm"))
                             {
                                 <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Reassign</a>
-                                
-                                <form asp-action="Unassign" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <form asp-action="Unassign" asp-route-id="@item.Id" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger" 
-                                            onclick="return confirm('Remove assignment?')">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Remove assignment?')">
                                         Unassign
                                     </button>
                                 </form>
@@ -98,11 +117,12 @@ else
                                 <span class="badge bg-secondary">Assigned</span>
                             }
                         }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </div>
+                </td>
+        </tr>
+                }
+    </tbody>
+</table>
 }
 
 <a asp-action="Index" class="btn btn-secondary mt-3">Back to All Reports</a>
