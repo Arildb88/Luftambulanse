@@ -26,10 +26,14 @@
         attribution: '&copy; OpenStreetMap contributors'
     });
 
-    window.darkLayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-        minZoom: 0, maxZoom: 20, ext: 'png',
-        attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
-    });
+    window.darkLayer = L.tileLayer(
+        `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
+        {
+            minZoom: 0,
+            maxZoom: 20,
+            attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+        }
+    );
 
     // Apply correct base layer based on saved dark mode
     const isDark = localStorage.getItem('darkmode') === 'active';

@@ -39,33 +39,76 @@ namespace Gruppe4NLA.Controllers
             _assigner = assigner;
         }
 
-        public async Task<IActionResult> Index(string? filter)
+        public async Task<IActionResult> Index(string? filter, string rsort = "DateSent", string rdir = "desc")
         {
             IQueryable<ReportModel> q = _context.Reports;
 
-            // Non-admin/caseworker: only see own reports
+            // Visibility as you had
             if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker")))
             {
                 var myId = _userManager.GetUserId(User);
                 var me = await _userManager.GetUserAsync(User);
                 var email = me?.Email;
-
-                // Either same Identity UserId, or legacy rows matched by email
-                q = q.Where(r => r.UserId == myId
-                              || (r.UserId == null && r.SenderName == email));
+                q = q.Where(r => r.UserId == myId || (r.UserId == null && r.SenderName == email));
             }
 
+            // Tabs
             var f = (filter ?? "all").ToLowerInvariant();
-            if (f == "submitted")
-                q = q.Where(r => r.Status == ReportStatus.Submitted);
-            else if (f == "drafts")
-                q = q.Where(r => r.Status == ReportStatus.Draft);
+            if (f == "submitted") q = q.Where(r => r.Status == ReportStatus.Submitted);
+            else if (f == "drafts") q = q.Where(r => r.Status == ReportStatus.Draft);
+
+            // Normalize dir
+            rdir = (rdir?.ToLower() == "asc") ? "asc" : "desc";
+
+            // Reports-specific sorting
+            switch ((rsort ?? "").ToLowerInvariant())
+            {
+                case "sender":
+                    q = rdir == "asc" ? q.OrderBy(r => r.SenderName)
+                                      : q.OrderByDescending(r => r.SenderName);
+                    break;
+
+                case "height":
+                    q = rdir == "asc" ? q.OrderBy(r => r.HeightInMeters ?? 0)
+                                      : q.OrderByDescending(r => r.HeightInMeters ?? 0);
+                    break;
+
+                case "type":
+                    q = rdir == "asc" ? q.OrderBy(r => r.Type)
+                                      : q.OrderByDescending(r => r.Type);
+                    break;
+
+                case "status":
+                    // Sort by the StatusCase you display (custom order)
+                    q = (rdir == "asc")
+                        ? q.OrderBy(r =>
+                            r.StatusCase == ReportStatusCase.Submitted ? 0 :
+                            r.StatusCase == ReportStatusCase.Assigned ? 1 :
+                            r.StatusCase == ReportStatusCase.InReview ? 2 :
+                            r.StatusCase == ReportStatusCase.Completed ? 3 : 4)
+                        : q.OrderByDescending(r =>
+                            r.StatusCase == ReportStatusCase.Submitted ? 0 :
+                            r.StatusCase == ReportStatusCase.Assigned ? 1 :
+                            r.StatusCase == ReportStatusCase.InReview ? 2 :
+                            r.StatusCase == ReportStatusCase.Completed ? 3 : 4);
+                    break;
+
+                case "datesent":
+                default:
+                    q = rdir == "asc" ? q.OrderBy(r => r.DateSent)
+                                      : q.OrderByDescending(r => r.DateSent);
+                    break;
+            }
+
+            var reports = await q.AsNoTracking().ToListAsync();
 
             ViewData["Filter"] = f;
+            ViewBag.RSort = rsort;
+            ViewBag.RDir = rdir;
 
-            var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
             return View(reports);
         }
+
 
         // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
@@ -505,40 +548,55 @@ namespace Gruppe4NLA.Controllers
         // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
-        public async Task<IActionResult> MyQueue()
+        public async Task<IActionResult> MyQueue(string sort = "AssignedAt", string dir = "asc")
         {
             var me = _userManager.GetUserId(User)!;
+            dir = (dir?.ToLower() == "desc") ? "desc" : "asc";
 
-            var items = await _context.Reports
+            var q = _context.Reports
                 .Where(r => r.AssignedToUserId == me &&
                             (r.StatusCase == ReportStatusCase.Assigned || r.StatusCase == ReportStatusCase.InReview))
-                .OrderBy(r => r.AssignedAtUtc)
-                .ToListAsync();
+                .Select(r => new MyQueueItemVM
+                {
+                    Id = r.Id,
+                    SenderName = r.SenderName,
+                    Organization =
+                        _context.Users.Where(u => u.Id == r.UserId).Select(u => u.Organization).FirstOrDefault()
+                        ?? _context.Users.Where(u => u.Email == r.SenderName).Select(u => u.Organization).FirstOrDefault(),
+                    Type = r.Type.ToString(),
+                    DateSent = r.DateSent,
+                    AssignedAtUtc = r.AssignedAtUtc,
+                    StatusCase = r.StatusCase
+                });
 
+            // (sorting switch here, same as before)
+
+            var items = await q.AsNoTracking().ToListAsync();
+            ViewBag.Sort = sort; ViewBag.Dir = dir;
             return View(items);
         }
-    }
 
 
-    public class AssignReportVM
-    {
-        [Required] public int ReportId { get; set; }
-        public string? CurrentAssignee { get; set; }
+        public class AssignReportVM
+        {
+            [Required] public int ReportId { get; set; }
+            public string? CurrentAssignee { get; set; }
 
-        [Required(ErrorMessage = "Please select a caseworker")]
-        public string? ToUserId { get; set; }
+            [Required(ErrorMessage = "Please select a caseworker")]
+            public string? ToUserId { get; set; }
 
-        public List<SelectListItem> Caseworkers { get; set; } = new();
-    }
+            public List<SelectListItem> Caseworkers { get; set; } = new();
+        }
 
-    public class ReportListItemVM
-    {
-        public int Id { get; set; }
-        public string? SenderName { get; set; }
-        public string? Organization { get; set; }
-        public string? Type { get; set; }
-        public DateTime DateSent { get; set; }
-        public string Status { get; set; } = "";
-        public string? AssignedTo { get; set; }
+        public class ReportListItemVM
+        {
+            public int Id { get; set; }
+            public string? SenderName { get; set; }
+            public string? Organization { get; set; }
+            public string? Type { get; set; }
+            public DateTime DateSent { get; set; }
+            public string Status { get; set; } = "";
+            public string? AssignedTo { get; set; }
+        }
     }
 }

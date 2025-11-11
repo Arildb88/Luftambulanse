@@ -1,9 +1,28 @@
-@model List<Gruppe4NLA.Models.ReportModel>
-
+﻿@model List<Gruppe4NLA.Models.ReportModel>
 @{
     ViewData["Title"] = "Reports";
-    var filter = ViewData["Filter"]?.ToString() ?? "all";
+    var filter = (ViewData["Filter"] as string) ?? "all";
+
+    var rsort = (ViewBag.RSort as string) ?? "DateSent";
+    var rdir = (ViewBag.RDir as string) ?? "desc";
+
+    Func<string, string> NextR = col =>
+        (rsort.Equals(col, StringComparison.OrdinalIgnoreCase) && rdir == "asc") ? "desc" : "asc";
+
+    Func<string, string> ArrowR = col =>
+        rsort.Equals(col, StringComparison.OrdinalIgnoreCase) ? (rdir == "asc" ? "▲" : "▼") : "";
 }
+<style>
+    .rsort-link {
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .rsort-link .caret {
+            margin-left: .25rem;
+            font-size: .8rem;
+        }
+</style>
 
 <h2>Reports</h2>
 
@@ -41,17 +60,58 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Sender</th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Sender"
+                       asp-route-rdir="@NextR("Sender")"
+                       class="rsort-link">
+                        Sender <span class="caret">@ArrowR("Sender")</span>
+                    </a>
+                </th>
                 <th>Latitude</th>
                 <th>Longitude</th>
-                <th>Height (m)</th>
-                <th>Type</th>
-                <th>Date Sent</th>
-                <th>Status</th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Height"
+                       asp-route-rdir="@NextR("Height")"
+                       class="rsort-link">
+                        Height (m) <span class="caret">@ArrowR("Height")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Type"
+                       asp-route-rdir="@NextR("Type")"
+                       class="rsort-link">
+                        Type <span class="caret">@ArrowR("Type")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="DateSent"
+                       asp-route-rdir="@NextR("DateSent")"
+                       class="rsort-link">
+                        Date Sent <span class="caret">@ArrowR("DateSent")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Status"
+                       asp-route-rdir="@NextR("Status")"
+                       class="rsort-link">
+                        Status <span class="caret">@ArrowR("Status")</span>
+                    </a>
+                </th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
+
             @foreach (var report in Model)
             {
                 <tr>

@@ -1,6 +1,8 @@
 ﻿@* Leaflet.cshtml — map + in-page modal for Add Report *@
 @* Einar, Arild *@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,6 +63,7 @@
             background: rgba(0,0,0,0.35);
         }
                 
+
     </style>
 </head>
 
@@ -85,6 +88,11 @@
         </div>
     </dialog>
 
+    @* // Get Stadia Maps API key from Context.Items *@
+    @{
+        var stadiaApiKey = Context.Items["StadiaApiKey"] as string;
+    }
+
     <script>
 
         //CustomElementRegistry Helicopter icon for your location
@@ -104,17 +112,31 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        const darkMode = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}', {
-            minZoom: 0, maxZoom: 20, ext: 'png',
-            attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
-        });
+                // Sett API-nøkkelen som en JS-variabel fra Razor
+        const stadiaApiKey = '@stadiaApiKey';
 
-        const googleSat = L.tileLayer('https://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
-            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-        });
+        // Bruk backticks for template-strings:
+        const darkMode = L.tileLayer(
+            `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaApiKey}`,
+            {
+                minZoom: 0,
+                maxZoom: 20,
+                attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+            }
+        );
+
+        const stadiaSat = L.tileLayer(
+            `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
+            {
+                minZoom: 0,
+                maxZoom: 20,
+                attribution: '&copy; Stadia Maps, Maxar, OpenStreetMap contributors'
+            }
+        );
+
 
         L.control.layers(
-            { 'OSM': osm, 'Darkmode': darkMode, 'SatView': googleSat },
+                { 'OSM': osm, 'Darkmode': darkMode, 'SatView': stadiaSat },
             {},
             { collapsed: false }
         ).addTo(map);
@@ -529,6 +551,7 @@
             };
         });
         
+
     </script>
 </body>
 </html>
