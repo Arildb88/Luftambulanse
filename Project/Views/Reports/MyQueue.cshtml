@@ -1,4 +1,6 @@
-@model List<Gruppe4NLA.Models.ReportModel>
+@model List<Gruppe4NLA.ViewModels.MyQueueItemVM>
+@using Gruppe4NLA.Models
+
 @{
     ViewData["Title"] = "My Queue";
 }
@@ -32,6 +34,7 @@ else
                 <tr>
                     <td>@report.Id</td>
                     <td>@report.SenderName</td>
+                    <td>@(report.Organization ?? "—")</td>
                     <td>@report.Type.ToString()</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
