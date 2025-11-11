@@ -148,6 +148,16 @@ using (var scope = app.Services.CreateScope())
             if (!create.Succeeded)
                 throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
         }
+        else
+        {
+            // UPDATE organization for existing user if provided and different/missing
+            if (!string.IsNullOrWhiteSpace(organization) && user.Organization != organization)
+            {
+                user.Organization = organization;
+                await userMgr.UpdateAsync(user);
+            }
+        }
+
         if (!await userMgr.IsInRoleAsync(user, role))
             await userMgr.AddToRoleAsync(user, role);
     }
@@ -163,10 +173,10 @@ using (var scope = app.Services.CreateScope())
     await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
     await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user
 
-    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot", "Avd Nord");      // Pilot user
-    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "Avd SørØst");      // Pilot user
-    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "Avd SørVest");      // Pilot user
-    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "Avd Sør");      // Pilot user
+    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot", "AvdNord");      // Pilot user
+    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "AvdSørØst");      // Pilot user
+    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "AvdSørVest");      // Pilot user
+    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "AvdSør");      // Pilot user
 }
 
 // Configure the HTTP request pipeline.
