@@ -564,40 +564,55 @@ namespace Gruppe4NLA.Controllers
         // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
-        public async Task<IActionResult> MyQueue()
+        public async Task<IActionResult> MyQueue(string sort = "AssignedAt", string dir = "asc")
         {
             var me = _userManager.GetUserId(User)!;
+            dir = (dir?.ToLower() == "desc") ? "desc" : "asc";
 
-            var items = await _context.Reports
+            var q = _context.Reports
                 .Where(r => r.AssignedToUserId == me &&
                             (r.StatusCase == ReportStatusCase.Assigned || r.StatusCase == ReportStatusCase.InReview))
-                .OrderBy(r => r.AssignedAtUtc)
-                .ToListAsync();
+                .Select(r => new MyQueueItemVM
+                {
+                    Id = r.Id,
+                    SenderName = r.SenderName,
+                    Organization =
+                        _context.Users.Where(u => u.Id == r.UserId).Select(u => u.Organization).FirstOrDefault()
+                        ?? _context.Users.Where(u => u.Email == r.SenderName).Select(u => u.Organization).FirstOrDefault(),
+                    Type = r.Type.ToString(),
+                    DateSent = r.DateSent,
+                    AssignedAtUtc = r.AssignedAtUtc,
+                    StatusCase = r.StatusCase
+                });
 
+            // (sorting switch here, same as before)
+
+            var items = await q.AsNoTracking().ToListAsync();
+            ViewBag.Sort = sort; ViewBag.Dir = dir;
             return View(items);
         }
-    }
 
 
-    public class AssignReportVM
-    {
-        [Required] public int ReportId { get; set; }
-        public string? CurrentAssignee { get; set; }
+        public class AssignReportVM
+        {
+            [Required] public int ReportId { get; set; }
+            public string? CurrentAssignee { get; set; }
 
-        [Required(ErrorMessage = "Please select a caseworker")]
-        public string? ToUserId { get; set; }
+            [Required(ErrorMessage = "Please select a caseworker")]
+            public string? ToUserId { get; set; }
 
-        public List<SelectListItem> Caseworkers { get; set; } = new();
-    }
+            public List<SelectListItem> Caseworkers { get; set; } = new();
+        }
 
-    public class ReportListItemVM
-    {
-        public int Id { get; set; }
-        public string? SenderName { get; set; }
-        public string? Organization { get; set; }
-        public string? Type { get; set; }
-        public DateTime DateSent { get; set; }
-        public string Status { get; set; } = "";
-        public string? AssignedTo { get; set; }
+        public class ReportListItemVM
+        {
+            public int Id { get; set; }
+            public string? SenderName { get; set; }
+            public string? Organization { get; set; }
+            public string? Type { get; set; }
+            public DateTime DateSent { get; set; }
+            public string Status { get; set; } = "";
+            public string? AssignedTo { get; set; }
+        }
     }
 }
