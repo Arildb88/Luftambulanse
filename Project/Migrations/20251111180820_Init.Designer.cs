@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251110100100_RemovedOtherDetails")]
-    partial class RemovedOtherDetails
+    [Migration("20251111180820_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,6 +57,9 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Organization")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
@@ -142,9 +145,6 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("AssignedToUserId")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DangerType")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
@@ -162,9 +162,6 @@ namespace Gruppe4NLA.Migrations
 
                     b.Property<double>("Longitude")
                         .HasColumnType("double");
-
-                    b.Property<string>("OtherDangerType")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("SenderName")
                         .IsRequired()

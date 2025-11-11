@@ -1,8 +1,9 @@
-using System.Diagnostics;
 using Gruppe4NLA.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Gruppe4NLA.Controllers
 {

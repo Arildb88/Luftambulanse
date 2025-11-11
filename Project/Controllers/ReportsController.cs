@@ -1,18 +1,20 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.DataContext;
 using Gruppe4NLA.Models;
 using Gruppe4NLA.Services;
 using Gruppe4NLA.ViewModels;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Composition;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using InboxRowVM = Gruppe4NLA.ViewModels.ReportListItemVM;
 
 namespace Gruppe4NLA.Controllers
@@ -27,7 +29,7 @@ namespace Gruppe4NLA.Controllers
 
 
         private readonly IReportAssignmentService _assigner;
-
+    
         public ReportsController(
             AppDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -38,6 +40,8 @@ namespace Gruppe4NLA.Controllers
             _userManager = userManager;
             _assigner = assigner;
         }
+
+        
 
         public async Task<IActionResult> Index(string? filter, string rsort = "DateSent", string rdir = "desc")
         {
@@ -353,8 +357,6 @@ namespace Gruppe4NLA.Controllers
             TempData["Message"] = "Report submitted.";
             return RedirectToAction(nameof(Index), new { filter = "submitted" });
         }
-        // === /Draft feature ===
-
 
         // Admin inbox: list all reports with assignment/status info
         [Authorize(Roles = "CaseworkerAdm,Caseworker")]
@@ -598,5 +600,18 @@ namespace Gruppe4NLA.Controllers
             public string Status { get; set; } = "";
             public string? AssignedTo { get; set; }
         }
+
+        public async Task<IActionResult> FullMap()
+        {
+            var reports = await _context.Reports
+                                        .Where(r => !string.IsNullOrEmpty(r.GeoJson))
+                                        .ToListAsync();
+
+            return View(reports ?? new List<ReportModel>()); // fallback to empty list
+        }
+
     }
+
 }
+
+

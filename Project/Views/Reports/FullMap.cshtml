@@ -1,0 +1,90 @@
+﻿@model IEnumerable<ReportModel>
+@using Gruppe4NLA.Models
+@using System.Text.Json.Nodes
+@{
+    ViewData["Title"] = "FullMap";
+
+    // Combine all reports into a single FeatureCollection
+    var allFeatures = new List<JsonObject>();
+
+    foreach (var report in Model.Where(r => !string.IsNullOrEmpty(r.GeoJson)))
+    {
+        var doc = JsonNode.Parse(report.GeoJson);
+        if (doc?["features"] is JsonArray features)
+        {
+            foreach (var feature in features)
+            {
+                var f = feature.AsObject();
+
+                // Ensure properties exist
+                var props = f["properties"] as JsonObject ?? new JsonObject();
+                props["Type"] = report.Type?.ToString();
+                props["ReportID"] = report.Id;
+                f["properties"] = props;
+
+                // Ensure geometry type exists
+                var geom = f["geometry"]?.AsObject();
+                if (geom != null && !geom.ContainsKey("type"))
+                {
+                    // If coordinates is a single point -> Point, else LineString
+                    var coords = geom["coordinates"];
+                    if (coords is JsonArray arr && arr.Count > 0)
+                    {
+                        if (arr[0] is JsonValue) // simple [lon, lat] -> Point
+                        {
+                            geom["type"] = "Point";
+                        }
+                        else // nested [[lon, lat], ...] -> LineString
+                        {
+                            geom["type"] = "LineString";
+                        }
+                    }
+                }
+
+                allFeatures.Add(f);
+            }
+        }
+    }
+
+    var combinedGeoJson = System.Text.Json.JsonSerializer.Serialize(new { type = "FeatureCollection", features = allFeatures });
+}
+
+}
+
+<h2>Full Map</h2>
+
+<div id="map" style="height: 600px;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+    var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    var geoData = @Html.Raw(combinedGeoJson);
+
+    var geoLayer = L.geoJSON(geoData, {
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup("<strong>Type:</strong> " + feature.properties.Type +
+                            "<br><strong>ID:</strong> " + feature.properties.ReportID);
+        }
+    }).addTo(map);
+
+    // Fit map to all features
+    map.fitBounds(geoLayer.getBounds());
+
+</script>
+
+
+<h3>Reports GeoJSON Debug:</h3>
+<ul>
+    @foreach (var report in Model)
+    {
+        <li>
+            Report Type: @report.Type
+            <pre>@report.GeoJson</pre>
+        </li>
+    }
+</ul>
