@@ -690,4 +690,51 @@ dialog::backdrop {
     }
 
     /*---------------------------------Submit and Draft button-------------------*/
+/* --- Felles styling for begge knapper --- */
+button[name="action"][value="save"],
+button[name="action"][value="submit"] {
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* --- Light Mode --- */
+body:not(.darkmode) button[name="action"][value="save"] {
+    background-color: #f0c93d; /* varm gul */
+    color: #000; /* svart tekst */
+}
+
+    body:not(.darkmode) button[name="action"][value="save"]:hover {
+        background-color: #e0b830;
+    }
+
+body:not(.darkmode) button[name="action"][value="submit"] {
+    background-color: #198754; /* grønn */
+    color: #000; /* svart tekst */
+}
+
+    body:not(.darkmode) button[name="action"][value="submit"]:hover {
+        background-color: #157347;
+    }
+
+/* --- Dark Mode --- */
+body.darkmode button[name="action"][value="save"] {
+    background-color: #c7a525; /* mørkere gul */
+    color: #fff; /* hvit tekst */
+}
+
+    body.darkmode button[name="action"][value="save"]:hover {
+        background-color: #b69520;
+    }
+
+body.darkmode button[name="action"][value="submit"] {
+    background-color: #157347; /* mørkere grønn */
+    color: #fff; /* hvit tekst */
+}
+
+    body.darkmode button[name="action"][value="submit"]:hover {
+        background-color: #116d3f;
+    }
 

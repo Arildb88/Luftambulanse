@@ -10,7 +10,13 @@
 
 <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
     <div class="p-4 rounded shadow-lg" style="background-color: var(--base-variant); color: var(--text-color);">
-        <h1 style="font-size: 3rem; margin-bottom: 1rem;">@Model.Title</h1>
+        @{
+        var titleColor = Model.Title.Contains("Draft", StringComparison.OrdinalIgnoreCase)
+                ? "#f0c93d" // gul for draft
+                : "#28a745"; // grønn for submitted
+                        }
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; color:@titleColor;">@Model.Title</h1>
+
         <p style="font-size: 1.25rem; margin-bottom: 2rem;">@Model.Message</p>
         <button class="btn btn-primary px-5 py-2" id="closeConfirmBtn">OK</button>
 

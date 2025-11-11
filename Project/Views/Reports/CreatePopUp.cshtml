@@ -160,6 +160,59 @@
     </div>
 </form>
 
+<style>
+    /* SAVE DRAFT knapp i varm gulfarge */
+    button[name="action"][value="save"] {
+        background-color: #f0c93d; /* varm, balansert gul */
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+        transition: background-color 0.25s ease;
+    }
+
+        /* Hover-effekt (litt mørkere nyanse) */
+        button[name="action"][value="save"]:hover {
+            background-color: #d9b632;
+        }
+
+    /* SUBMIT-knappen får beholdt grønn stil */
+    button[name="action"][value="submit"] {
+        background-color: #198754;
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+    }
+
+        button[name="action"][value="submit"]:hover {
+            background-color: #157347;
+        }
+</style>
+
+<style>
+    /* Removes padding in form with CSS override */
+    html, body { 
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: auto;
+        background-color: var(--base-color);
+    }
+
+    form {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .container, .form-group, main {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
