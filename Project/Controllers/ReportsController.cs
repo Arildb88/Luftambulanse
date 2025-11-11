@@ -39,33 +39,76 @@ namespace Gruppe4NLA.Controllers
             _assigner = assigner;
         }
 
-        public async Task<IActionResult> Index(string? filter)
+        public async Task<IActionResult> Index(string? filter, string rsort = "DateSent", string rdir = "desc")
         {
             IQueryable<ReportModel> q = _context.Reports;
 
-            // Non-admin/caseworker: only see own reports
+            // Visibility as you had
             if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker")))
             {
                 var myId = _userManager.GetUserId(User);
                 var me = await _userManager.GetUserAsync(User);
                 var email = me?.Email;
-
-                // Either same Identity UserId, or legacy rows matched by email
-                q = q.Where(r => r.UserId == myId
-                              || (r.UserId == null && r.SenderName == email));
+                q = q.Where(r => r.UserId == myId || (r.UserId == null && r.SenderName == email));
             }
 
+            // Tabs
             var f = (filter ?? "all").ToLowerInvariant();
-            if (f == "submitted")
-                q = q.Where(r => r.Status == ReportStatus.Submitted);
-            else if (f == "drafts")
-                q = q.Where(r => r.Status == ReportStatus.Draft);
+            if (f == "submitted") q = q.Where(r => r.Status == ReportStatus.Submitted);
+            else if (f == "drafts") q = q.Where(r => r.Status == ReportStatus.Draft);
+
+            // Normalize dir
+            rdir = (rdir?.ToLower() == "asc") ? "asc" : "desc";
+
+            // Reports-specific sorting
+            switch ((rsort ?? "").ToLowerInvariant())
+            {
+                case "sender":
+                    q = rdir == "asc" ? q.OrderBy(r => r.SenderName)
+                                      : q.OrderByDescending(r => r.SenderName);
+                    break;
+
+                case "height":
+                    q = rdir == "asc" ? q.OrderBy(r => r.HeightInMeters ?? 0)
+                                      : q.OrderByDescending(r => r.HeightInMeters ?? 0);
+                    break;
+
+                case "type":
+                    q = rdir == "asc" ? q.OrderBy(r => r.Type)
+                                      : q.OrderByDescending(r => r.Type);
+                    break;
+
+                case "status":
+                    // Sort by the StatusCase you display (custom order)
+                    q = (rdir == "asc")
+                        ? q.OrderBy(r =>
+                            r.StatusCase == ReportStatusCase.Submitted ? 0 :
+                            r.StatusCase == ReportStatusCase.Assigned ? 1 :
+                            r.StatusCase == ReportStatusCase.InReview ? 2 :
+                            r.StatusCase == ReportStatusCase.Completed ? 3 : 4)
+                        : q.OrderByDescending(r =>
+                            r.StatusCase == ReportStatusCase.Submitted ? 0 :
+                            r.StatusCase == ReportStatusCase.Assigned ? 1 :
+                            r.StatusCase == ReportStatusCase.InReview ? 2 :
+                            r.StatusCase == ReportStatusCase.Completed ? 3 : 4);
+                    break;
+
+                case "datesent":
+                default:
+                    q = rdir == "asc" ? q.OrderBy(r => r.DateSent)
+                                      : q.OrderByDescending(r => r.DateSent);
+                    break;
+            }
+
+            var reports = await q.AsNoTracking().ToListAsync();
 
             ViewData["Filter"] = f;
+            ViewBag.RSort = rsort;
+            ViewBag.RDir = rdir;
 
-            var reports = await q.OrderByDescending(r => r.DateSent).ToListAsync();
             return View(reports);
         }
+
 
         // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
         [HttpPost]
