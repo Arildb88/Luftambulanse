@@ -1,9 +1,28 @@
-@model List<Gruppe4NLA.ViewModels.MyQueueItemVM>
+﻿@model List<Gruppe4NLA.ViewModels.MyQueueItemVM>
 @using Gruppe4NLA.Models
 
 @{
     ViewData["Title"] = "My Queue";
+
+    var qsort = (ViewBag.QSort as string) ?? "AssignedAt";
+    var qdir = (ViewBag.QDir as string) ?? "asc";
+
+    Func<string, string> NextQ = c =>
+        (qsort.Equals(c, StringComparison.OrdinalIgnoreCase) && qdir == "asc") ? "desc" : "asc";
+    Func<string, string> ArrowQ = c =>
+        qsort.Equals(c, StringComparison.OrdinalIgnoreCase) ? (qdir == "asc" ? "▲" : "▼") : "";
 }
+<style>
+    .qsort-link {
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .qsort-link .caret {
+            margin-left: .25rem;
+            font-size: .8rem;
+        }
+</style>
 
 <h2>My Assigned Reports</h2>
 
@@ -19,11 +38,31 @@ else
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Sender</th>
-                <th>Organization</th>
-                <th>Type</th>
-                <th>Date Sent</th>
-                <th>Assigned At</th>
+                <th>
+                    <a asp-action="MyQueue" asp-route-qsort="Sender" asp-route-qdir="@NextQ("Sender")" class="qsort-link">
+                        Sender <span class="caret">@ArrowQ("Sender")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="MyQueue" asp-route-qsort="Organization" asp-route-qdir="@NextQ("Organization")" class="qsort-link">
+                        Organization <span class="caret">@ArrowQ("Organization")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="MyQueue" asp-route-qsort="Type" asp-route-qdir="@NextQ("Type")" class="qsort-link">
+                        Type <span class="caret">@ArrowQ("Type")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="MyQueue" asp-route-qsort="DateSent" asp-route-qdir="@NextQ("DateSent")" class="qsort-link">
+                        Date Sent <span class="caret">@ArrowQ("DateSent")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="MyQueue" asp-route-qsort="AssignedAt" asp-route-qdir="@NextQ("AssignedAt")" class="qsort-link">
+                        Assigned At <span class="caret">@ArrowQ("AssignedAt")</span>
+                    </a>
+                </th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -34,8 +73,8 @@ else
                 <tr>
                     <td>@report.Id</td>
                     <td>@report.SenderName</td>
-                    <td>@(report.Organization ?? "�")</td>
-                    <td>@report.Type.ToString()</td>
+                    <td>@(report.Organization ?? "—")</td>
+                    <td>@report.Type</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
                     <td>

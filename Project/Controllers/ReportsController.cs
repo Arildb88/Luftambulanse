@@ -607,10 +607,10 @@ namespace Gruppe4NLA.Controllers
         // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
-        public async Task<IActionResult> MyQueue(string sort = "AssignedAt", string dir = "asc")
+        public async Task<IActionResult> MyQueue(string qsort = "AssignedAt", string qdir = "asc")
         {
             var me = _userManager.GetUserId(User)!;
-            dir = (dir?.ToLower() == "desc") ? "desc" : "asc";
+            qdir = (qdir?.ToLower() == "desc") ? "desc" : "asc";
 
             var q = _context.Reports
                 .Where(r => r.AssignedToUserId == me &&
@@ -628,13 +628,45 @@ namespace Gruppe4NLA.Controllers
                     StatusCase = r.StatusCase
                 });
 
-            // (sorting switch here, same as before)
+            switch ((qsort ?? "").ToLowerInvariant())
+            {
+                case "sender":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.SenderName ?? "")
+                        : q.OrderByDescending(x => x.SenderName ?? "");
+                    break;
+
+                case "organization":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.Organization ?? "")
+                        : q.OrderByDescending(x => x.Organization ?? "");
+                    break;
+
+                case "type":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.Type)
+                        : q.OrderByDescending(x => x.Type);
+                    break;
+
+                case "datesent":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.DateSent)
+                        : q.OrderByDescending(x => x.DateSent);
+                    break;
+
+                case "assignedat":
+                default:
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.AssignedAtUtc ?? DateTime.MaxValue)   // nulls last
+                        : q.OrderByDescending(x => x.AssignedAtUtc ?? DateTime.MinValue);
+                    break;
+            }
 
             var items = await q.AsNoTracking().ToListAsync();
-            ViewBag.Sort = sort; ViewBag.Dir = dir;
+            ViewBag.QSort = qsort;
+            ViewBag.QDir = qdir;
             return View(items);
         }
-
 
         public class AssignReportVM
         {
