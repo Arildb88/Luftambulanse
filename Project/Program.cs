@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServerVersion
 
-
 // Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +27,6 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/AccessDenied"); // optional
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/ForgotPassword"); // optional
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/ForgotPasswordConfirmation"); // optional
-
 });
 
 // Hide "Server" header from Kestrel, security measures. Also added to the group of security measures below
@@ -185,8 +183,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days.
     app.UseHsts();
-
-     
 }
 
 // Needed to load local leaflet map

@@ -331,6 +331,7 @@ body {
 }
 
 /* --------------- Create Report Pop Up --------------- */
+
 /* ===== Obstacle option cards ===== */
 .obstacle-grid {
     margin-top: .25rem;
@@ -398,8 +399,8 @@ body {
     border-color: #0b5ed7;
 }
 
-/* ===== Height unit switch (Meters / Feet) ===== */
-.height-inline {
+/* ---------- Height + Light row ----------*/
+.height-light-row {
     display: flex;
     align-items: center;
     gap: 14px;
@@ -480,76 +481,92 @@ body {
     border-color: #0b5ed7;
 }
 
-
-
-/* Reuse obstacle-card for the "Lighted" checkbox */
+/* Lighted box (samme stil som obstacle-card) */
 .light-card-small {
     width: 120px;
-    height: 100px;
-    padding: 15px 10px;
-    border: 2px solid #e0e0e0;
+    height: 85px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    border: 2px solid var(--accent-color);
     border-radius: 16px;
-    transition: all 0.2s ease;
+    gap: 6px;
+    margin-left: auto;
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    cursor: pointer;
+    user-select: none;
+    transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
 }
+
+/* Skjul "på"-ikonet som standard */
+.icon-on {
+    display: none;
+}
+
+/* Når checkboxen er trykket (checked), bytt ikon */
+.btn-check:checked + .light-card-small .icon-off {
+    display: none;
+}
+
+.btn-check:checked + .light-card-small .icon-on {
+    display: inline-block;
+}
+
+/* Juster størrelse og utseende */
+.light-icon svg {
+    width: 36px;
+    height: 36px;
+    transition: fill 0.2s ease, filter 0.2s ease;
+}
+
+/* Når aktiv: glød-effekt på "på"-ikonet */
+.btn-check:checked + .light-card-small .icon-on svg {
+    filter: drop-shadow(0 0 6px #ffeb3b);
+}
+
+/* Hover-effekt */
+.light-card-small:hover svg {
+    filter: drop-shadow(0 0 4px var(--accent-color));
+}
+
+    /* Hover-effekt (samme som obstacle-card) */
+    .light-card-small:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,.12);
+    }
 
 /* Checked state */
 .btn-check:checked + .light-card-small {
+    background: var(--blueBtn-color) ;
     border-color: var(--blueBtn-color);
-    background-color: var(--blueBtn-color);
-    color: #000;
-    box-shadow: 0 0 12px rgba(255, 221, 51, 0.4);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(13,110,253,.35);
 }
 
-    /* Make the icon glow when active */
+    /* Glødende ikon når aktiv */
     .btn-check:checked + .light-card-small .obstacle-emoji svg {
         fill: #ffeb3b;
         filter: drop-shadow(0 0 6px #ffea00);
     }
 
-/* Ensure everything in the row has consistent height */
-.height-inline {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-grow: 1;
-    height: 85px; /* match light-card-small height */
-}
-/* === Align height row elements visually (Height + Unit + Lighted) === */
-.height-light-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
+/* Dark mode tilpasning */
+.darkmode .light-card-small {
+    border-color: #424242;
+    background: var(--base-variant);
+    color: var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,.35);
 }
 
-
-/* Make sure the lighted box aligns neatly */
-.lighted-inline {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
+.darkmode .btn-check:checked + .light-card-small {
+    background: #0b5ed7;
+    border-color: #0b5ed7;
+    color: #fff;
 }
 
-/* Lighted box sizing to align visually */
-.light-card-small {
-    width: 110px;
-    height: 85px;
-    display: flex;
-    flex-direction: column; /* plasser ikon over tekst */
-    align-items: center; /* midtstill horisontalt */
-    justify-content: center; /* midtstill vertikalt */
-    padding: 10px 8px;
-    border: 2px solid #ffd54f; /* valgfri gul ramme */
-    border-radius: 16px;
-    gap: 6px; /* avstand mellom ikon og tekst */
-    margin-left: auto; /* skyv hele boksen til høyre */
-    transition: all 0.2s ease;
-}
-
-/* Slight hover effect for both states */
-.light-card-small:hover {
-    border-color: #ffd54f;
-}
 
 /* Match switch height */
 .unit-switch {
@@ -567,7 +584,7 @@ body {
 /* Match input height and padding */
 #heightInput {
     height: 85px;
-    width: 150px;
+    width: 30%;
     border-radius: 12px;
     font-size: 1rem;
     padding: 0px;
@@ -577,7 +594,7 @@ body {
 /* --- Responsive fallback for smaller screens --- */
 @media (max-width: 768px) {
     .height-light-row {
-        flex-direction: column;
+        flex-direction: row;
         align-items: stretch;
     }
 
@@ -673,4 +690,51 @@ dialog::backdrop {
     }
 
     /*---------------------------------Submit and Draft button-------------------*/
+/* --- Felles styling for begge knapper --- */
+button[name="action"][value="save"],
+button[name="action"][value="submit"] {
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* --- Light Mode --- */
+body:not(.darkmode) button[name="action"][value="save"] {
+    background-color: #f0c93d; /* varm gul */
+    color: #000; /* svart tekst */
+}
+
+    body:not(.darkmode) button[name="action"][value="save"]:hover {
+        background-color: #e0b830;
+    }
+
+body:not(.darkmode) button[name="action"][value="submit"] {
+    background-color: #198754; /* grønn */
+    color: #000; /* svart tekst */
+}
+
+    body:not(.darkmode) button[name="action"][value="submit"]:hover {
+        background-color: #157347;
+    }
+
+/* --- Dark Mode --- */
+body.darkmode button[name="action"][value="save"] {
+    background-color: #c7a525; /* mørkere gul */
+    color: #fff; /* hvit tekst */
+}
+
+    body.darkmode button[name="action"][value="save"]:hover {
+        background-color: #b69520;
+    }
+
+body.darkmode button[name="action"][value="submit"] {
+    background-color: #157347; /* mørkere grønn */
+    color: #fff; /* hvit tekst */
+}
+
+    body.darkmode button[name="action"][value="submit"]:hover {
+        background-color: #116d3f;
+    }
 

@@ -115,12 +115,10 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-
             // Konverter høyde til meter hvis brukeren har valgt "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
             {
-                // 1 foot = 0.3048 meter
-                model.NewReport.HeightInMeters = model.NewReport.HeightInMeters * 0.3048;
+                model.NewReport.HeightInMeters *= 0.3048;
             }
 
             if (!ModelState.IsValid)
@@ -149,45 +147,31 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            // Status from button
-            if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
-            {
-                newReport.Status = ReportStatus.Submitted;
-            }
-            else
-            {
-                newReport.Status = ReportStatus.Draft;
-            }
+            // Sett status basert på knapp
+            newReport.Status = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase)
+                ? ReportStatus.Submitted
+                : ReportStatus.Draft;
 
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            // Green message on the same page
-            ViewBag.Message = newReport.Status == ReportStatus.Submitted
-                ? "Submit was successful"
-                : "Draft was successful";
-
-            // Keep these fields in the form after save
-            var keepLat = model.NewReport.Latitude;
-            var keepLng = model.NewReport.Longitude;
-            var keepSender = model.NewReport.SenderName;
-
-            // Refresh list if shown below
-            model.SubmittedReport = await _context.Reports
-                .OrderByDescending(r => r.DateSent)
-                .ToListAsync();
-
-            // Reset inputs but keep key fields
-            model.NewReport = new ReportModel
+            // 🚀 I stedet for å vise skjemaet igjen — gå til Confirmation View
+            var confirmation = new ConfirmationViewModel
             {
-                Latitude = keepLat,
-                Longitude = keepLng,
-                SenderName = keepSender
+                Title = newReport.Status == ReportStatus.Submitted
+                    ? "Report Submitted"
+                    : "Draft Saved",
+                Message = newReport.Status == ReportStatus.Submitted
+                    ? "Your report has been submitted successfully."
+                    : "Your draft has been saved successfully.",
+                RedirectUrl = newReport.Status == ReportStatus.Submitted
+                    ? Url.Action("Index", "Home")!
+                    : Url.Action("Index", "Reports", new { filter = "drafts" })!
             };
 
-            ModelState.Clear();
-            return View(model);
+            return View("Confirmation", confirmation);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Create(double? lat, double? lng)
