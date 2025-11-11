@@ -61,6 +61,10 @@ namespace Gruppe4NLA.Models
     
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
+
+
+
+        public string? PathGeoJson { get; set; }
         
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
@@ -126,4 +130,18 @@ namespace Gruppe4NLA.Models
         Completed = 4,
         Rejected = 5
     }
+
+    public class GeoJsonFeature
+    {
+        public string type { get; set; } = "Feature";
+        public GeoJsonGeometry geometry { get; set; } = new GeoJsonGeometry();
+        public Dictionary<string, object> properties { get; set; } = new();
+    }
+
+    public class GeoJsonGeometry
+    {
+        public string type { get; set; } = "";
+        public object coordinates { get; set; } = null!;
+    }
+
 }

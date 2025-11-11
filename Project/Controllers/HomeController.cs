@@ -42,6 +42,12 @@ namespace Gruppe4NLA.Controllers
             return View();
         }
 
+        public IActionResult FullMap()
+        {
+            return View();
+        }
+
+
         public IActionResult LogIn()
         {
             return View();

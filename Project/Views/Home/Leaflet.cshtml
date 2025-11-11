@@ -435,7 +435,8 @@
                 features.push({
                     type: "Feature",
                     geometry: {
-                    coordinates: [parseFloat(ll.lng.toFixed(6)), parseFloat(ll.lat.toFixed(6))]
+                        type: "Point",
+                        coordinates: [parseFloat(ll.lng.toFixed(6)), parseFloat(ll.lat.toFixed(6))]
                 },
                 properties: {}
                 });

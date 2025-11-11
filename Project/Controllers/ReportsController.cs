@@ -38,6 +38,70 @@ namespace Gruppe4NLA.Controllers
             _userManager = userManager;
             _assigner = assigner; 
         }
+        // Returns GeoJSON data for all reports (or filtered)
+        [HttpGet]
+        public IActionResult GetReportsGeoJson()
+        {
+            var reports = _context.Reports.ToList();
+
+            // Build GeoJSON FeatureCollection
+            var features = reports.Select(r =>
+            {
+                var feature = new GeoJsonFeature();
+
+                if (!string.IsNullOrEmpty(r.PathGeoJson))
+
+                {
+                    var pathCoordinates = System.Text.Json.JsonSerializer.Deserialize<double[][]>(r.PathGeoJson);
+
+                    return new
+                    {
+                        type = "Feature",
+                        geometry = new
+
+                        {
+                            type = "LineString",
+                            coordinates = pathCoordinates
+                        },
+                        properties = new
+                        {
+                            sender = r.SenderName,
+                            type = r.Type,
+                            details = r.Details,
+                            dateSent = r.DateSent.ToString("yyyy-MM-dd HH:mm:ss")
+                        }
+                    };
+                }
+                else
+                {
+                    return new
+                    {
+                        type = "Feature",
+                        geometry = new
+                        {
+                            type = "Point",
+                            coordinates = new[] { r.Longitude, r.Latitude }  // GeoJSON uses [lng, lat]
+                        },
+                        properties = new
+                        {
+                            sender = r.SenderName,
+                            type = r.Type,
+                            details = r.Details,
+                            height = r.HeightInMeters,
+                            lights = r.AreLighted,
+                            dateSent = r.DateSent.ToString("yyyy-MM-dd HH:mm:ss")
+                        }
+                    };
+                }
+            });
+            var geoJson = new
+            {
+                type = "FeatureCollection",
+                features = features
+            };
+
+            return Json(geoJson);
+        }
 
         public async Task<IActionResult> Index(string? filter)
         {
@@ -553,4 +617,5 @@ namespace Gruppe4NLA.Controllers
         public string Status { get; set; } = "";
         public string? AssignedTo { get; set; }
     }
+
 }
