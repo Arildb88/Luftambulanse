@@ -11,6 +11,9 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServ
 // Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
 
+// Retrieves the Stadia Maps API key from appsettings.json
+var stadiaApiKey = builder.Configuration["ApiKeys:StadiaMaps"];
+
 // Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods for MVC controllers Post/Put/Patch/Delete)
 builder.Services.AddControllersWithViews(o =>
 {
@@ -72,6 +75,15 @@ builder.Services.ConfigureApplicationCookie(o =>
 // Builds the app
 var app = builder.Build();
 
+//Make the Stadia Maps API key available throughout the application
+app.Use(async (context, next) =>
+{
+    var config = context.RequestServices.GetRequiredService<IConfiguration>();
+    context.Items["StadiaApiKey"] = config["ApiKeys:StadiaMaps"];
+    await next();
+});
+
+
 // Content security policy CSP
 app.Use(async (context, next) =>
 {
@@ -87,20 +99,20 @@ app.Use(async (context, next) =>
     // Needs to be "whitelisted" to allow Leaflet to function properly
     // Allow Leaflet + the tile hosts you actually use
     context.Response.Headers["Content-Security-Policy"] =
-        "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
-        "style-src  'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
-        // IMPORTANT: tile/image sources. Add the ones you actually use in your app!
-        "img-src 'self' data: blob: " +
-            "https://tile.openstreetmap.org " +        
-            "https://*.tile.openstreetmap.org " +      
-            "https://tiles.stadiamaps.com " +          
-            "https://*.google.com; " +                 
-        "connect-src 'self'; " +
-        "font-src 'self' data:; " +
-        "frame-src 'self'; " +                     
-        "frame-ancestors 'self'; " +               
-        "base-uri 'self'; form-action 'self'";
+         "default-src 'self'; " +
+         "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
+         "style-src  'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; " +
+         "img-src 'self' data: blob: " +
+             "https://tile.openstreetmap.org " +
+             "https://*.tile.openstreetmap.org " +
+             "https://tiles.stadiamaps.com " +
+             "https://*.stadiamaps.com " + // 🟢 viktig!
+             "https://*.google.com; " +
+         "connect-src 'self' https://tiles.stadiamaps.com https://*.stadiamaps.com; " + // 🟢 viktig!
+         "font-src 'self' data:; " +
+         "frame-src 'self'; " +
+         "frame-ancestors 'self'; " +
+         "base-uri 'self'; form-action 'self'";
 
     // Add other headers as needed
     await next();
