@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Gruppe4NLA.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class FullMapTest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

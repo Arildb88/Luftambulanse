@@ -66,26 +66,78 @@
     var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
+    //const svgIconBlue = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
+
+    //const svgIconBlack = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCDAF5">
+    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
+
     var geoData = @Html.Raw(combinedGeoJson);
+
+        
 
         var geoLayer = L.geoJSON(geoData, {
         onEachFeature: function (feature, layer) {
             layer.bindPopup("<strong>Type:</strong> " + feature.properties.Type +
                             "<br><strong>ID:</strong> " + feature.properties.ReportID);
-        },
-        pointToLayer: function(feature, latlng) {
-            let iconUrl;
-            if (feature.properties.Type === "Pole") iconUrl = "/Content/Images/point.png";
-            else iconUrl = "/Content/Images/point.png";
-
-            return L.marker(latlng, {
-                icon: L.icon({
-                    iconUrl: iconUrl,
-                    iconSize: [25, 25],
-                    iconAnchor: [12, 25]
-                })
+        
+        if (feature.geometry.type === "LineString") {
+            const coords = feature.geometry.coordinates;
+            coords.forEach(coord => {
+                const latlng = [coord[1], coord[0]];
+                L.circleMarker(latlng, {
+                    radius: 4,
+                    fillColor: "var(--base-color)",
+                    color: "#000",
+                    weight: 1,
+                    fillOpacity: 1
+                }).addTo(map);
             });
-            },
+        }
+        },
+
+        pointToLayer: function(feature, latlng) {
+            if (feature.properties.Type === "Pole") {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <circle cx="12" cy="12" r="8"
+                          fill="var(--warning-color)"
+                          stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+        else if (feature.properties.Type === "Cable") {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <circle cx="12" cy="12" r="8"
+                            fill="var(--warning-color)"
+                            stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+        else {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <polygon points="12,2 22,22 2,22"
+                             fill="var(--warning-color)"
+                             stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+
+        // Use L.divIcon to render inline SVG with CSS variable colors
+        return L.marker(latlng, {
+            icon: L.divIcon({
+                html: svgIcon,
+                className: 'custom-icon',
+                iconSize: [25, 25],
+                iconAnchor: [12, 25]
+            })
+        });
+    },
         style: function(feature) {
             // Only applies to lines/polygons
             if (feature.geometry.type === "LineString") {

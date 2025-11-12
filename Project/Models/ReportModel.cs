@@ -57,19 +57,7 @@ namespace Gruppe4NLA.Models
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
 
-        [NotMapped]
-        public GeoJsonPoint? GeoJsonPoint
-        {
-            get => string.IsNullOrEmpty(GeoJson) ? null : JsonSerializer.Deserialize<GeoJsonPoint>(GeoJson);
-            set => GeoJson = value == null ? null : JsonSerializer.Serialize(value);
-        }
         
-        [NotMapped]
-        public GeoJsonLineString? GeoJsonLineString
-        {
-            get => string.IsNullOrEmpty(GeoJson) ? null : JsonSerializer.Deserialize<GeoJsonLineString>(GeoJson);
-            set => GeoJson = value is null ? null : JsonSerializer.Serialize(value);
-        }
 
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
@@ -121,16 +109,6 @@ namespace Gruppe4NLA.Models
         InReview = 3,
         Completed = 4,
         Rejected = 5
-    }
-    public class GeoJsonPoint
-    {
-        public string Type { get; set; } = "Point";
-        public double[] Coordinates { get; set; } = new double[2];
-    }
-    public class GeoJsonLineString
-    {
-        public string Type { get; set; } = "LineString";
-        public double[][] Coordinates { get; set; } = new double[0][];
     }
 
 }

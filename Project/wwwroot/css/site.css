@@ -10,6 +10,7 @@
     --blueBtn-color: #0d6efd;
     --polyline-color: #EA4335;
     --marker-color: #EA4335;
+    --warning-color: #EA4335;
 }
 
 .darkmode {
@@ -22,6 +23,7 @@
     --primary-color: #333333;
     --accent-color: #5f6570;
     --polyline-color: #EA4335;
+    --warning-color: #EA4335;
 }
 .navbar {
     background-color: var(--base-variant); 
