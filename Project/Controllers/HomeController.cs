@@ -61,6 +61,10 @@ namespace Gruppe4NLA.Controllers
             return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
+        // Map view – allow any of these roles
+        [Authorize(Roles = "Pilot,Caseworker,CaseworkerAdm,Admin")]
+        public IActionResult Map() => View("Leaflet");
+
         [AllowAnonymous]
         public IActionResult Privacy() => View();
 
