@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gruppe4NLA.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251110100100_RemovedOtherDetails")]
-    partial class RemovedOtherDetails
+    [Migration("20251112094650_FullMapTest")]
+    partial class FullMapTest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -57,6 +57,9 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("Organization")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
@@ -142,9 +145,6 @@ namespace Gruppe4NLA.Migrations
                     b.Property<string>("AssignedToUserId")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("DangerType")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
@@ -162,9 +162,6 @@ namespace Gruppe4NLA.Migrations
 
                     b.Property<double>("Longitude")
                         .HasColumnType("double");
-
-                    b.Property<string>("OtherDangerType")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("SenderName")
                         .IsRequired()

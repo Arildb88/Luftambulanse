@@ -1,12 +1,9 @@
-using System.Diagnostics;
 using Gruppe4NLA.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; // for ToListAsync
-using Gruppe4NLA.Areas.Identity.Data;
-using AspNetCoreGeneratedDocument;
-
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Gruppe4NLA.Controllers
 {
@@ -61,7 +58,7 @@ namespace Gruppe4NLA.Controllers
             return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
-        // Map view – allow any of these roles
+        // Map view â€“ allow any of these roles
         [Authorize(Roles = "Pilot,Caseworker,CaseworkerAdm,Admin")]
         public IActionResult Map() => View("Leaflet");
 
@@ -71,7 +68,7 @@ namespace Gruppe4NLA.Controllers
         [AllowAnonymous]
         public IActionResult FAQ() => View();
 
-        // You already use Identity pages — make this forward to the real login
+        // You already use Identity pages â€” make this forward to the real login
         [AllowAnonymous]
         public IActionResult LogIn() => RedirectToPage("/Account/Login", new { area = "Identity" });
 

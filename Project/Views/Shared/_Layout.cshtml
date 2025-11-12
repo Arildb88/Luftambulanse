@@ -58,6 +58,11 @@
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
 
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Reports" asp-action="FullMap">Alt</a>
+                            </li>
+                            
                             @*Make Leaflet map available to all registered users*@
                             @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Admin") || User.IsInRole("Pilot"))
                             {
