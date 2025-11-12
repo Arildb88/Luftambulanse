@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore; // for ToListAsync
 using Gruppe4NLA.Areas.Identity.Data;
+using AspNetCoreGeneratedDocument;
 
 
 namespace Gruppe4NLA.Controllers
@@ -48,10 +49,10 @@ namespace Gruppe4NLA.Controllers
 
             if (User.IsInRole("CaseworkerAdm"))
                 // If you have a dedicated CaseworkerAdmin controller, switch to: RedirectToAction("Index","CaseworkerAdmin");
-                return RedirectToAction("Index", "Inbox");
+                return RedirectToAction("Inbox", "Reports");
 
             if (User.IsInRole("Caseworker"))
-                return RedirectToAction("Index", "Inbox");
+                return RedirectToAction("Inbox", "Reports");
 
             if (User.IsInRole("Pilot"))
                 return RedirectToAction(nameof(Leaflet), "Home");
