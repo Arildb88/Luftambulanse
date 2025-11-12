@@ -360,36 +360,79 @@ namespace Gruppe4NLA.Controllers
 
         // Admin inbox: list all reports with assignment/status info
         [Authorize(Roles = "CaseworkerAdm,Caseworker")]
-        public async Task<IActionResult> Inbox()
+        public async Task<IActionResult> Inbox(string isort = "DateSent", string idir = "desc")
         {
-            var data = await _context.Reports
-                .OrderByDescending(r => r.DateSent)
-                .Select(r => new InboxRowVM
-                {
-                    Id = r.Id,
-                    SenderName = r.SenderName,
-                    Type = r.Type.ToString(),
-                    DateSent = r.DateSent,
-                    Status = r.Status.ToString(),
-                    AssignedTo = r.AssignedToUserId != null
-                        ? _context.Users
-                            .Where(u => u.Id == r.AssignedToUserId)
-                            .Select(u => u.Email ?? u.UserName ?? u.Id)
-                            .FirstOrDefault()
-                        : null,
-                    // Gets organization of the user
-                    Organization =
-                _context.Users
-                    .Where(u => u.Id == r.UserId)
-                    .Select(u => u.Organization)
-                    .FirstOrDefault()
-                ?? _context.Users
-                    .Where(u => u.Email == r.SenderName)
-                    .Select(u => u.Organization)
-                    .FirstOrDefault()
-                })
-                .ToListAsync();
+            idir = (idir?.ToLower() == "asc") ? "asc" : "desc";
 
+            // Project once to the VM
+            var q = _context.Reports.Select(r => new ReportListItemVM
+            {
+                Id = r.Id,
+                SenderName = r.SenderName,
+                Organization =
+                    _context.Users.Where(u => u.Id == r.UserId).Select(u => u.Organization).FirstOrDefault()
+                    ?? _context.Users.Where(u => u.Email == r.SenderName).Select(u => u.Organization).FirstOrDefault(),
+                Type = r.Type.ToString(),
+                DateSent = r.DateSent,
+                Status = r.Status.ToString(),
+                AssignedTo = r.AssignedToUserId != null
+                    ? _context.Users.Where(u => u.Id == r.AssignedToUserId)
+                        .Select(u => u.Email ?? u.UserName ?? u.Id).FirstOrDefault()
+                    : null
+            });
+
+            // Sorting (Inbox-specific: isort/idir)
+            switch ((isort ?? "").ToLowerInvariant())
+            {
+                case "sender":
+                    q = idir == "asc" ? q.OrderBy(x => x.SenderName) : q.OrderByDescending(x => x.SenderName);
+                    break;
+
+                case "organization":
+                    q = idir == "asc" ? q.OrderBy(x => x.Organization) : q.OrderByDescending(x => x.Organization);
+                    break;
+
+                case "type":
+                    q = idir == "asc" ? q.OrderBy(x => x.Type) : q.OrderByDescending(x => x.Type);
+                    break;
+
+                case "status":
+                    q = (idir == "asc")
+                        ? q.OrderBy(x =>
+                              x.Status == "Draft" ? 0 :
+                              x.Status == "Submitted" ? 1 :
+                              x.Status == "Assigned" ? 2 :
+                              x.Status == "InReview" ? 3 :
+                              x.Status == "Completed" ? 4 :
+                              x.Status == "Rejected" ? 5 : 9)
+                        : q.OrderByDescending(x =>
+                              x.Status == "Draft" ? 0 :
+                              x.Status == "Submitted" ? 1 :
+                              x.Status == "Assigned" ? 2 :
+                              x.Status == "InReview" ? 3 :
+                              x.Status == "Completed" ? 4 :
+                              x.Status == "Rejected" ? 5 : 9);
+                    break;
+
+                case "assignedto":
+                    // ASC: Unassigned (null) first, then assigned alphabetically
+                    // DESC: Assigned alphabetically, Unassigned last
+                    q = (idir == "asc")
+                        ? q.OrderByDescending(x => x.AssignedTo == null)   // true first → nulls first
+                             .ThenBy(x => x.AssignedTo)
+                        : q.OrderBy(x => x.AssignedTo == null)             // false first → assigned first
+                             .ThenByDescending(x => x.AssignedTo);
+                    break;
+
+                case "datesent":
+                default:
+                    q = idir == "asc" ? q.OrderBy(x => x.DateSent) : q.OrderByDescending(x => x.DateSent);
+                    break;
+            }
+
+            var data = await q.AsNoTracking().ToListAsync();
+            ViewBag.ISort = isort;
+            ViewBag.IDir = idir;
             return View(data);
         }
 
@@ -550,10 +593,10 @@ namespace Gruppe4NLA.Controllers
         // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
-        public async Task<IActionResult> MyQueue(string sort = "AssignedAt", string dir = "asc")
+        public async Task<IActionResult> MyQueue(string qsort = "AssignedAt", string qdir = "asc")
         {
             var me = _userManager.GetUserId(User)!;
-            dir = (dir?.ToLower() == "desc") ? "desc" : "asc";
+            qdir = (qdir?.ToLower() == "desc") ? "desc" : "asc";
 
             var q = _context.Reports
                 .Where(r => r.AssignedToUserId == me &&
@@ -571,45 +614,68 @@ namespace Gruppe4NLA.Controllers
                     StatusCase = r.StatusCase
                 });
 
-            // (sorting switch here, same as before)
+            switch ((qsort ?? "").ToLowerInvariant())
+            {
+                case "sender":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.SenderName ?? "")
+                        : q.OrderByDescending(x => x.SenderName ?? "");
+                    break;
+
+                case "organization":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.Organization ?? "")
+                        : q.OrderByDescending(x => x.Organization ?? "");
+                    break;
+
+                case "type":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.Type)
+                        : q.OrderByDescending(x => x.Type);
+                    break;
+
+                case "datesent":
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.DateSent)
+                        : q.OrderByDescending(x => x.DateSent);
+                    break;
+
+                case "assignedat":
+                default:
+                    q = qdir == "asc"
+                        ? q.OrderBy(x => x.AssignedAtUtc ?? DateTime.MaxValue)   // nulls last
+                        : q.OrderByDescending(x => x.AssignedAtUtc ?? DateTime.MinValue);
+                    break;
+            }
 
             var items = await q.AsNoTracking().ToListAsync();
-            ViewBag.Sort = sort; ViewBag.Dir = dir;
+            ViewBag.QSort = qsort;
+            ViewBag.QDir = qdir;
             return View(items);
         }
 
+        //public class AssignReportVM
+        //{
+        //    [Required] public int ReportId { get; set; }
+        //    public string? CurrentAssignee { get; set; }
 
-        public class AssignReportVM
-        {
-            [Required] public int ReportId { get; set; }
-            public string? CurrentAssignee { get; set; }
+        //    [Required(ErrorMessage = "Please select a caseworker")]
+        //    public string? ToUserId { get; set; }
 
-            [Required(ErrorMessage = "Please select a caseworker")]
-            public string? ToUserId { get; set; }
+        //    public List<SelectListItem> Caseworkers { get; set; } = new();
+        //}
 
-            public List<SelectListItem> Caseworkers { get; set; } = new();
-        }
-
-        public class ReportListItemVM
-        {
-            public int Id { get; set; }
-            public string? SenderName { get; set; }
-            public string? Organization { get; set; }
-            public string? Type { get; set; }
-            public DateTime DateSent { get; set; }
-            public string Status { get; set; } = "";
-            public string? AssignedTo { get; set; }
-        }
-
-        public async Task<IActionResult> FullMap()
-        {
-            var reports = await _context.Reports
-                                        .Where(r => !string.IsNullOrEmpty(r.GeoJson))
-                                        .ToListAsync();
-
-            return View(reports ?? new List<ReportModel>()); // fallback to empty list
-        }
-
+        //MIGHT BE NEEDED
+        //public class ReportListItemVM
+        //{
+        //    public int Id { get; set; }
+        //    public string? SenderName { get; set; }
+        //    public string? Organization { get; set; }
+        //    public string? Type { get; set; }
+        //    public DateTime DateSent { get; set; }
+        //    public string Status { get; set; } = "";
+        //    public string? AssignedTo { get; set; }
+        //}
     }
 
 }

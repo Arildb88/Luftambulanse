@@ -740,3 +740,20 @@ body.darkmode button[name="action"][value="submit"] {
         background-color: #116d3f;
     }
 
+    /* Changes to the CreatePopup report page */
+/* Light mode: add a subtle black border to 'Details' and the Height input */
+body:not(.darkmode) #heightInput,
+body:not(.darkmode) textarea[name="NewReport.Details"] {
+    border: 1px solid #000; /* small black border */
+    box-shadow: none; /* optional: remove Bootstrap inset glow */
+}
+
+    /* Keep the same border when focused (while leaving your global focus ring) */
+    body:not(.darkmode) #heightInput:focus,
+    body:not(.darkmode) textarea[name="NewReport.Details"]:focus {
+        border-color: #000;
+    }
+
+
+
+
