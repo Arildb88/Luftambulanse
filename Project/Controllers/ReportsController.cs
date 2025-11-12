@@ -17,6 +17,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using InboxRowVM = Gruppe4NLA.ViewModels.ReportListItemVM;
 
+
 namespace Gruppe4NLA.Controllers
 {
     // Added AutoValidateAntiforgeryToken globally to all controllers who needs it, beter than forgetting to add later
@@ -652,6 +653,15 @@ namespace Gruppe4NLA.Controllers
             ViewBag.QSort = qsort;
             ViewBag.QDir = qdir;
             return View(items);
+        }
+
+        public async Task<IActionResult> FullMap()
+        {
+            var reports = await _context.Reports
+                                        .Where(r => !string.IsNullOrEmpty(r.GeoJson))
+                                        .ToListAsync();
+
+            return View(reports ?? new List<ReportModel>()); // fallback to empty list
         }
 
         //public class AssignReportVM
