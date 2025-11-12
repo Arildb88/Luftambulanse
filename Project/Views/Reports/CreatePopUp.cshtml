@@ -16,7 +16,7 @@
 
     <!------------ Sendername + Hidden Lat/long, GJson------------>
     <div class="form-group"> 
-        <label asp-for="NewReport.SenderName">SENDER:</label>
+        <label asp-for="NewReport.SenderName"><strong>SENDER:</strong></label>
         <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
@@ -86,7 +86,7 @@
 
     <!------------ Obstacle Type cards ------------>
     <div class="mb-3">
-        <label class="form-label d-block">OBSTACLE TYPE:</label>
+        <label class="form-label d-block"><strong>OBSTACLE TYPE:</strong></label>
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeCable"
@@ -150,7 +150,7 @@
 
     <!------------ Removed 'OtherDangerType' field ------------>
     <div class="form-group">
-        <label asp-for="NewReport.Details">DETAILS:</label>
+        <label asp-for="NewReport.Details"><strong>DETAILS:</strong></label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
