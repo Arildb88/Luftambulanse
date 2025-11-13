@@ -69,7 +69,7 @@ namespace Gruppe4NLA.Models
         public DateTime? AssignedAtUtc { get; set; }
 
         //Workflow status
-        public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Submitted;
+        public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Draft;
 
         public ReportStatus Status { get; set; } = ReportStatus.Draft;
 

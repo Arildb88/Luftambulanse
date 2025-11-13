@@ -1,4 +1,13 @@
-﻿@model List<Gruppe4NLA.Models.ReportModel>
+﻿@using Gruppe4NLA.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var me = await UserManager.GetUserAsync(User);
+    var myId = me?.Id;
+    var myEmail = me?.Email;
+}
+
+@model List<Gruppe4NLA.Models.ReportModel>
 @{
     ViewData["Title"] = "Reports";
     var filter = (ViewData["Filter"] as string) ?? "all";
@@ -138,10 +147,24 @@ else
                         {
                             <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
 
-                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" style="display:inline;">
+                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-success">Submit</button>
                             </form>
+
+                            @* Pilot can delete OWN drafts:
+                               - either user owns it via UserId
+                               - or old rows where UserId is null but SenderName == my email *@
+                            @if (User.IsInRole("Pilot") &&
+                                            (report.UserId == myId ||
+                                            (report.UserId == null && string.Equals(report.SenderName, myEmail, StringComparison.OrdinalIgnoreCase))))
+                            {
+                                <form asp-action="Delete" asp-route-id="@report.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Delete this draft? This cannot be undone.');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            }
                         }
                     </td>
                 </tr>

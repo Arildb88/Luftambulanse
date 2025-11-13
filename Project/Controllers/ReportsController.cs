@@ -55,7 +55,7 @@ namespace Gruppe4NLA.Controllers
                 var email = me?.Email;
                 q = q.Where(r => r.UserId == myId || (r.UserId == null && r.SenderName == email));
             }
-
+            // ---------------- Sorting Filter ---------------- //
             // Tabs
             var f = (filter ?? "all").ToLowerInvariant();
             if (f == "submitted") q = q.Where(r => r.Status == ReportStatus.Submitted);
@@ -155,6 +155,10 @@ namespace Gruppe4NLA.Controllers
             newReport.Status = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase)
                 ? ReportStatus.Submitted
                 : ReportStatus.Draft;
+
+            newReport.StatusCase = (newReport.Status == ReportStatus.Submitted)
+                ? ReportStatusCase.Submitted
+                : ReportStatusCase.Draft;
 
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
@@ -292,6 +296,51 @@ namespace Gruppe4NLA.Controllers
             return View(report);
         }
 
+        // === Delete Report feature ===
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            if (!CanDelete(report)) return Forbid();
+
+            _context.Reports.Remove(report);
+            await _context.SaveChangesAsync();
+
+            TempData["Ok"] = "Report deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Who may delete?
+        private bool CanDelete(ReportModel r)
+        {
+            var myId = _userManager.GetUserId(User) ?? string.Empty;   // null-safe
+            var myName = User?.Identity?.Name ?? string.Empty;           // often email/username
+
+            // Pilot can delete own Drafts:
+            //   - owns via UserId
+            //   - or legacy rows where UserId is null but SenderName == my email/username
+            if (r.Status == ReportStatus.Draft)
+            {
+                return User.IsInRole("Pilot") &&
+                       (r.UserId == myId ||
+                        (r.UserId == null &&
+                         string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            // Submitted can be deleted by Caseworker / CaseworkerAdm / Admin
+            if (r.Status == ReportStatus.Submitted)
+            {
+                return User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker");
+            }
+
+            // Fallback (adjust if you want stricter):
+            return User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm");
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ReportModel updated, string? action)
@@ -305,37 +354,40 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
-                return View(updated);
+            if (!ModelState.IsValid) return View(updated);
 
             // Update editable fields
             report.Latitude = updated.Latitude;
             report.Longitude = updated.Longitude;
             report.GeoJson = updated.GeoJson;
             report.Type = updated.Type;
-            // (Removed: OtherDangerType update)
             report.Details = updated.Details;
             report.HeightInMeters = updated.HeightInMeters;
             report.AreLighted = updated.AreLighted;
 
+            // Set Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.Status = ReportStatus.Submitted;
-
+                report.StatusCase = ReportStatusCase.Submitted;   // <-- add this
+                report.SubmittedAt = DateTime.UtcNow;             // (optional)
             }
             else
             {
                 report.Status = ReportStatus.Draft;
+                report.StatusCase = ReportStatusCase.Draft;       // <-- and this
             }
 
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = (report.Status == ReportStatus.Submitted)
+            TempData["Message"] = report.Status == ReportStatus.Submitted
                 ? "Report submitted."
                 : "Draft updated.";
 
-            return RedirectToAction(nameof(Index), new { filter = (report.Status == ReportStatus.Draft) ? "drafts" : "submitted" });
+            return RedirectToAction(nameof(Index),
+                new { filter = report.Status == ReportStatus.Draft ? "drafts" : "submitted" });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -653,29 +705,6 @@ namespace Gruppe4NLA.Controllers
             ViewBag.QDir = qdir;
             return View(items);
         }
-
-        //public class AssignReportVM
-        //{
-        //    [Required] public int ReportId { get; set; }
-        //    public string? CurrentAssignee { get; set; }
-
-        //    [Required(ErrorMessage = "Please select a caseworker")]
-        //    public string? ToUserId { get; set; }
-
-        //    public List<SelectListItem> Caseworkers { get; set; } = new();
-        //}
-
-        //MIGHT BE NEEDED
-        //public class ReportListItemVM
-        //{
-        //    public int Id { get; set; }
-        //    public string? SenderName { get; set; }
-        //    public string? Organization { get; set; }
-        //    public string? Type { get; set; }
-        //    public DateTime DateSent { get; set; }
-        //    public string Status { get; set; } = "";
-        //    public string? AssignedTo { get; set; }
-        //}
     }
 
 }
