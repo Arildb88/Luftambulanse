@@ -299,7 +299,8 @@ namespace Gruppe4NLA.Controllers
         // === Delete Report feature ===
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        // [Authorize] // optional; your CanDelete() guards it anyway
+        public async Task<IActionResult> Delete(int id, string? returnUrl)
         {
             var report = await _context.Reports.FindAsync(id);
             if (report == null) return NotFound();
@@ -310,34 +311,37 @@ namespace Gruppe4NLA.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Ok"] = "Report deleted.";
+
+            // If caller gave us a safe local URL, go back there; else pick a sensible page
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            // Fallback: Admins/caseworkers usually came from Inbox; pilots from Index
+            if (User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker"))
+                return RedirectToAction(nameof(Inbox));
+
             return RedirectToAction(nameof(Index));
         }
 
         // Who may delete?
         private bool CanDelete(ReportModel r)
         {
-            var myId = _userManager.GetUserId(User) ?? string.Empty;   // null-safe
-            var myName = User?.Identity?.Name ?? string.Empty;           // often email/username
+            // Admin / CaseworkerAdm can delete anything
+            if (User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm"))
+                return true;
 
-            // Pilot can delete own Drafts:
-            //   - owns via UserId
-            //   - or legacy rows where UserId is null but SenderName == my email/username
-            if (r.Status == ReportStatus.Draft)
-            {
-                return User.IsInRole("Pilot") &&
-                       (r.UserId == myId ||
-                        (r.UserId == null &&
-                         string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase)));
-            }
+            // Caseworker can delete Drafts and Submitted
+            if (User.IsInRole("Caseworker"))
+                return r.Status == ReportStatus.Draft || r.Status == ReportStatus.Submitted;
 
-            // Submitted can be deleted by Caseworker / CaseworkerAdm / Admin
-            if (r.Status == ReportStatus.Submitted)
-            {
-                return User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker");
-            }
+            // (Optional) Pilot: only own Drafts
+            var myId = _userManager.GetUserId(User);
+            var myName = User?.Identity?.Name; // often email/username
+            if (User.IsInRole("Pilot") && r.Status == ReportStatus.Draft)
+                return r.UserId == myId ||
+                       (r.UserId == null && string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase));
 
-            // Fallback (adjust if you want stricter):
-            return User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm");
+            return false;
         }
 
 

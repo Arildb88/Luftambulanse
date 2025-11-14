@@ -141,30 +141,40 @@ else
                 </span>
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+                @{
+                            // Who can delete?
+                            var canDelete =
+                            User.IsInRole("Admin") ||
+                            User.IsInRole("CaseworkerAdm") ||
+                            User.IsInRole("Caseworker") ||
+                            // Pilot: only own drafts
+                            (User.IsInRole("Pilot")
+                            && report.Status == Gruppe4NLA.Models.ReportStatus.Draft
+                            && (report.UserId == myId ||
+                            (report.UserId == null && string.Equals(report.SenderName, myEmail, StringComparison.OrdinalIgnoreCase))));
+                        }
 
-                @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
+                        <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+
+                        @if (canDelete)
+                        {
+                            <form asp-action="Delete"
+                                  asp-route-id="@report.Id"
+                                  asp-route-returnUrl="@($"{Context.Request.Path}{Context.Request.QueryString}")"
+                                  method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this report? This cannot be undone.');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        }
+
+                        @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
                         {
                             <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
-
                             <form asp-action="Submit" asp-route-id="@report.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-success">Submit</button>
                             </form>
-
-                            @* Pilot can delete OWN drafts:
-                               - either user owns it via UserId
-                               - or old rows where UserId is null but SenderName == my email *@
-                            @if (User.IsInRole("Pilot") &&
-                                            (report.UserId == myId ||
-                                            (report.UserId == null && string.Equals(report.SenderName, myEmail, StringComparison.OrdinalIgnoreCase))))
-                            {
-                                <form asp-action="Delete" asp-route-id="@report.Id" method="post" class="d-inline"
-                                      onsubmit="return confirm('Delete this draft? This cannot be undone.');">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
-                            }
                         }
                     </td>
                 </tr>
