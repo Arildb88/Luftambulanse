@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.Controllers;
 using Gruppe4NLA.DataContext;
 using Gruppe4NLA.Models;
+using Gruppe4NLA.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Xunit;
 using Assert = Xunit.Assert;
 
 namespace Gruppe4NLA.Tests
@@ -18,25 +22,55 @@ namespace Gruppe4NLA.Tests
         // Helper: creates controller with seeded in-memory DB
         private ReportsController GetControllerWithData(string dbName)
         {
-            var options = new DbContextOptionsBuilder<ApplicationContext>()
+            var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(databaseName: dbName)
                 .Options;
 
-            var context = new ApplicationContext(options);
+            var context = new AppDbContext(options);
 
-            // Clean previous test data (ensures isolation)
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
-            // Seed initial data
+            // Seed data
             context.Reports.AddRange(
                 new ReportModel { Id = 1, SenderName = "Alice", DateSent = DateTime.Now.AddDays(-1) },
                 new ReportModel { Id = 2, SenderName = "Bob", DateSent = DateTime.Now }
             );
             context.SaveChanges();
 
-            return new ReportsController(context);
+            // --- Mock UserManager<ApplicationUser> ---
+            var store = new Mock<IUserStore<ApplicationUser>>();
+            var userManager = new Mock<UserManager<ApplicationUser>>(
+                store.Object,
+                null, null, null, null, null, null, null, null
+            );
+
+            // Default: return a fake user
+            userManager
+                .Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                .ReturnsAsync(new ApplicationUser { Id = "user1", Email = "test@example.com" });
+
+            userManager
+                .Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>()))
+                .Returns("user1");
+
+            // --- Mock IReportAssignmentService ---
+            var assigner = new Mock<IReportAssignmentService>();
+
+            // Provide default no-op Tasks
+            assigner
+        .Setup(a => a.AssignAsync(
+         It.IsAny<int>(),
+         It.IsAny<string>(),
+         It.IsAny<string>(),
+         It.IsAny<CancellationToken>()
+         ))
+        .Returns(Task.CompletedTask);
+
+
+            return new ReportsController(context, userManager.Object, assigner.Object);
         }
+
 
         [Fact]
         public async Task Index_ReturnsViewWithReportsOrderedByDate()
@@ -45,7 +79,7 @@ namespace Gruppe4NLA.Tests
             var controller = GetControllerWithData(nameof(Index_ReturnsViewWithReportsOrderedByDate));
 
             // Act
-            var result = await controller.Index() as ViewResult;
+            var result = await controller.Index(null, "Draft", "Submitted") as ViewResult;
 
             // Assert
             Assert.NotNull(result);
@@ -100,43 +134,44 @@ namespace Gruppe4NLA.Tests
             Assert.NotEmpty(model.SubmittedReport);
         }
 
+        
         [Fact]
         public async Task Create_Post_InvalidModel_ReturnsViewWithErrors()
         {
             // Arrange
             var controller = GetControllerWithData(nameof(Create_Post_InvalidModel_ReturnsViewWithErrors));
-            controller.ModelState.AddModelError("Latitude", "Required");
 
-            var model = new ReportModelWrapper();
+            // Force ModelState invalid
+            controller.ModelState.AddModelError("", "Some error");
 
             // Act
-            var result = await controller.Create(model) as ViewResult;
+            var result = await controller.Create(null, null) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsType<ReportModelWrapper>(result.Model);
+            var model = Assert.IsType<ReportModelWrapper>(result.Model);
             Assert.False(controller.ModelState.IsValid);
         }
+
+
 
         [Fact]
         public async Task Create_Post_ValidModel_AddsReportAndReturnsView()
         {
             // Arrange
             var controller = GetControllerWithData(nameof(Create_Post_ValidModel_AddsReportAndReturnsView));
-            var newReport = new ReportModelWrapper
+            var newReport = new ReportModelWrapper();
+            var NewReport = new ReportModel
             {
-                NewReport = new ReportModel
-                {
                     SenderName = "Test",
                     Latitude = 59.0,
                     Longitude = 10.0,
-                    DangerType = "Crane",
+                    Type = newReport.NewReport.Type,
                     Details = "Crane: 40 meters"
-                }
             };
 
             // Act
-            var result = await controller.Create(newReport) as ViewResult;
+            var result = await controller.Create(10.0, 50.0) as ViewResult;
 
             // Assert
             Assert.NotNull(result);

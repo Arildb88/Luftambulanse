@@ -23,11 +23,12 @@ namespace Gruppe4NLA.Tests
         [Fact]
         public void ReportModel_ValidModel_PassesValidation()
         {
+            var newReport = new ReportModelWrapper();
             var model = new ReportModel
             {
                 Id = 1,
                 SenderName = "Test",
-                DangerType = "Kran",
+                Type = ReportModel.DangerTypeEnum.Cable,
                 DateSent = DateTime.Now,
                 Details = "Kran: 30 Meter",
                 Latitude = 59.91,
