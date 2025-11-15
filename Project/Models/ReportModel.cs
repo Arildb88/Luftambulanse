@@ -31,8 +31,6 @@ namespace Gruppe4NLA.Models
         [Required(ErrorMessage = "You need to select an ObstacleType")]
         public DangerTypeEnum? Type { get; set; }
 
-        // (Removed: OtherDangerType and its validation attribute)
-
         public DateTime DateSent { get; set; }
 
         public string? Details { get; set; }
@@ -57,13 +55,11 @@ namespace Gruppe4NLA.Models
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
 
-        
-
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
 
         //Who performed the assignment
-        public string? AssignedByUserId { get; set; }
+        //public string? AssignedByUserId { get; set; }
 
         //Whenzthe assignment happened
         public DateTime? AssignedAtUtc { get; set; }
@@ -90,8 +86,6 @@ namespace Gruppe4NLA.Models
         public DateTime? SubmittedAt { get; set; }
 
     }
-
-    // (Removed: RequiredIfOtherTypeAttribute class)
 
     // Wrapper to hold new coordinate and submitted list
     public class ReportModelWrapper

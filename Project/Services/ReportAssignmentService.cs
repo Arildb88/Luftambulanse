@@ -18,7 +18,7 @@ namespace Gruppe4NLA.Services
         }
 
         // Assigns a report to a specific user
-        public async Task AssignAsync(int reportId, string toUserId, string performedByUserId, CancellationToken ct = default)
+        public async Task AssignAsync(int reportId, string toUserId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
                          ?? throw new KeyNotFoundException("Report not found");
@@ -26,7 +26,6 @@ namespace Gruppe4NLA.Services
             var fromUserId = report.AssignedToUserId;
 
             report.AssignedToUserId = toUserId;
-            report.AssignedByUserId = performedByUserId;
             report.AssignedAtUtc = DateTime.UtcNow;
             report.StatusCase = ReportStatusCase.Assigned;
             report.UpdatedAtUtc = DateTime.UtcNow;
@@ -38,7 +37,6 @@ namespace Gruppe4NLA.Services
                     ReportId = reportId,
                     FromUserId = fromUserId,
                     ToUserId = toUserId,
-                    PerformedByUserId = performedByUserId,
                     PerformedAtUtc = DateTime.UtcNow,
                     Action = fromUserId == null ? "Assigned" : "Reassigned"
                 });
@@ -48,7 +46,7 @@ namespace Gruppe4NLA.Services
         }
 
         // Removes assignment from a report
-        public async Task UnassignAsync(int reportId, string performedByUserId, CancellationToken ct = default)
+        public async Task UnassignAsync(int reportId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
                          ?? throw new KeyNotFoundException("Report not found");
@@ -58,7 +56,6 @@ namespace Gruppe4NLA.Services
             var fromUserId = report.AssignedToUserId;
 
             report.AssignedToUserId = null;
-            report.AssignedByUserId = performedByUserId;
             report.AssignedAtUtc = DateTime.UtcNow;
             report.Status = ReportStatus.Submitted;
             report.UpdatedAtUtc = DateTime.UtcNow;
@@ -70,7 +67,6 @@ namespace Gruppe4NLA.Services
                     ReportId = reportId,
                     FromUserId = fromUserId,
                     ToUserId = null,
-                    PerformedByUserId = performedByUserId,
                     PerformedAtUtc = DateTime.UtcNow,
                     Action = "Unassigned"
                 });
@@ -92,7 +88,6 @@ namespace Gruppe4NLA.Services
             }
 
             report.AssignedToUserId = userId;
-            report.AssignedByUserId = userId; // Self-assigned
             report.AssignedAtUtc = DateTime.UtcNow;
             report.StatusCase = ReportStatusCase.Assigned;
             report.UpdatedAtUtc = DateTime.UtcNow;
@@ -104,7 +99,6 @@ namespace Gruppe4NLA.Services
                     ReportId = reportId,
                     FromUserId = null,
                     ToUserId = userId,
-                    PerformedByUserId = userId,
                     PerformedAtUtc = DateTime.UtcNow,
                     Action = "Self-Assigned"
                 });
@@ -114,7 +108,7 @@ namespace Gruppe4NLA.Services
         }
 
         // Approves a report and marks it as completed
-        public async Task ApproveAsync(int reportId, string performedByUserId, CancellationToken ct = default)
+        public async Task ApproveAsync(int reportId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
                          ?? throw new KeyNotFoundException("Report not found");
@@ -135,7 +129,6 @@ namespace Gruppe4NLA.Services
                     ReportId = reportId,
                     FromUserId = report.AssignedToUserId,
                     ToUserId = report.AssignedToUserId,
-                    PerformedByUserId = performedByUserId,
                     PerformedAtUtc = DateTime.UtcNow,
                     Action = "Approved"
                 });
@@ -145,7 +138,7 @@ namespace Gruppe4NLA.Services
         }
 
         // Rejects a report and marks it as rejected
-        public async Task RejectAsync(int reportId, string performedByUserId, CancellationToken ct = default)
+        public async Task RejectAsync(int reportId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
                          ?? throw new KeyNotFoundException("Report not found");
@@ -166,7 +159,6 @@ namespace Gruppe4NLA.Services
                     ReportId = reportId,
                     FromUserId = report.AssignedToUserId,
                     ToUserId = report.AssignedToUserId,
-                    PerformedByUserId = performedByUserId,
                     PerformedAtUtc = DateTime.UtcNow,
                     Action = "Rejected"
                 });

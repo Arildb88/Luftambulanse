@@ -107,10 +107,6 @@ namespace Gruppe4NLA.Migrations
                     b.Property<DateTime>("PerformedAtUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("PerformedByUserId")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<int>("ReportId")
                         .HasColumnType("int");
 
@@ -135,9 +131,6 @@ namespace Gruppe4NLA.Migrations
 
                     b.Property<DateTime?>("AssignedAtUtc")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("AssignedByUserId")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("AssignedToUserId")
                         .HasColumnType("longtext");
