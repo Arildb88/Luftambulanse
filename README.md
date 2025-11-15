@@ -18,18 +18,13 @@ git clone https://github.com/Arildb88/Luftambulanse.git <br>
 cd Luftambulanse (to enter the folder of the project) <br>
 4. Run docker compose file in terminal (Git Bash, Powershell etc.):
 Enter the command: <br>
-docker compose up -d --build (Runs the docker compose file that builds the database)<br>
-**Note**
+docker compose up -d (Runs the docker compose file that builds the database)<br>
 dotnet ef database update --project project (Updates the database to the project)<br>
-if you get access denied from admin user, try to enter this in your command prompt to deactivate your local Mariadb server thats running in the background) <br>
-net stop MariaDB >nul 2>&1 <br>
-net stop mysql >nul 2>&1 <br>
-Run the command again if you needed to shut down MariaDb container: <br>
-dotnet ef database update<br> **Note**
 5. Run application: <br>
 Enter the command:<br>
 dotnet watch run --project project (to start the application and open your web browser with the project launched)
 
+**NEEDSTOBEUPDATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**<br>
 **How to use the application:**<br>
 You are now ready to use the application.<br>
 We will add a login screen where you have to login with a username and password (BankID or similar)<br>
@@ -50,7 +45,7 @@ You are prompted with a view of a map where you can:<br>
 	- Administrator (a page where you can manage users, site settings and more, this page is under development)
 	- About (a page with information about the project and the team behind it)
 
-
+**NEEDSTOBEUPDATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**<br>
 **Project Structure:**<br>
 The project is structured in a way that follows the MVC (Model-View-Controller) pattern.<br>
 The main folders are:<br>

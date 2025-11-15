@@ -1,140 +1,145 @@
-Ôªø
-
 @using Gruppe4NLA.Models
 @model ReportModelWrapper
-@* This tells the view it will receive and bind to a single Report object *@
-
 @{
-    
-    ViewData["Title"] = "Add Report"; 
+    ViewData["Title"] = "Add Report";
     ViewData["ShowNavbar"] = false;
     ViewData["ShowFooter"] = false;
-    @* Sets the page title *@
 }
 
-<h2><br>Add a new Report</h2>
 @if (ViewBag.Message != null)
 {
     <p style="color:green">@ViewBag.Message</p>
 }
 
-@* Form that posts data to the Create action in ReportsController *@
-<br>
 <form asp-action="CreatePopUp" method="post">
-    
-    @* Adding spacing and changing the style *@
-    <style>
-        .form-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+    @Html.AntiForgeryToken()
 
-        .form-group label {
-            width: 100px;
-            margin-right: 10px;
-            margin-left: 10px;
-            text-align: left;
-        }
-
-        .form-group input,
-        .form-group textarea{
-            flex: 1; 
-            padding: 5px;
-        }
-
-        .form-group input[type="checkbox"] {
-            flex: 0;
-            margin-left: 10px;
-            transform: scale(2.5);
-            cursor: pointer;
-        }
-    </style>
-
-    @* Sender name input *@
-    <div class="form-group">
-        <label asp-for="NewReport.SenderName">Sender</label>
-
-        <!-- Shows as text, but cannot be edited -->
-        <input asp-for="NewReport.SenderName"
-               class="form-control-plaintext"
-               readonly
-               tabindex="-1"
-               onfocus="this.blur()"
-               style="user-select: none; color: var(--text-color);" />
-
-        <!-- hidden field that sends to backend -->
+    <!------------ Sendername + Hidden Lat/long, GJson------------>
+    <div class="form-group"> 
+        <label asp-for="NewReport.SenderName"><strong>SENDER:</strong></label>
+        <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
 
-    @* Latitude input *@
-    <div class="form-group">
+    <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Latitude"></label>
         <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
     </div>
 
-    @* Longitude input *@
-    <div class="form-group">
+    <div class="form-group" style="display: none;">
         <label asp-for="NewReport.Longitude"></label>
         <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
         <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
     </div>
 
-    @* HeightInnMeters input *@
-    <div class="form-group">
-        <label asp-for="NewReport.HeightInnMeters">Height In Meters</label>
-        <input asp-for="NewReport.HeightInnMeters" class="form-control" />
-        <span asp-validation-for="NewReport.HeightInnMeters" class="text-danger"></span>
+    <div class="form-group" style="display: none;">
+        <label asp-for="NewReport.GeoJson">GeoJSON</label>
+        <textarea asp-for="NewReport.GeoJson" rows="6" class="form-control" readonly style="font-family: monospace; white-space: pre;"></textarea>
+        <span asp-validation-for="NewReport.GeoJson" class="text-danger"></span>
     </div>
 
-    <!-- Obstacle Type cards -->
-    <div class="mb-3">
-        <label class="form-label d-block">Obstacle Type</label>
+    <!------------ Height + Lighted inline row ------------>
+    <div class="height-light-row">
+        <div class="unit-switch">
+            <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
+                @(Model.NewReport.HeightUnit == "meters" ? "checked" : "")>
+            <label for="unitMeters" class="switch-option">Meters</label>
 
+            <input type="radio" id="unitFeet" name="NewReport.HeightUnit" value="feet"
+                @(Model.NewReport.HeightUnit == "feet" ? "checked" : "")>
+            <label for="unitFeet" class="switch-option">Feet</label>
+        </div>
+
+        <input asp-for="NewReport.HeightInMeters"
+             type="number"
+             step="any"
+             id="heightInput"
+             class="form-control"
+             placeholder="Height in meters"
+             min="0"
+             max="500" />
+
+
+        <input type="checkbox" class="btn-check" id="lightSwitch" asp-for="NewReport.AreLighted" />
+        <label class="light-card-small" for="lightSwitch" aria-label="Lighted">
+            <!-- Light Off -->
+            <span class="light-icon icon-off">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" viewBox="0 -960 960 960" fill="var(--text-color)">
+                    <path d="M480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80Zm0-720q-44 0-81.5 15.5T332-742l-58-56q41-38 93.5-60T480-880q125 0 212.5 87.5T780-580q0 71-25 121.5T698-376l-56-56q21-23 39.5-59t18.5-89q0-92-64-156t-156-64Zm368 688-57 57-265-265H330q-69-41-109.5-110T180-580q0-20 2.5-39t7.5-37L56-792l56-56 736 736ZM354-400h92L260-586v6q0 54 24.5 101t69.5 79Zm-6-98Zm134-94Zm164 312v80H320v-80h326Z" />
+                </svg>
+            </span>
+            <!-- Light On -->
+            <span class="light-icon icon-on">
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" width="36px" viewBox="0 -960 960 960" fill="#ffeb3b">
+                    <path d="M480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-200v-80h320v80H320Zm10-120q-69-41-109.5-110T180-580q0-125 87.5-212.5T480-880q125 0 212.5 87.5T780-580q0 81-40.5 150T630-320H330Zm24-80h252q45-32 69.5-79T700-580q0-92-64-156t-156-64q-92 0-156 64t-64 156q0 54 24.5 101t69.5 79Zm126 0Z" />
+                </svg>
+
+            </span>
+
+            <span class="light-text">Lighted</span>
+        </label>
+
+    </div>
+    <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
+
+    <!------------ Obstacle Type cards ------------>
+    <div class="mb-3">
+        <label class="form-label d-block"><strong>OBSTACLE TYPE:</strong></label>
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
-                <input type="radio" class="btn-check" name="NewReport.Type" id="typePowerLine"
-                       value="@((int)ReportModel.DangerType.PowerLine)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.PowerLine ? "checked" : "")>
-                <label class="obstacle-card" for="typePowerLine" aria-label="PowerLine">
-                    <!-- Prefer an SVG/PNG in wwwroot; fallback emoji below -->
-                    @* <img src="~/Content/Images/obstacles/powerline.svg" alt="" /> *@
-                    <span class="obstacle-emoji">‚ö°</span>
+                <input type="radio" class="btn-check" name="NewReport.Type" id="typeCable"
+                       value="@((int)ReportModel.DangerTypeEnum.Cable)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Cable ? "checked" : "")>
+                <label class="obstacle-card" for="typeCable" aria-label="Cable">
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M760-120q-39 0-70-22.5T647-200H440q-66 0-113-47t-47-113q0-66 47-113t113-47h80q33 0 56.5-23.5T600-600q0-33-23.5-56.5T520-680H313q-13 35-43.5 57.5T200-600q-50 0-85-35t-35-85q0-50 35-85t85-35q39 0 69.5 22.5T313-760h207q66 0 113 47t47 113q0 66-47 113t-113 47h-80q-33 0-56.5 23.5T360-360q0 33 23.5 56.5T440-280h207q13-35 43.5-57.5T760-360q50 0 85 35t35 85q0 50-35 85t-85 35ZM200-680q17 0 28.5-11.5T240-720q0-17-11.5-28.5T200-760q-17 0-28.5 11.5T160-720q0 17 11.5 28.5T200-680Z" />
+                        </svg>
+                    </span>
                     <span>PowerLine</span>
                 </label>
             </div>
 
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typePole"
-                       value="@((int)ReportModel.DangerType.Pole)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Pole ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.Pole)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Pole ? "checked" : "")>
                 <label class="obstacle-card" for="typePole" aria-label="Pole">
-                    @* <img src="~/Content/Images/obstacles/pole.svg" alt="" /> *@
-                    <span class="obstacle-emoji">üìç</span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns=" http: //www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z" />
+                        </svg>
+                    </span>
                     <span>Pole</span>
                 </label>
             </div>
 
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeConstruction"
-                       value="@((int)ReportModel.DangerType.Construction)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Construction ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.Construction)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Construction ? "checked" : "")>
                 <label class="obstacle-card" for="typeConstruction" aria-label="Construction">
-                    @* <img src="~/Content/Images/obstacles/construction.svg" alt="" /> *@
-                    <span class="obstacle-emoji">üöß</span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-120v-160h-80v-80h80v-166L88-440l-48-64 440-336 440 336-48 64-112-86v166h80v80h-80v160h-80v-160H520v160h-80v-160H280v160h-80Zm80-240h160v-349L280-587v227Zm240 0h160v-227L520-709v349Z" />
+                        </svg>
+                    </span>
                     <span>Construction</span>
                 </label>
             </div>
 
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeOther"
-                       value="@((int)ReportModel.DangerType.Other)"
-                       @(Model.NewReport.Type == ReportModel.DangerType.Other ? "checked" : "")>
+                       value="@((int)ReportModel.DangerTypeEnum.Other)"
+                       @(Model.NewReport.Type == ReportModel.DangerTypeEnum.Other ? "checked" : "")>
                 <label class="obstacle-card" for="typeOther" aria-label="Other">
-                    @* <img src="~/Content/Images/obstacles/other.svg" alt="" /> *@
-                    <span class="obstacle-emoji">üì¶</span>
+                    <span class="obstacle-emoji">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--text-color)">
+                            <path d="M200-120q-33 0-56.5-23.5T120-200v-160h80v160h160v80H200Zm560 0H600v-80h160v-160h80v160q0 33-23.5 56.5T760-120ZM120-760q0-33 23.5-56.5T200-840h160v80H200v160h-80v-160Zm720 0v160h-80v-160H600v-80h160q33 0 56.5 23.5T840-760ZM480-240q21 0 35.5-14.5T530-290q0-21-14.5-35.5T480-340q-21 0-35.5 14.5T430-290q0 21 14.5 35.5T480-240Zm-36-153h73q0-34 8-52t35-45q35-35 46.5-56.5T618-598q0-54-39-88t-99-34q-50 0-86 26t-52 74l66 27q7-26 26.5-42.5T480-652q29 0 46.5 15.5T544-595q0 20-9.5 37.5T502-521q-33 29-45.5 56T444-393Z" />
+                        </svg>
+                    </span>
                     <span>Other</span>
                 </label>
             </div>
@@ -143,48 +148,121 @@
         <span class="text-danger" asp-validation-for="NewReport.Type"></span>
     </div>
 
-    <!-- Other obstacle textbox -->
-    <div id="otherTypeWrapper"
-         class="form-group @(Model.NewReport.Type == ReportModel.DangerType.Other ? "" : "d-none")">
-        <label asp-for="NewReport.OtherDangerType">Obstacle Type</label>
-        <input asp-for="NewReport.OtherDangerType" class="form-control" />
-        <span asp-validation-for="NewReport.OtherDangerType" class="text-danger"></span>
-    </div>
-
-    @* Extra details textarea *@
+    <!------------ Removed 'OtherDangerType' field ------------>
     <div class="form-group">
-        <label asp-for="NewReport.Details"></label>
+        <label asp-for="NewReport.Details"><strong>DETAILS:</strong></label>
         <textarea asp-for="NewReport.Details" class="form-control"></textarea>
     </div>
 
-    @* AreLighted input *@ 
     <div class="form-group">
-        <label asp-for="NewReport.AreLighted">Lighted</label>
-        <input asp-for="NewReport.AreLighted" type="checkbox" />
-    </div>
-
-
-
-    @* Save and Cancel buttons *@
-    <div class="d-flex justify-content-center gap-3 mt-3">
-        <button type="submit" class="btnSubmit">Save</button>
+        <button type="submit" name="action" value="save" class="btn btn-success">SAVE DRAFT</button>
+        <button type="submit" name="action" value="submit" class="btn btn-success">SUBMIT</button>
     </div>
 </form>
+
+<style>
+    /* SAVE DRAFT knapp i varm gulfarge */
+    button[name="action"][value="save"] {
+        background-color: #f0c93d; /* varm, balansert gul */
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+        transition: background-color 0.25s ease;
+    }
+
+        /* Hover-effekt (litt m¯rkere nyanse) */
+        button[name="action"][value="save"]:hover {
+            background-color: #d9b632;
+        }
+
+    /* SUBMIT-knappen fÂr beholdt gr¯nn stil */
+    button[name="action"][value="submit"] {
+        background-color: #198754;
+        color: #fff;
+        font-weight: 600;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 24px;
+    }
+
+        button[name="action"][value="submit"]:hover {
+            background-color: #157347;
+        }
+</style>
+
+<style>
+    /* Removes padding in form with CSS override */
+    html, body { 
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: auto;
+        background-color: var(--base-color);
+    }
+
+    form {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .container, .form-group, main {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        function updateOtherVisibility() {
-          const wrap = document.getElementById('otherTypeWrapper');
-          const isOther = document.getElementById('typeOther').checked;
-          wrap.classList.toggle('d-none', !isOther);
+        // Height unit + validation (kept)
+        const heightInput = document.getElementById('heightInput');
+        const unitMeters = document.getElementById('unitMeters');
+        const unitFeet = document.getElementById('unitFeet');
+
+        function resetInput() { heightInput.value = ''; }
+        function updateValidation() {
+            if (unitMeters.checked) {
+                heightInput.placeholder = "Height in meters";
+                heightInput.min = 0; heightInput.max = 500;
+            } else {
+                heightInput.placeholder = "Height in feet";
+                heightInput.min = 0; heightInput.max = 1640;
+            }
         }
-        document.querySelectorAll('input[name="NewReport.Type"]').forEach(r =>
-          r.addEventListener('change', updateOtherVisibility)
-        );
-        updateOtherVisibility();
+        unitMeters.addEventListener('change', () => { resetInput(); updateValidation(); });
+        unitFeet.addEventListener('change', () => { resetInput(); updateValidation(); });
+        updateValidation();
+
+        // Light icon switch (kept)
+        const lightSwitch = document.getElementById('lightSwitch');
+        const lightIcon = document.getElementById('lightIcon');
+        function updateLightBulb() {
+            if (lightSwitch.checked) {
+                lightIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="#ffeb3b">
+                    <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Z"/>
+                </svg>`;
+            } else {
+                lightIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" height="36px" viewBox="0 -960 960 960" width="36px" fill="var(--text-color)">
+                    <path d="M480-80q-17 0-28.5-11.5T440-120h80q0 17-11.5 28.5T480-80Zm0-160q-66 0-113-47t-47-113q0-32 13-61t36-49q23-20 35.5-43.5T420-600q0-33 23.5-56.5T500-680q33 0 56.5 23.5T580-600q0 25 12.5 48.5T628-508q23 20 36 49t13 61q0 66-47 113t-113 47Z"/>
+                </svg>`;
+            }
+        }
+        lightSwitch.addEventListener('change', updateLightBulb);
+        updateLightBulb();
+
+        function clearReportForm() {
+            console.log("?? clearReportForm() called inside iframe");
+            const lat = document.querySelector('input[name="NewReport.Latitude"]');
+            const lng = document.querySelector('input[name="NewReport.Longitude"]');
+            const geo = document.querySelector('textarea[name="NewReport.GeoJson"]');
+            if (lat) lat.value = "";
+            if (lng) lng.value = "";
+            if (geo) geo.value = "";
+        }
+        window.clearReportForm = clearReportForm;
     </script>
 }
-
-
-

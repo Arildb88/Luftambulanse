@@ -1,49 +1,153 @@
-@model IEnumerable<ReportModel>
-@* This view lists multiple Report objects in a table *@
-
+﻿@model List<Gruppe4NLA.Models.ReportModel>
 @{
-    ViewData["Title"] = "Reports"; 
-    @* Sets the page title *@
+    ViewData["Title"] = "Reports";
+    var filter = (ViewData["Filter"] as string) ?? "all";
+
+    var rsort = (ViewBag.RSort as string) ?? "DateSent";
+    var rdir = (ViewBag.RDir as string) ?? "desc";
+
+    Func<string, string> NextR = col =>
+        (rsort.Equals(col, StringComparison.OrdinalIgnoreCase) && rdir == "asc") ? "desc" : "asc";
+
+    Func<string, string> ArrowR = col =>
+        rsort.Equals(col, StringComparison.OrdinalIgnoreCase) ? (rdir == "asc" ? "▲" : "▼") : "";
 }
+<style>
+    .rsort-link {
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .rsort-link .caret {
+            margin-left: .25rem;
+            font-size: .8rem;
+        }
+</style>
 
 <h2>Reports</h2>
 
-@* Link to create a new report *@
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Report</a>
-</p>
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Sender</th>
-        <th>Latitude</th>
-        <th>Longitude</th>
-        <th>Height (Meters)</th>
-        <th>Danger Type</th>
-        <th>DateSent</th>
-    </tr>
-    </thead>
-    <tbody>
-    @* Loop through reports and show them as rows *@
-    @foreach (var r in Model)
-    {
-        var typeText = r.Type == Gruppe4NLA.Models.ReportModel.DangerType.Other
-            ? (r.OtherDangerType ?? "Other")
-            : (r.Type?.ToString() ?? "�");
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
 
-        <tr>
-            <td>@r.SenderName</td>
-            <td>@r.Latitude</td>
-            <td>@r.Longitude</td>
-            <td>@r.HeightInnMeters</td>
-            <td>@typeText</td>
-            <td>@r.DateSent</td>
-            <td>
-                @* Link to details page *@
-                <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-info btn-sm">Details</a>
+<div class="btn-group mb-3" role="group">
+    <a asp-action="Index" asp-route-filter="all"
+       class="btn @(filter == "all" ? "btn-primary" : "btn-outline-primary")">
+        All Reports
+    </a>
+    <a asp-action="Index" asp-route-filter="submitted"
+       class="btn @(filter == "submitted" ? "btn-primary" : "btn-outline-primary")">
+        Submitted
+    </a>
+    <a asp-action="Index" asp-route-filter="drafts"
+       class="btn @(filter == "drafts" ? "btn-primary" : "btn-outline-primary")">
+        Drafts
+    </a>
+</div>
+
+@if (!Model.Any())
+{
+    <p>No reports found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Sender"
+                       asp-route-rdir="@NextR("Sender")"
+                       class="rsort-link">
+                        Sender <span class="caret">@ArrowR("Sender")</span>
+                    </a>
+                </th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Height"
+                       asp-route-rdir="@NextR("Height")"
+                       class="rsort-link">
+                        Height (m) <span class="caret">@ArrowR("Height")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Type"
+                       asp-route-rdir="@NextR("Type")"
+                       class="rsort-link">
+                        Type <span class="caret">@ArrowR("Type")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="DateSent"
+                       asp-route-rdir="@NextR("DateSent")"
+                       class="rsort-link">
+                        Date Sent <span class="caret">@ArrowR("DateSent")</span>
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-filter="@filter"
+                       asp-route-rsort="Status"
+                       asp-route-rdir="@NextR("Status")"
+                       class="rsort-link">
+                        Status <span class="caret">@ArrowR("Status")</span>
+                    </a>
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var report in Model)
+            {
+                <tr>
+                    <td>@report.SenderName</td>
+                    <td>@report.Latitude?.ToString("F6")</td>
+                    <td>@report.Longitude?.ToString("F6")</td>
+                    <td>@report.HeightInMeters?.ToString("F2")</td>
+                    <td>@report.Type.ToString()</td>
+                    <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                            @(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "Approved" :
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected ? "Rejected" :
+                                                report.StatusCase.ToString())
+                </span>
             </td>
-        </tr>
-    }
-    </tbody>
-</table>
+            <td>
+                <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+
+                @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
+                        {
+                            <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
+
+                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-success">Submit</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-action="Create" class="btn btn-primary">Create New Report</a>

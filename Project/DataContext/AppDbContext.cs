@@ -11,13 +11,14 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 
     // Your domain sets:
     public DbSet<ReportModel> Reports { get; set; } = default!;
+    public DbSet<ReportAssignmentLog> ReportAssignmentLogs { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder); // keep Identity mappings
 
         modelBuilder.Entity<ReportModel>().HasKey(x => x.Id);
+        modelBuilder.Entity<ReportAssignmentLog>().HasKey(x => x.Id);
         // any extra configuration…
     }
 }
-

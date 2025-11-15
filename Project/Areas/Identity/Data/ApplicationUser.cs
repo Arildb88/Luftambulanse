@@ -11,7 +11,7 @@ namespace Gruppe4NLA.Areas.Identity.Data;
 public class ApplicationUser : IdentityUser
 {
 
-    //public string? OrganizationName { get; set; }
+    public string? Organization { get; set; }
     //public string? FirstName { get; set; }
     //public string? LastName { get; set; }
     

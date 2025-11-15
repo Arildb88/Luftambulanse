@@ -17,7 +17,7 @@ namespace Gruppe4NLA.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "9.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -55,6 +55,9 @@ namespace Gruppe4NLA.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
+                    b.Property<string>("Organization")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
@@ -86,6 +89,39 @@ namespace Gruppe4NLA.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Gruppe4NLA.Models.ReportAssignmentLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FromUserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("PerformedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PerformedByUserId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToUserId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportAssignmentLogs");
+                });
+
             modelBuilder.Entity("Gruppe4NLA.Models.ReportModel", b =>
                 {
                     b.Property<int>("Id")
@@ -97,13 +133,25 @@ namespace Gruppe4NLA.Migrations
                     b.Property<bool>("AreLighted")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime?>("AssignedAtUtc")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("AssignedByUserId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("AssignedToUserId")
+                        .HasColumnType("longtext");
+
                     b.Property<DateTime>("DateSent")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Details")
                         .HasColumnType("longtext");
 
-                    b.Property<double?>("HeightInnMeters")
+                    b.Property<string>("GeoJson")
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("HeightInMeters")
                         .HasColumnType("double");
 
                     b.Property<double>("Latitude")
@@ -112,16 +160,24 @@ namespace Gruppe4NLA.Migrations
                     b.Property<double>("Longitude")
                         .HasColumnType("double");
 
-                    b.Property<string>("OtherDangerType")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
                     b.Property<string>("SenderName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StatusCase")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SubmittedAt")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");

@@ -1,0 +1,165 @@
+﻿@model IEnumerable<ReportModel>
+@using Gruppe4NLA.Models
+@using System.Text.Json.Nodes
+@{
+    ViewData["Title"] = "FullMap";
+    Layout = "_Layout";
+
+    var stadiaApiKey = Context.Items["StadiaApiKey"] as string;
+
+    // Combine all reports into a single FeatureCollection
+    var allFeatures = new List<JsonObject>();
+
+    foreach (var report in Model.Where(r => !string.IsNullOrEmpty(r.GeoJson)))
+    {
+        var doc = JsonNode.Parse(report.GeoJson);
+        if (doc?["features"] is JsonArray features)
+        {
+            foreach (var feature in features)
+            {
+                var f = feature.AsObject();
+
+                // Ensure properties exist
+                var props = f["properties"] as JsonObject ?? new JsonObject();
+                props["Type"] = report.Type?.ToString();
+                props["ReportID"] = report.Id;
+                f["properties"] = props;
+
+                // Ensure geometry type exists
+                var geom = f["geometry"]?.AsObject();
+                if (geom != null && !geom.ContainsKey("type"))
+                {
+                    // If coordinates is a single point -> Point, else LineString
+                    var coords = geom["coordinates"];
+                    if (coords is JsonArray arr && arr.Count > 0)
+                    {
+                        if (arr[0] is JsonValue) // simple [lon, lat] -> Point
+                        {
+                            geom["type"] = "Point";
+                        }
+                        else // nested [[lon, lat], ...] -> LineString
+                        {
+                            geom["type"] = "LineString";
+                        }
+                    }
+                }
+
+                allFeatures.Add(f);
+            }
+        }
+    }
+
+    var combinedGeoJson = System.Text.Json.JsonSerializer.Serialize(new { type = "FeatureCollection", features = allFeatures });
+}
+
+<h2>Full Map</h2>
+
+<div id="map" style="height: 600px;"></div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    
+    const stadiaApiKey = '@stadiaApiKey';
+    
+    var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    //const svgIconBlue = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
+
+    //const svgIconBlack = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCDAF5">
+    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
+
+    var geoData = JSON.parse('@combinedGeoJson'.replace(/&quot;/g, '"')); 
+
+        var geoLayer = L.geoJSON(geoData, {
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup("<strong>Type:</strong> " + feature.properties.Type +
+                            "<br><strong>ID:</strong> " + feature.properties.ReportID);
+        
+        if (feature.geometry.type === "LineString") {
+            const coords = feature.geometry.coordinates;
+            coords.forEach(coord => {
+                const latlng = [coord[1], coord[0]];
+                L.circleMarker(latlng, {
+                    radius: 4,
+                    fillColor: "var(--base-color)",
+                    color: "#000",
+                    weight: 1,
+                    fillOpacity: 1
+                }).addTo(map);
+            });
+        }
+        },
+
+        pointToLayer: function(feature, latlng) {
+            if (feature.properties.Type === "Pole") {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <circle cx="12" cy="12" r="8"
+                          fill="var(--warning-color)"
+                          stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+        else if (feature.properties.Type === "Cable") {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <circle cx="12" cy="12" r="8"
+                            fill="var(--warning-color)"
+                            stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+        else {
+            svgIcon = `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 0 24 24" width="25" height="25">
+                    <polygon points="12,2 22,22 2,22"
+                             fill="var(--warning-color)"
+                             stroke="black" stroke-width="2" />
+                </svg>
+            `;
+        }
+
+        // Use L.divIcon to render inline SVG with CSS variable colors
+        return L.marker(latlng, {
+            icon: L.divIcon({
+                html: svgIcon,
+                className: 'custom-icon',
+                iconSize: [25, 25],
+                iconAnchor: [12, 25]
+            })
+        });
+    },
+        style: function(feature) {
+            // Only applies to lines/polygons
+            if (feature.geometry.type === "LineString") {
+                return {
+                    color: "var(--polyline-color)",
+                    weight: 3
+                };
+            }
+            return {};
+        }
+    }).addTo(map);
+
+    // Fit map to all features
+    map.fitBounds(geoLayer.getBounds());
+
+</script>
+
+<h3>Reports GeoJSON Debug:</h3>
+<ul>
+    @foreach (var report in Model)
+    {
+        <li>
+            Report Type: @report.Type
+            <pre>@report.GeoJson</pre>
+        </li>
+    }
+</ul>

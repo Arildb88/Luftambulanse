@@ -1,0 +1,70 @@
+﻿@model Gruppe4NLA.Models.ConfirmationViewModel
+@{
+    ViewData["Title"] = Model.Title;
+
+    ViewData["ShowNavbar"] = false;
+    ViewData["ShowFooter"] = false;
+
+    Layout = "_Layout";
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+    <div class="p-4 rounded shadow-lg" style="background-color: var(--base-variant); color: var(--text-color);">
+        @{
+        var titleColor = Model.Title.Contains("Draft", StringComparison.OrdinalIgnoreCase)
+                ? "#f0c93d" // gul for draft
+                : "#28a745"; // grønn for submitted
+                        }
+        <h1 style="font-size: 3rem; margin-bottom: 1rem; color:@titleColor;">@Model.Title</h1>
+
+        <p style="font-size: 1.25rem; margin-bottom: 2rem;">@Model.Message</p>
+        <button class="btn btn-primary px-5 py-2" id="closeConfirmBtn">OK</button>
+
+        <script>
+            document.getElementById("closeConfirmBtn")?.addEventListener("click", () => {
+                try {
+                    const parentDoc = window.parent?.document;
+                    if (!parentDoc) return;
+
+                    const reportFrame = parentDoc.getElementById("reportFrame");
+                    const dialog = parentDoc.getElementById("reportDialog");
+
+                    // 1️⃣ Tøm skjemaet inne i iframe
+                    if (reportFrame?.contentWindow?.clearReportForm) {
+                        console.log("🧹 clearReportForm() from Confirmation");
+                        reportFrame.contentWindow.clearReportForm();
+                    }
+
+                    // 2️⃣ Rydd kart-objekter (marker/polyline/red dots)
+                    const mapWindow = window.parent; // Leaflet.cshtml kjører i parent
+                    if (mapWindow && mapWindow.map) {
+                        console.log("🗑️ Clearing map objects...");
+                        if (mapWindow.marker) {
+                            mapWindow.map.removeLayer(mapWindow.marker);
+                            mapWindow.marker = null;
+                        }
+                        if (mapWindow.polyline) {
+                            mapWindow.map.removeLayer(mapWindow.polyline);
+                            mapWindow.polyline = null;
+                        }
+                        if (mapWindow.redDotLayer) {
+                            mapWindow.redDotLayer.clearLayers();
+                        }
+                        mapWindow.latlngs = [];
+                    }
+
+                    // 3️⃣ Lukk dialogen
+                    if (dialog) {
+                        dialog.close();
+                        console.log("✅ Dialog closed.");
+                    }
+
+                } catch (err) {
+                    console.error("❌ Error in Confirmation OK handler:", err);
+                }
+            });
+        </script>
+
+    </div>
+</div>
+

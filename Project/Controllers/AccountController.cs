@@ -1,71 +1,59 @@
-﻿
-
-
-
-
-// You dont need a AccountController when using Identity with Razor Pages
-
-// If we need to use login functionality we can use:
-
-//@using Gruppe4NLA.Areas.Identity.Data
-//@inject SignInManager<ApplicationUser> SignInManager
-//@inject UserManager<ApplicationUser> UserManager
-
-
-
-
-
-
-
-//using Gruppe4NLA.Models;
+﻿//using Gruppe4NLA.Areas.Identity.Data;
+//using Microsoft.AspNetCore.Authorization;
 //using Microsoft.AspNetCore.Identity;
 //using Microsoft.AspNetCore.Mvc;
-//using Gruppe4NLA.Areas.Identity.Pages.Account;
+//using Microsoft.EntityFrameworkCore;
 
 //namespace Gruppe4NLA.Controllers
 //{
-//    public class AccountController : Controller
+//    [HttpPost]
+//    [ValidateAntiForgeryToken]
+//    public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
 //    {
-//        private readonly UserManager<IdentityUser> _userManager;
-//        private readonly SignInManager<IdentityUser> _signInManager;
-
-//        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+//        if (ModelState.IsValid)
 //        {
-//            _userManager = userManager;
-//            _signInManager = signInManager;
-//        }
+//            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-//        [HttpGet]
-//        public IActionResult Login()
-//        {
-//            return View();
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Login(LoginViewModel model)
-//        {
-//            if (ModelState.IsValid)
+//            if (result.Succeeded)
 //            {
-//                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-//                if (result.Succeeded)
-//                {
-//                    return RedirectToAction("Index", "Home");
-//                }
-//                else
-//                {
-//                    ModelState.AddModelError(string.Empty, "Invalig login attempt. ");
-//                }
+//                var user = await _userManager.FindByEmailAsync(model.Email);
+//                var roles = await _userManager.GetRolesAsync(user);
+
+//                if (roles.Contains("Pilot"))
+//                    return RedirectToAction("Index", "Map");
+
+//                if (roles.Contains("Admin"))
+//                    return RedirectToAction("Index", "Admin");
+
+//                if (roles.Contains("Caseworker"))
+//                    return RedirectToAction("Index", "Reports");
+
+//                // default fallback
+//                return RedirectToAction("Index", "Home");
 //            }
-//            return View(model);
+
+//            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 //        }
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Logout()
-//        {
-//            await _signInManager.SignOutAsync();
-//            return RedirectToAction("Login", "Account");
-//        }
+//        return View(model);
 //    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //}
