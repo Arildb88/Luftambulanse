@@ -548,7 +548,7 @@ namespace Gruppe4NLA.Controllers
             }
 
             var me = _userManager.GetUserId(User)!;
-            await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!, me);
+            await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!);
 
             TempData["Ok"] = "Report assigned.";
             return RedirectToAction(nameof(Inbox));
@@ -561,7 +561,7 @@ namespace Gruppe4NLA.Controllers
         public async Task<IActionResult> Unassign(int id)
         {
             var me = _userManager.GetUserId(User)!;
-            await _assigner.UnassignAsync(id, me);
+            await _assigner.UnassignAsync(id);
             TempData["Ok"] = "Assignment removed.";
             return RedirectToAction(nameof(Inbox));
         }
@@ -605,7 +605,7 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                await _assigner.ApproveAsync(id, userId);
+                await _assigner.ApproveAsync(id);
                 TempData["Ok"] = "Report approved successfully";
                 return RedirectToAction(nameof(MyQueue));
             }
@@ -632,7 +632,7 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                await _assigner.RejectAsync(id, userId);
+                await _assigner.RejectAsync(id);
                 TempData["Ok"] = "Report rejected";
                 return RedirectToAction(nameof(MyQueue));
             }
