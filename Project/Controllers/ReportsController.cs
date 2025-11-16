@@ -141,8 +141,8 @@ namespace Gruppe4NLA.Controllers
             var newReport = new ReportModel
             {
                 UserId = model.NewReport.UserId,
-                Latitude = model.NewReport.Latitude,
-                Longitude = model.NewReport.Longitude,
+                //Latitude = model.NewReport.Latitude,
+                //Longitude = model.NewReport.Longitude,
                 GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
@@ -199,13 +199,7 @@ namespace Gruppe4NLA.Controllers
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
-
-            if (lat.HasValue)
-                model.NewReport.Latitude = lat.Value;
-
-            if (lng.HasValue)
-                model.NewReport.Longitude = lng.Value;
-
+                       
             return View(model);
         }
 
@@ -225,13 +219,7 @@ namespace Gruppe4NLA.Controllers
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
-
-            if (lat.HasValue)
-                model.NewReport.Latitude = lat.Value;
-
-            if (lng.HasValue)
-                model.NewReport.Longitude = lng.Value;
-
+                       
             return View(model);
         }
 
@@ -255,6 +243,11 @@ namespace Gruppe4NLA.Controllers
                 }
             }
 
+            // ✅ NEW: compute coordinates from GeoJson
+            var (lat, lng) = GetFirstCoordinateFromGeoJson(report.GeoJson);
+            ViewBag.Latitude = lat;
+            ViewBag.Longitude = lng;
+
             return View(report);
         }
 
@@ -269,9 +262,8 @@ namespace Gruppe4NLA.Controllers
                 NewReport = new ReportModel
                 {
                     UserId = _userManager.GetUserId(User), // used to filter "my reports"
-                    SenderName = user?.Email,              // set the sender name from the user
-                    Latitude = lat ?? default,
-                    Longitude = lng ?? default
+                    SenderName = user?.Email              // set the sender name from the user
+                   
                 },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
@@ -362,8 +354,6 @@ namespace Gruppe4NLA.Controllers
             if (!ModelState.IsValid) return View(updated);
 
             // Update editable fields
-            report.Latitude = updated.Latitude;
-            report.Longitude = updated.Longitude;
             report.GeoJson = updated.GeoJson;
             report.Type = updated.Type;
             report.Details = updated.Details;
@@ -720,6 +710,79 @@ namespace Gruppe4NLA.Controllers
 
             // ToListAsync() never returns null, so this is effectively just "reports"
             return View(reports);
+        }
+
+        // Helper: read first [lat, lng] from GeoJson (Point or LineString)
+        private static (double? lat, double? lng) GetFirstCoordinateFromGeoJson(string? geoJson)
+        {
+            if (string.IsNullOrWhiteSpace(geoJson))
+                return (null, null);
+
+            try
+            {
+                using var doc = JsonDocument.Parse(geoJson);
+                var root = doc.RootElement;
+
+                JsonElement coords;
+
+                // Case 1: FeatureCollection
+                if (root.TryGetProperty("features", out var features) &&
+                    features.ValueKind == JsonValueKind.Array &&
+                    features.GetArrayLength() > 0)
+                {
+                    var firstFeature = features[0];
+
+                    if (firstFeature.TryGetProperty("geometry", out var geom) &&
+                        geom.TryGetProperty("coordinates", out coords))
+                    {
+                        return ExtractLatLngFromCoordinates(geom, coords);
+                    }
+                }
+
+                // Case 2: Single geometry with coordinates at root
+                if (root.TryGetProperty("coordinates", out coords))
+                {
+                    return ExtractLatLngFromCoordinates(root, coords);
+                }
+            }
+            catch
+            {
+                // invalid JSON or unexpected structure → just return nulls
+            }
+
+            return (null, null);
+        }
+
+        private static (double? lat, double? lng) ExtractLatLngFromCoordinates(JsonElement geom, JsonElement coords)
+        {
+            // If it's a Point: [lon, lat]
+            if (geom.TryGetProperty("type", out var typeProp) &&
+                typeProp.ValueKind == JsonValueKind.String &&
+                typeProp.GetString() == "Point")
+            {
+                if (coords.ValueKind == JsonValueKind.Array && coords.GetArrayLength() >= 2)
+                {
+                    double lng = coords[0].GetDouble();
+                    double lat = coords[1].GetDouble();
+                    return (lat, lng);
+                }
+            }
+
+            // If it's a LineString: [[lon, lat], ...] → use the first coordinate
+            if (coords.ValueKind == JsonValueKind.Array &&
+                coords.GetArrayLength() > 0 &&
+                coords[0].ValueKind == JsonValueKind.Array)
+            {
+                var first = coords[0];
+                if (first.GetArrayLength() >= 2)
+                {
+                    double lng = first[0].GetDouble();
+                    double lat = first[1].GetDouble();
+                    return (lat, lng);
+                }
+            }
+
+            return (null, null);
         }
     }
 }

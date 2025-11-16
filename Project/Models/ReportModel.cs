@@ -1,4 +1,4 @@
-using Gruppe4NLA.Controllers;
+﻿using Gruppe4NLA.Controllers;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +15,7 @@ namespace Gruppe4NLA.Models
 
         // Further statuses can be added here
     }
-
+        
     public class ReportModel
     {
 
@@ -43,13 +43,13 @@ namespace Gruppe4NLA.Models
 
         public bool AreLighted { get; set; } = false;
 
-        // Coordinates are needed
-        [Required(ErrorMessage = "Latitude is required")]
-        [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
-        public double? Latitude { get; set; }
+        //// Coordinates are needed
+        //[Required(ErrorMessage = "Latitude is required")]
+        //[Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
+        //public double? Latitude { get; set; }
 
-        [Required(ErrorMessage = "Longitude is required")]
-        [Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
+        //[Required(ErrorMessage = "Longitude is required")]
+        //[Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
         public double? Longitude { get; set; }
 
         // GeoJSON string for geometry storage
@@ -58,10 +58,7 @@ namespace Gruppe4NLA.Models
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
 
-        //Who performed the assignment
-        //public string? AssignedByUserId { get; set; }
-
-        //Whenzthe assignment happened
+        //When the assignment happened
         public DateTime? AssignedAtUtc { get; set; }
 
         //Workflow status
@@ -104,5 +101,6 @@ namespace Gruppe4NLA.Models
         Completed = 4,
         Rejected = 5
     }
+
 
 }

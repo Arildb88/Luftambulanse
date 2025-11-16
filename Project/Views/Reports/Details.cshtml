@@ -1,4 +1,4 @@
-@model Gruppe4NLA.Models.ReportModel
+﻿@model Gruppe4NLA.Models.ReportModel
 
 @{
     ViewData["Title"] = "Report Details";
@@ -39,7 +39,8 @@
 
             <dt class="col-sm-3">Coordinates</dt>
             <dd class="col-sm-9">
-                Lat: @Model.Latitude?.ToString("F6"), Lng: @Model.Longitude?.ToString("F6")
+                Lat: @(ViewBag.Latitude?.ToString("F6") ?? "N/A"),
+                Lng: @(ViewBag.Longitude?.ToString("F6") ?? "N/A")
             </dd>
 
             <dt class="col-sm-3">Date Sent</dt>
@@ -48,9 +49,9 @@
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
                 <span class="badge bg-@(Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
-                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
-                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
-                                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
                     @Model.StatusCase
                 </span>
             </dd>
@@ -60,45 +61,51 @@
                 <dt class="col-sm-3">Assigned To</dt>
                 <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
             }
+        </dl>
 
-            @* Show approve/reject buttons for assigned caseworker only *@
-            @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
-                        Model.AssignedToUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value &&
-                        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Completed &&
-                        Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Rejected)
-            {
-                <hr />
-                <div class="mt-3">
-                    <h5>Review Actions</h5>
+        @* Show approve/reject buttons for assigned caseworker only *@
+        @if ((User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) &&
+                Model.AssignedToUserId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value &&
+                Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Completed &&
+                Model.StatusCase != Gruppe4NLA.Models.ReportStatusCase.Rejected)
+        {
+            <hr />
+            <div class="mt-3">
+                <h5>Review Actions</h5>
 
-                    <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
-                            Approve Report
-                        </button>
-                    </form>
+                <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
+                        Approve Report
+                    </button>
+                </form>
 
-                    <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
-                            Reject Report
-                        </button>
-                    </form>
-                </div>
-            }
+                <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
+                        Reject Report
+                    </button>
+                </form>
+            </div>
+        }
 
-            @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
-            {
-                <div class="alert alert-success mt-3">
-                    This report has been approved.
-                </div>
-            }
-            else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
-            {
-                <div class="alert alert-danger mt-3">
-                    This report has been rejected.
-                </div>
-            }
+        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
+        {
+            <div class="alert alert-success mt-3">
+                This report has been approved.
+            </div>
+        }
+        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
+        {
+            <div class="alert alert-danger mt-3">
+                This report has been rejected.
+            </div>
+        }
+
+        <!-- Leaflet map for this report -->
+        <hr />
+        <h5>Location Map</h5>
+        <div id="reportMap" style="height:400px;"></div>
     </div>
 </div>
 
@@ -109,3 +116,47 @@
     }
     <a asp-action="Index" class="btn btn-secondary">Back to Reports</a>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
+    <script src="~/lib/LeafletMap/leaflet.js"></script>
+
+    <script>
+        (function () {
+            // GeoJSON (for point OR line)
+            const geoJsonObject = @Html.Raw(Model.GeoJson ?? "null");
+
+            // Lat/Lng from ViewBag (fallback)
+            const haveLat = @((ViewBag.Latitude != null) ? "true" : "false");
+            const haveLng = @((ViewBag.Longitude != null) ? "true" : "false");
+            const latVal = @((ViewBag.Latitude ?? 0.0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+            const lngVal = @((ViewBag.Longitude ?? 0.0).ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+            // If we have neither GeoJSON nor coordinates, nothing to show
+            if (!geoJsonObject && !(haveLat && haveLng)) {
+                return;
+            }
+
+            const map = L.map('reportMap');
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            if (geoJsonObject) {
+                // Draw GeoJSON (point or line) and fit map to it
+                const layer = L.geoJSON(geoJsonObject).addTo(map);
+                const bounds = layer.getBounds();
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { maxZoom: 16 });
+                } else if (haveLat && haveLng) {
+                    map.setView([latVal, lngVal], 14);
+                }
+            } else if (haveLat && haveLng) {
+                // Fallback: just a single marker
+                map.setView([latVal, lngVal], 14);
+                L.marker([latVal, lngVal]).addTo(map);
+            }
+        })();
+    </script>
+}

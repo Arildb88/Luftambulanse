@@ -21,19 +21,7 @@
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
-
-    <div class="form-group" style="display: none;">
-        <label asp-for="NewReport.Latitude"></label>
-        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
-    </div>
-
-    <div class="form-group" style="display: none;">
-        <label asp-for="NewReport.Longitude"></label>
-        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
-    </div>
-
+       
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.GeoJson">GeoJSON</label>
         <textarea asp-for="NewReport.GeoJson" rows="6" class="form-control" readonly style="font-family: monospace; white-space: pre;"></textarea>
