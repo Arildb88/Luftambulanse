@@ -65,17 +65,11 @@ namespace Gruppe4NLA.Controllers
         public IActionResult Map() => View("Leaflet");
 
         [AllowAnonymous]
-        public IActionResult Privacy() => View();
-
-        [AllowAnonymous]
         public IActionResult FAQ() => View();
 
         // You already use Identity pages — make this forward to the real login
         [AllowAnonymous]
         public IActionResult LogIn() => RedirectToPage("/Account/Login", new { area = "Identity" });
-
-        [AllowAnonymous]
-        public IActionResult About() => View();
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Adminpage()
