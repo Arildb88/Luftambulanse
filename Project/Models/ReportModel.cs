@@ -43,15 +43,6 @@ namespace Gruppe4NLA.Models
 
         public bool AreLighted { get; set; } = false;
 
-        //// Coordinates are needed
-        //[Required(ErrorMessage = "Latitude is required")]
-        //[Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
-        //public double? Latitude { get; set; }
-
-        //[Required(ErrorMessage = "Longitude is required")]
-        //[Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
-        public double? Longitude { get; set; }
-
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
 

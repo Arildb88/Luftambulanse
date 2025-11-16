@@ -120,7 +120,7 @@
     <a asp-action="Index" class="btn btn-secondary">Back to Reports</a>
 </div>
 
-@section Scripts {
+    @section Scripts {
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
 
@@ -138,6 +138,50 @@
                     geoJsonObject = null;
                 }
             }
+
+            // Normalize geometry.type like in FullMap (Point vs LineString)
+            function ensureGeometryType(geom) {
+                if (!geom) return;
+                if (geom.type) return; // already has type
+
+                const coords = geom.coordinates;
+                if (!Array.isArray(coords) || coords.length === 0) return;
+
+                // [[lon, lat], ...] → LineString
+                if (Array.isArray(coords[0])) {
+                    geom.type = "LineString";
+                }
+                else {
+                    // [lon, lat] → Point
+                    geom.type = "Point";
+                }
+            }
+
+            function normalizeGeoJson(geo) {
+                if (!geo) return null;
+
+                // FeatureCollection
+                if (geo.type === "FeatureCollection" && Array.isArray(geo.features)) {
+                    geo.features.forEach(f => {
+                        if (f && f.geometry) {
+                            ensureGeometryType(f.geometry);
+                        }
+                    });
+                    return geo;
+                }
+
+                // Single Feature
+                if (geo.type === "Feature" && geo.geometry) {
+                    ensureGeometryType(geo.geometry);
+                    return geo;
+                }
+
+                // Raw geometry
+                ensureGeometryType(geo);
+                return geo;
+            }
+
+            geoJsonObject = normalizeGeoJson(geoJsonObject);
 
             // Lat/Lng from ViewBag (fallback)
             const haveLat = @((ViewBag.Latitude != null) ? "true" : "false");
@@ -206,11 +250,13 @@
                 }
 
             } else if (haveLat && haveLng) {
-                // Fallback: just a single marker (no GeoJSON, only ViewBag coords)
+                // Fallback: just a single marker
                 map.setView([latVal, lngVal], 14);
                 L.marker([latVal, lngVal]).addTo(map);
             }
         })();
     </script>
 }
+
+
 

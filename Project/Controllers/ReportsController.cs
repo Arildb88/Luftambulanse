@@ -769,7 +769,7 @@ namespace Gruppe4NLA.Controllers
                     }
                 }
 
-                // Case 3: raw geometry object at root (type: Point / LineString)
+                // Case 3: raw geometry object at root (with or without "type")
                 if (root.TryGetProperty("coordinates", out var coordsRoot))
                 {
                     return ExtractLatLngFromCoordinates(root, coordsRoot);
@@ -785,10 +785,16 @@ namespace Gruppe4NLA.Controllers
 
         private static (double? lat, double? lng) ExtractLatLngFromCoordinates(JsonElement geom, JsonElement coords)
         {
-            // If it's a Point: [lon, lat]
+            // Try to read explicit "type" if present
+            string? type = null;
             if (geom.TryGetProperty("type", out var typeProp) &&
-                typeProp.ValueKind == JsonValueKind.String &&
-                typeProp.GetString() == "Point")
+                typeProp.ValueKind == JsonValueKind.String)
+            {
+                type = typeProp.GetString();
+            }
+
+            // If it's explicitly a Point: [lon, lat]
+            if (type == "Point")
             {
                 if (coords.ValueKind == JsonValueKind.Array && coords.GetArrayLength() >= 2)
                 {
@@ -798,13 +804,40 @@ namespace Gruppe4NLA.Controllers
                 }
             }
 
-            // If it's a LineString: [[lon, lat], ...] → use the first coordinate
-            if (coords.ValueKind == JsonValueKind.Array &&
-                coords.GetArrayLength() > 0 &&
-                coords[0].ValueKind == JsonValueKind.Array)
+            // If it's explicitly a LineString: [[lon, lat], ...] → use the first coordinate
+            if (type == "LineString")
+            {
+                if (coords.ValueKind == JsonValueKind.Array &&
+                    coords.GetArrayLength() > 0 &&
+                    coords[0].ValueKind == JsonValueKind.Array)
+                {
+                    var first = coords[0];
+                    if (first.GetArrayLength() >= 2)
+                    {
+                        double lng = first[0].GetDouble();
+                        double lat = first[1].GetDouble();
+                        return (lat, lng);
+                    }
+                }
+            }
+
+            // 🔹 Fallback if "type" is missing:
+            //    - [lon, lat] → treat as Point
+            //    - [[lon, lat], ...] → treat as LineString
+            if (coords.ValueKind == JsonValueKind.Array && coords.GetArrayLength() > 0)
             {
                 var first = coords[0];
-                if (first.GetArrayLength() >= 2)
+
+                // [lon, lat] → Point
+                if (first.ValueKind == JsonValueKind.Number && coords.GetArrayLength() >= 2)
+                {
+                    double lng = coords[0].GetDouble();
+                    double lat = coords[1].GetDouble();
+                    return (lat, lng);
+                }
+
+                // [[lon, lat], ...] → LineString
+                if (first.ValueKind == JsonValueKind.Array && first.GetArrayLength() >= 2)
                 {
                     double lng = first[0].GetDouble();
                     double lat = first[1].GetDouble();
