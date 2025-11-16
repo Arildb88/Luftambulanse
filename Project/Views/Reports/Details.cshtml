@@ -127,7 +127,17 @@
     <script>
         (function () {
             // GeoJSON (for point OR line)
-            const geoJsonObject = @Html.Raw(Model.GeoJson ?? "null");
+            const geoJsonRaw = @Html.Raw(Model.GeoJson ?? "null");
+            let geoJsonObject = geoJsonRaw;
+
+            // If GeoJSON is stored as a string, parse it into an object
+            if (typeof geoJsonRaw === "string") {
+                try {
+                    geoJsonObject = JSON.parse(geoJsonRaw);
+                } catch (e) {
+                    geoJsonObject = null;
+                }
+            }
 
             // Lat/Lng from ViewBag (fallback)
             const haveLat = @((ViewBag.Latitude != null) ? "true" : "false");
@@ -156,7 +166,7 @@
                     map.setView([latVal, lngVal], 14);
                 }
 
-                // 🔹 Extract all coordinates from the GeoJSON
+                // Extract all coordinates from the GeoJSON
                 function extractCoords(geo) {
                     if (!geo) return [];
 
@@ -179,24 +189,28 @@
                     return [];
                 }
 
+                // 🔹 Now actually get the coordinates
                 const coords = extractCoords(geoJsonObject);
-                const coordDiv = document.getElementById('coordList');
 
-                // Only show list if we have more than one point (i.e., a line)
+                // Only show the list if it's a line (more than one coordinate)
+                const coordDiv = document.getElementById('coordList');
                 if (coordDiv && coords.length > 1) {
                     let html = '<h6>All coordinates in line</h6><ol class="mb-0 small">';
                     coords.forEach(c => {
-                        html += `<li>Lat: ${c.lat.toFixed(6)}, Lng: ${c.lng.toFixed(6)}</li>`;
+                        const lat = Number(c.lat).toFixed(6);
+                        const lng = Number(c.lng).toFixed(6);
+                        html += `<li>Lat: ${lat}, Lng: ${lng}</li>`;
                     });
                     html += '</ol>';
                     coordDiv.innerHTML = html;
                 }
 
             } else if (haveLat && haveLng) {
-                // Fallback: just a single marker
+                // Fallback: just a single marker (no GeoJSON, only ViewBag coords)
                 map.setView([latVal, lngVal], 14);
                 L.marker([latVal, lngVal]).addTo(map);
             }
         })();
     </script>
 }
+
