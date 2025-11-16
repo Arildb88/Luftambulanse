@@ -141,8 +141,6 @@ namespace Gruppe4NLA.Controllers
             var newReport = new ReportModel
             {
                 UserId = model.NewReport.UserId,
-                //Latitude = model.NewReport.Latitude,
-                //Longitude = model.NewReport.Longitude,
                 GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
@@ -720,34 +718,66 @@ namespace Gruppe4NLA.Controllers
 
             try
             {
-                using var doc = JsonDocument.Parse(geoJson);
-                var root = doc.RootElement;
+                // Some rows may have the JSON stored as a quoted string: "\"{...}\"".
+                // Normalize that so we always parse real JSON.
+                var jsonToParse = geoJson.Trim();
 
-                JsonElement coords;
-
-                // Case 1: FeatureCollection
-                if (root.TryGetProperty("features", out var features) &&
-                    features.ValueKind == JsonValueKind.Array &&
-                    features.GetArrayLength() > 0)
+                if (jsonToParse.StartsWith("\"") && jsonToParse.EndsWith("\""))
                 {
-                    var firstFeature = features[0];
-
-                    if (firstFeature.TryGetProperty("geometry", out var geom) &&
-                        geom.TryGetProperty("coordinates", out coords))
+                    try
                     {
-                        return ExtractLatLngFromCoordinates(geom, coords);
+                        // Try to unescape using System.Text.Json
+                        jsonToParse = JsonSerializer.Deserialize<string>(jsonToParse)
+                                      ?? jsonToParse.Trim('"');
+                    }
+                    catch
+                    {
+                        // Fallback: strip outer quotes
+                        jsonToParse = jsonToParse.Trim('"');
                     }
                 }
 
-                // Case 2: Single geometry with coordinates at root
-                if (root.TryGetProperty("coordinates", out coords))
+                using var doc = JsonDocument.Parse(jsonToParse);
+                var root = doc.RootElement;
+
+                // If there's a "type" property, check what kind of GeoJSON this is
+                if (root.TryGetProperty("type", out var typeProp) &&
+                    typeProp.ValueKind == JsonValueKind.String)
                 {
-                    return ExtractLatLngFromCoordinates(root, coords);
+                    var type = typeProp.GetString();
+
+                    // Case 1: FeatureCollection → take first feature.geometry
+                    if (type == "FeatureCollection" &&
+                        root.TryGetProperty("features", out var features) &&
+                        features.ValueKind == JsonValueKind.Array &&
+                        features.GetArrayLength() > 0)
+                    {
+                        var firstFeature = features[0];
+                        if (firstFeature.TryGetProperty("geometry", out var geom) &&
+                            geom.TryGetProperty("coordinates", out var coords))
+                        {
+                            return ExtractLatLngFromCoordinates(geom, coords);
+                        }
+                    }
+
+                    // Case 2: single Feature → use its geometry
+                    if (type == "Feature" &&
+                        root.TryGetProperty("geometry", out var geom2) &&
+                        geom2.TryGetProperty("coordinates", out var coords2))
+                    {
+                        return ExtractLatLngFromCoordinates(geom2, coords2);
+                    }
+                }
+
+                // Case 3: raw geometry object at root (type: Point / LineString)
+                if (root.TryGetProperty("coordinates", out var coordsRoot))
+                {
+                    return ExtractLatLngFromCoordinates(root, coordsRoot);
                 }
             }
             catch
             {
-                // invalid JSON or unexpected structure → just return nulls
+                // invalid JSON or unexpected structure → just fall back to nulls
             }
 
             return (null, null);
