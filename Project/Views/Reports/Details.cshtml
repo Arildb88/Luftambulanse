@@ -49,9 +49,9 @@
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
                 <span class="badge bg-@(Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
-                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
-                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
-                                                            Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
                     @Model.StatusCase
                 </span>
             </dd>
@@ -106,6 +106,9 @@
         <hr />
         <h5>Location Map</h5>
         <div id="reportMap" style="height:400px;"></div>
+
+        <!-- 🔹 All coordinates (for lines) will be rendered here -->
+        <div id="coordList" class="mt-3"></div>
     </div>
 </div>
 
@@ -152,6 +155,43 @@
                 } else if (haveLat && haveLng) {
                     map.setView([latVal, lngVal], 14);
                 }
+
+                // 🔹 Extract all coordinates from the GeoJSON
+                function extractCoords(geo) {
+                    if (!geo) return [];
+
+                    if (geo.type === 'FeatureCollection') {
+                        return geo.features.flatMap(f => extractCoords(f.geometry || f));
+                    }
+
+                    if (geo.type === 'Feature') {
+                        return extractCoords(geo.geometry);
+                    }
+
+                    if (geo.type === 'LineString') {
+                        return geo.coordinates.map(c => ({ lng: c[0], lat: c[1] }));
+                    }
+
+                    if (geo.type === 'Point') {
+                        return [{ lng: geo.coordinates[0], lat: geo.coordinates[1] }];
+                    }
+
+                    return [];
+                }
+
+                const coords = extractCoords(geoJsonObject);
+                const coordDiv = document.getElementById('coordList');
+
+                // Only show list if we have more than one point (i.e., a line)
+                if (coordDiv && coords.length > 1) {
+                    let html = '<h6>All coordinates in line</h6><ol class="mb-0 small">';
+                    coords.forEach(c => {
+                        html += `<li>Lat: ${c.lat.toFixed(6)}, Lng: ${c.lng.toFixed(6)}</li>`;
+                    });
+                    html += '</ol>';
+                    coordDiv.innerHTML = html;
+                }
+
             } else if (haveLat && haveLng) {
                 // Fallback: just a single marker
                 map.setView([latVal, lngVal], 14);
