@@ -112,10 +112,10 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        // Sett API-nøkkelen som en JS-variabel fra Razor
+        // Sett API-key as a JS-variabel from Razor
         const stadiaApiKey = '@stadiaApiKey';
 
-        // Bruk backticks for template-strings:
+        // use backticks for template-strings:
         const darkMode = L.tileLayer(
             `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaApiKey}`,
             {
