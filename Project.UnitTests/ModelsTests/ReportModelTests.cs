@@ -24,14 +24,13 @@ namespace Gruppe4NLA.Tests
         public void ReportModel_ValidModel_PassesValidation()
         {
             var model = new ReportModel
+
             {
                 Id = 1,
                 SenderName = "Test",
-                DangerType = "Kran",
+                Type = ReportModel.DangerTypeEnum.Cable,
                 DateSent = DateTime.Now,
                 Details = "Kran: 30 Meter",
-                Latitude = 59.91,
-                Longitude = 10.75
             };
 
             var results = ValidateModel(model);
@@ -43,8 +42,6 @@ namespace Gruppe4NLA.Tests
         {
             var model = new ReportModel
             {
-                Latitude = 59.91,
-                Longitude = 10.75
             };
 
             var results = ValidateModel(model);
@@ -74,8 +71,6 @@ namespace Gruppe4NLA.Tests
             var model = new ReportModel
             {
                 SenderName = "Test",
-                Latitude = invalidLatitude,
-                Longitude = 10
             };
 
             var results = ValidateModel(model);
@@ -90,8 +85,6 @@ namespace Gruppe4NLA.Tests
             var model = new ReportModel
             {
                 SenderName = "Test",
-                Latitude = 59,
-                Longitude = invalidLongitude
             };
 
             var results = ValidateModel(model);

@@ -1,4 +1,13 @@
-﻿@model List<Gruppe4NLA.Models.ReportModel>
+﻿@using Gruppe4NLA.Areas.Identity.Data
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@{
+    var me = await UserManager.GetUserAsync(User);
+    var myId = me?.Id;
+    var myEmail = me?.Email;
+}
+
+@model List<Gruppe4NLA.Models.ReportModel>
 @{
     ViewData["Title"] = "Reports";
     var filter = (ViewData["Filter"] as string) ?? "all";
@@ -68,9 +77,7 @@ else
                        class="rsort-link">
                         Sender <span class="caret">@ArrowR("Sender")</span>
                     </a>
-                </th>
-                <th>Latitude</th>
-                <th>Longitude</th>
+                </th>                
                 <th>
                     <a asp-action="Index"
                        asp-route-filter="@filter"
@@ -116,8 +123,6 @@ else
             {
                 <tr>
                     <td>@report.SenderName</td>
-                    <td>@report.Latitude?.ToString("F6")</td>
-                    <td>@report.Longitude?.ToString("F6")</td>
                     <td>@report.HeightInMeters?.ToString("F2")</td>
                     <td>@report.Type.ToString()</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
@@ -132,13 +137,37 @@ else
                 </span>
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+                @{
+                            // Who can delete?
+                            var canDelete =
+                            User.IsInRole("Admin") ||
+                            User.IsInRole("CaseworkerAdm") ||
+                            User.IsInRole("Caseworker") ||
+                            // Pilot: only own drafts
+                            (User.IsInRole("Pilot")
+                            && report.Status == Gruppe4NLA.Models.ReportStatus.Draft
+                            && (report.UserId == myId ||
+                            (report.UserId == null && string.Equals(report.SenderName, myEmail, StringComparison.OrdinalIgnoreCase))));
+                        }
 
-                @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
+                        <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
+
+                        @if (canDelete)
+                        {
+                            <form asp-action="Delete"
+                                  asp-route-id="@report.Id"
+                                  asp-route-returnUrl="@($"{Context.Request.Path}{Context.Request.QueryString}")"
+                                  method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this report? This cannot be undone.');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        }
+
+                        @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
                         {
                             <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
-
-                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" style="display:inline;">
+                            <form asp-action="Submit" asp-route-id="@report.Id" method="post" class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-sm btn-success">Submit</button>
                             </form>

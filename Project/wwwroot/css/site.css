@@ -504,12 +504,12 @@ body {
     transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
 }
 
-/* Skjul "på"-ikonet som standard */
+/* Hide "On"-icon as standard*/
 .icon-on {
     display: none;
 }
 
-/* Når checkboxen er trykket (checked), bytt ikon */
+/* When checkbox are pressed (checked), switch icon*/
 .btn-check:checked + .light-card-small .icon-off {
     display: none;
 }
@@ -518,24 +518,23 @@ body {
     display: inline-block;
 }
 
-/* Juster størrelse og utseende */
 .light-icon svg {
     width: 36px;
     height: 36px;
     transition: fill 0.2s ease, filter 0.2s ease;
 }
 
-/* Når aktiv: glød-effekt på "på"-ikonet */
+/* when active: glow-effect on "ON"-icon*/
 .btn-check:checked + .light-card-small .icon-on svg {
     filter: drop-shadow(0 0 6px #ffeb3b);
 }
 
-/* Hover-effekt */
+/* Hover-effect */
 .light-card-small:hover svg {
     filter: drop-shadow(0 0 4px var(--accent-color));
 }
 
-    /* Hover-effekt (samme som obstacle-card) */
+    /* Hover-effect (same as obstacle-card) */
     .light-card-small:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(0,0,0,.12);
@@ -549,13 +548,13 @@ body {
     box-shadow: 0 6px 18px rgba(13,110,253,.35);
 }
 
-    /* Glødende ikon når aktiv */
+    /* glowing icon when active*/
     .btn-check:checked + .light-card-small .obstacle-emoji svg {
         fill: #ffeb3b;
         filter: drop-shadow(0 0 6px #ffea00);
     }
 
-/* Dark mode tilpasning */
+/* Dark mode adjustments */
 .darkmode .light-card-small {
     border-color: #424242;
     background: var(--base-variant);
@@ -692,7 +691,7 @@ dialog::backdrop {
     }
 
     /*---------------------------------Submit and Draft button-------------------*/
-/* --- Felles styling for begge knapper --- */
+/* --- common styling for both buttons--- */
 button[name="action"][value="save"],
 button[name="action"][value="submit"] {
     font-weight: 600;
@@ -704,8 +703,8 @@ button[name="action"][value="submit"] {
 
 /* --- Light Mode --- */
 body:not(.darkmode) button[name="action"][value="save"] {
-    background-color: #f0c93d; /* varm gul */
-    color: #000; /* svart tekst */
+    background-color: #f0c93d; /* warm yellow*/
+    color: #000; /* black text */
 }
 
     body:not(.darkmode) button[name="action"][value="save"]:hover {
@@ -713,8 +712,8 @@ body:not(.darkmode) button[name="action"][value="save"] {
     }
 
 body:not(.darkmode) button[name="action"][value="submit"] {
-    background-color: #198754; /* grønn */
-    color: #000; /* svart tekst */
+    background-color: #198754; /* green */
+    color: #000; /* black text */
 }
 
     body:not(.darkmode) button[name="action"][value="submit"]:hover {
@@ -723,8 +722,8 @@ body:not(.darkmode) button[name="action"][value="submit"] {
 
 /* --- Dark Mode --- */
 body.darkmode button[name="action"][value="save"] {
-    background-color: #c7a525; /* mørkere gul */
-    color: #fff; /* hvit tekst */
+    background-color: #c7a525; /* darker yellow */
+    color: #fff; /* white text*/
 }
 
     body.darkmode button[name="action"][value="save"]:hover {
@@ -732,8 +731,8 @@ body.darkmode button[name="action"][value="save"] {
     }
 
 body.darkmode button[name="action"][value="submit"] {
-    background-color: #157347; /* mørkere grønn */
-    color: #fff; /* hvit tekst */
+    background-color: #157347; /* darker green*/
+    color: #fff; /* white text */
 }
 
     body.darkmode button[name="action"][value="submit"]:hover {

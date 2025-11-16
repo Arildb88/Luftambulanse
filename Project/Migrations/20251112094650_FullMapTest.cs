@@ -82,8 +82,6 @@ namespace Gruppe4NLA.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ToUserId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PerformedByUserId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     PerformedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Action = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -115,8 +113,6 @@ namespace Gruppe4NLA.Migrations
                     GeoJson = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AssignedToUserId = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    AssignedByUserId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     AssignedAtUtc = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     StatusCase = table.Column<int>(type: "int", nullable: false),

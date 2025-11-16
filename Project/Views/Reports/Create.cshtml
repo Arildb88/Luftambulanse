@@ -54,19 +54,7 @@
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
-
-    <div class="form-group">
-        <label asp-for="NewReport.Latitude"></label>
-        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="NewReport.Longitude"></label>
-        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
-    </div>
-
+       
     <div class="form-group">
         <label asp-for="NewReport.GeoJson"></label>
         <textarea asp-for="NewReport.GeoJson" class="form-control"></textarea>
@@ -131,9 +119,10 @@
     @foreach (var coord in Model.SubmittedReport)
     {
         <li>
-            Lat: @(coord.Latitude?.ToString("F6") ?? "N/A"),
-            Lng: @(coord.Longitude?.ToString("F6") ?? "N/A")
-        </li>
+            @(string.IsNullOrWhiteSpace(coord.GeoJson)
+                    ? "No geometry stored"
+                    : "Report has GeoJSON geometry")
+    </li>
     }
 </ul>
 

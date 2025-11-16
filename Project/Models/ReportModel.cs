@@ -1,4 +1,4 @@
-using Gruppe4NLA.Controllers;
+﻿using Gruppe4NLA.Controllers;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +15,7 @@ namespace Gruppe4NLA.Models
 
         // Further statuses can be added here
     }
-
+        
     public class ReportModel
     {
 
@@ -31,8 +31,6 @@ namespace Gruppe4NLA.Models
         [Required(ErrorMessage = "You need to select an ObstacleType")]
         public DangerTypeEnum? Type { get; set; }
 
-        // (Removed: OtherDangerType and its validation attribute)
-
         public DateTime DateSent { get; set; }
 
         public string? Details { get; set; }
@@ -45,31 +43,17 @@ namespace Gruppe4NLA.Models
 
         public bool AreLighted { get; set; } = false;
 
-        // Coordinates are needed
-        [Required(ErrorMessage = "Latitude is required")]
-        [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
-        public double? Latitude { get; set; }
-
-        [Required(ErrorMessage = "Longitude is required")]
-        [Range(-180, 180, ErrorMessage = "Longitude must be between -180 og 180")]
-        public double? Longitude { get; set; }
-
         // GeoJSON string for geometry storage
         public string? GeoJson { get; set; }
-
-        
 
         //Who the report is assigned to 
         public string? AssignedToUserId { get; set; }
 
-        //Who performed the assignment
-        public string? AssignedByUserId { get; set; }
-
-        //Whenzthe assignment happened
+        //When the assignment happened
         public DateTime? AssignedAtUtc { get; set; }
 
         //Workflow status
-        public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Submitted;
+        public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Draft;
 
         public ReportStatus Status { get; set; } = ReportStatus.Draft;
 
@@ -91,8 +75,6 @@ namespace Gruppe4NLA.Models
 
     }
 
-    // (Removed: RequiredIfOtherTypeAttribute class)
-
     // Wrapper to hold new coordinate and submitted list
     public class ReportModelWrapper
     {
@@ -110,5 +92,6 @@ namespace Gruppe4NLA.Models
         Completed = 4,
         Rejected = 5
     }
+
 
 }

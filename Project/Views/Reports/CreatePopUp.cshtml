@@ -21,19 +21,7 @@
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
-
-    <div class="form-group" style="display: none;">
-        <label asp-for="NewReport.Latitude"></label>
-        <input asp-for="NewReport.Latitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Latitude" class="text-danger"></span>
-    </div>
-
-    <div class="form-group" style="display: none;">
-        <label asp-for="NewReport.Longitude"></label>
-        <input asp-for="NewReport.Longitude" type="number" step="any" lang="en-US" inputmode="decimal" />
-        <span asp-validation-for="NewReport.Longitude" class="text-danger"></span>
-    </div>
-
+       
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.GeoJson">GeoJSON</label>
         <textarea asp-for="NewReport.GeoJson" rows="6" class="form-control" readonly style="font-family: monospace; white-space: pre;"></textarea>
@@ -161,7 +149,7 @@
 </form>
 
 <style>
-    /* SAVE DRAFT knapp i varm gulfarge */
+    /* SAVE DRAFT button in warm yellow*/
     button[name="action"][value="save"] {
         background-color: #f0c93d; /* varm, balansert gul */
         color: #fff;
@@ -172,12 +160,12 @@
         transition: background-color 0.25s ease;
     }
 
-        /* Hover-effekt (litt mørkere nyanse) */
+        /* Hover-effect */
         button[name="action"][value="save"]:hover {
             background-color: #d9b632;
         }
 
-    /* SUBMIT-knappen får beholdt grønn stil */
+    /* SUBMIT-button keeps green style*/
     button[name="action"][value="submit"] {
         background-color: #198754;
         color: #fff;

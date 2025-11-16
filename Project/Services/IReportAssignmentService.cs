@@ -7,18 +7,18 @@ namespace Gruppe4NLA.Services
     public interface IReportAssignmentService
     {
         // Assign a report to a specific user
-        Task AssignAsync(int reportId, string toUserId, string performedByUserId, CancellationToken ct = default);
+        Task AssignAsync(int reportId, string toUserId, CancellationToken ct = default);
 
         // Remove assignment (returns report to unassigned state)
-        Task UnassignAsync(int reportId, string performedByUserId, CancellationToken ct = default); 
+        Task UnassignAsync(int reportId, CancellationToken ct = default); 
         
         // Self assign cases for caseworker
         Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default);
         
         // Approve cases
-        Task ApproveAsync(int reportId, string performedByUserId, CancellationToken ct = default);
+        Task ApproveAsync(int reportId, CancellationToken ct = default);
         
         // Deny cases
-        Task RejectAsync(int reportId, string performedByUserId, CancellationToken ct = default);
+        Task RejectAsync(int reportId, CancellationToken ct = default);
     }
 }

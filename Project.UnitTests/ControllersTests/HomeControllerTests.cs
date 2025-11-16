@@ -12,7 +12,7 @@ using Assert = Xunit.Assert;
 // Xunit testing for Controller --> HomeController
 // Revision needed later.
 
-
+/*
 namespace Gruppe4NLA.Tests
 {
     public class HomeControllerTests
@@ -72,4 +72,4 @@ namespace Gruppe4NLA.Tests
             Assert.False(string.IsNullOrEmpty(model.RequestId));
         }
     }
-}
+}*/

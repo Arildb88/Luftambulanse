@@ -56,7 +56,7 @@ namespace Gruppe4NLA.Controllers
                 var email = me?.Email;
                 q = q.Where(r => r.UserId == myId || (r.UserId == null && r.SenderName == email));
             }
-
+            // ---------------- Sorting Filter ---------------- //
             // Tabs
             var f = (filter ?? "all").ToLowerInvariant();
             if (f == "submitted") q = q.Where(r => r.Status == ReportStatus.Submitted);
@@ -111,7 +111,7 @@ namespace Gruppe4NLA.Controllers
             ViewBag.RSort = rsort;
             ViewBag.RDir = rdir;
 
-            return View(reports);
+            return View("~/Views/Home/ReportsView.cshtml", reports);
         }
 
 
@@ -120,7 +120,7 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // Konverter høyde til meter hvis brukeren har valgt "feet"
+            // Converts height in meters if user has chosen "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
             {
                 model.NewReport.HeightInMeters *= 0.3048;
@@ -141,8 +141,6 @@ namespace Gruppe4NLA.Controllers
             var newReport = new ReportModel
             {
                 UserId = model.NewReport.UserId,
-                Latitude = model.NewReport.Latitude,
-                Longitude = model.NewReport.Longitude,
                 GeoJson = model.NewReport.GeoJson,
                 SenderName = model.NewReport.SenderName,
                 Type = model.NewReport.Type,
@@ -152,15 +150,19 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            // Sett status basert på knapp
+            // Set status based on button
             newReport.Status = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase)
                 ? ReportStatus.Submitted
                 : ReportStatus.Draft;
 
+            newReport.StatusCase = (newReport.Status == ReportStatus.Submitted)
+                ? ReportStatusCase.Submitted
+                : ReportStatusCase.Draft;
+
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            // 🚀 I stedet for å vise skjemaet igjen — gå til Confirmation View
+            // Instead of showing report form again — go to Confirmation View
             var confirmation = new ConfirmationViewModel
             {
                 Title = newReport.Status == ReportStatus.Submitted
@@ -195,13 +197,7 @@ namespace Gruppe4NLA.Controllers
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
-
-            if (lat.HasValue)
-                model.NewReport.Latitude = lat.Value;
-
-            if (lng.HasValue)
-                model.NewReport.Longitude = lng.Value;
-
+                       
             return View(model);
         }
 
@@ -221,13 +217,7 @@ namespace Gruppe4NLA.Controllers
                     .OrderByDescending(r => r.DateSent)
                     .ToListAsync()
             };
-
-            if (lat.HasValue)
-                model.NewReport.Latitude = lat.Value;
-
-            if (lng.HasValue)
-                model.NewReport.Longitude = lng.Value;
-
+                       
             return View(model);
         }
 
@@ -251,6 +241,11 @@ namespace Gruppe4NLA.Controllers
                 }
             }
 
+            // ✅ NEW: compute coordinates from GeoJson
+            var (lat, lng) = GetFirstCoordinateFromGeoJson(report.GeoJson);
+            ViewBag.Latitude = lat;
+            ViewBag.Longitude = lng;
+
             return View(report);
         }
 
@@ -265,9 +260,8 @@ namespace Gruppe4NLA.Controllers
                 NewReport = new ReportModel
                 {
                     UserId = _userManager.GetUserId(User), // used to filter "my reports"
-                    SenderName = user?.Email,              // set the sender name from the user
-                    Latitude = lat ?? default,
-                    Longitude = lng ?? default
+                    SenderName = user?.Email              // set the sender name from the user
+                   
                 },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
@@ -293,6 +287,55 @@ namespace Gruppe4NLA.Controllers
             return View(report);
         }
 
+        // === Delete Report feature ===
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // [Authorize] // optional; your CanDelete() guards it anyway
+        public async Task<IActionResult> Delete(int id, string? returnUrl)
+        {
+            var report = await _context.Reports.FindAsync(id);
+            if (report == null) return NotFound();
+
+            if (!CanDelete(report)) return Forbid();
+
+            _context.Reports.Remove(report);
+            await _context.SaveChangesAsync();
+
+            TempData["Ok"] = "Report deleted.";
+
+            // If caller gave us a safe local URL, go back there; else pick a sensible page
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            // Fallback: Admins/caseworkers usually came from Inbox; pilots from Index
+            if (User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker"))
+                return RedirectToAction(nameof(Inbox));
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Who may delete?
+        private bool CanDelete(ReportModel r)
+        {
+            // Admin / CaseworkerAdm can delete anything
+            if (User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm"))
+                return true;
+
+            // Caseworker can delete Drafts and Submitted
+            if (User.IsInRole("Caseworker"))
+                return r.Status == ReportStatus.Draft || r.Status == ReportStatus.Submitted;
+
+            // (Optional) Pilot: only own Drafts
+            var myId = _userManager.GetUserId(User);
+            var myName = User?.Identity?.Name; // often email/username
+            if (User.IsInRole("Pilot") && r.Status == ReportStatus.Draft)
+                return r.UserId == myId ||
+                       (r.UserId == null && string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase));
+
+            return false;
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ReportModel updated, string? action)
@@ -306,37 +349,38 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
-                return View(updated);
+            if (!ModelState.IsValid) return View(updated);
 
             // Update editable fields
-            report.Latitude = updated.Latitude;
-            report.Longitude = updated.Longitude;
             report.GeoJson = updated.GeoJson;
             report.Type = updated.Type;
-            // (Removed: OtherDangerType update)
             report.Details = updated.Details;
             report.HeightInMeters = updated.HeightInMeters;
             report.AreLighted = updated.AreLighted;
 
+            // Set Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
                 report.Status = ReportStatus.Submitted;
-
+                report.StatusCase = ReportStatusCase.Submitted;   // <-- add this
+                report.SubmittedAt = DateTime.UtcNow;             // (optional)
             }
             else
             {
                 report.Status = ReportStatus.Draft;
+                report.StatusCase = ReportStatusCase.Draft;       // <-- and this
             }
 
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = (report.Status == ReportStatus.Submitted)
+            TempData["Message"] = report.Status == ReportStatus.Submitted
                 ? "Report submitted."
                 : "Draft updated.";
 
-            return RedirectToAction(nameof(Index), new { filter = (report.Status == ReportStatus.Draft) ? "drafts" : "submitted" });
+            return RedirectToAction(nameof(Index),
+                new { filter = report.Status == ReportStatus.Draft ? "drafts" : "submitted" });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -492,7 +536,7 @@ namespace Gruppe4NLA.Controllers
             }
 
             var me = _userManager.GetUserId(User)!;
-            await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!, me);
+            await _assigner.AssignAsync(vm.ReportId, vm.ToUserId!);
 
             TempData["Ok"] = "Report assigned.";
             return RedirectToAction(nameof(Inbox));
@@ -505,7 +549,7 @@ namespace Gruppe4NLA.Controllers
         public async Task<IActionResult> Unassign(int id)
         {
             var me = _userManager.GetUserId(User)!;
-            await _assigner.UnassignAsync(id, me);
+            await _assigner.UnassignAsync(id);
             TempData["Ok"] = "Assignment removed.";
             return RedirectToAction(nameof(Inbox));
         }
@@ -549,7 +593,7 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                await _assigner.ApproveAsync(id, userId);
+                await _assigner.ApproveAsync(id);
                 TempData["Ok"] = "Report approved successfully";
                 return RedirectToAction(nameof(MyQueue));
             }
@@ -576,7 +620,7 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                await _assigner.RejectAsync(id, userId);
+                await _assigner.RejectAsync(id);
                 TempData["Ok"] = "Report rejected";
                 return RedirectToAction(nameof(MyQueue));
             }
@@ -655,39 +699,155 @@ namespace Gruppe4NLA.Controllers
             return View(items);
         }
 
+        [HttpGet]
         public async Task<IActionResult> FullMap()
         {
             var reports = await _context.Reports
                                         .Where(r => !string.IsNullOrEmpty(r.GeoJson))
                                         .ToListAsync();
 
-            return View(reports ?? new List<ReportModel>()); // fallback to empty list
+            // ToListAsync() never returns null, so this is effectively just "reports"
+            return View(reports);
         }
 
-        //public class AssignReportVM
-        //{
-        //    [Required] public int ReportId { get; set; }
-        //    public string? CurrentAssignee { get; set; }
+        // Helper: read first [lat, lng] from GeoJson (Point or LineString)
+        private static (double? lat, double? lng) GetFirstCoordinateFromGeoJson(string? geoJson)
+        {
+            if (string.IsNullOrWhiteSpace(geoJson))
+                return (null, null);
 
-        //    [Required(ErrorMessage = "Please select a caseworker")]
-        //    public string? ToUserId { get; set; }
+            try
+            {
+                // Some rows may have the JSON stored as a quoted string: "\"{...}\"".
+                // Normalize that so we always parse real JSON.
+                var jsonToParse = geoJson.Trim();
 
-        //    public List<SelectListItem> Caseworkers { get; set; } = new();
-        //}
+                if (jsonToParse.StartsWith("\"") && jsonToParse.EndsWith("\""))
+                {
+                    try
+                    {
+                        // Try to unescape using System.Text.Json
+                        jsonToParse = JsonSerializer.Deserialize<string>(jsonToParse)
+                                      ?? jsonToParse.Trim('"');
+                    }
+                    catch
+                    {
+                        // Fallback: strip outer quotes
+                        jsonToParse = jsonToParse.Trim('"');
+                    }
+                }
 
-        //MIGHT BE NEEDED
-        //public class ReportListItemVM
-        //{
-        //    public int Id { get; set; }
-        //    public string? SenderName { get; set; }
-        //    public string? Organization { get; set; }
-        //    public string? Type { get; set; }
-        //    public DateTime DateSent { get; set; }
-        //    public string Status { get; set; } = "";
-        //    public string? AssignedTo { get; set; }
-        //}
+                using var doc = JsonDocument.Parse(jsonToParse);
+                var root = doc.RootElement;
+
+                // If there's a "type" property, check what kind of GeoJSON this is
+                if (root.TryGetProperty("type", out var typeProp) &&
+                    typeProp.ValueKind == JsonValueKind.String)
+                {
+                    var type = typeProp.GetString();
+
+                    // Case 1: FeatureCollection → take first feature.geometry
+                    if (type == "FeatureCollection" &&
+                        root.TryGetProperty("features", out var features) &&
+                        features.ValueKind == JsonValueKind.Array &&
+                        features.GetArrayLength() > 0)
+                    {
+                        var firstFeature = features[0];
+                        if (firstFeature.TryGetProperty("geometry", out var geom) &&
+                            geom.TryGetProperty("coordinates", out var coords))
+                        {
+                            return ExtractLatLngFromCoordinates(geom, coords);
+                        }
+                    }
+
+                    // Case 2: single Feature → use its geometry
+                    if (type == "Feature" &&
+                        root.TryGetProperty("geometry", out var geom2) &&
+                        geom2.TryGetProperty("coordinates", out var coords2))
+                    {
+                        return ExtractLatLngFromCoordinates(geom2, coords2);
+                    }
+                }
+
+                // Case 3: raw geometry object at root (with or without "type")
+                if (root.TryGetProperty("coordinates", out var coordsRoot))
+                {
+                    return ExtractLatLngFromCoordinates(root, coordsRoot);
+                }
+            }
+            catch
+            {
+                // invalid JSON or unexpected structure → just fall back to nulls
+            }
+
+            return (null, null);
+        }
+
+        private static (double? lat, double? lng) ExtractLatLngFromCoordinates(JsonElement geom, JsonElement coords)
+        {
+            // Try to read explicit "type" if present
+            string? type = null;
+            if (geom.TryGetProperty("type", out var typeProp) &&
+                typeProp.ValueKind == JsonValueKind.String)
+            {
+                type = typeProp.GetString();
+            }
+
+            // If it's explicitly a Point: [lon, lat]
+            if (type == "Point")
+            {
+                if (coords.ValueKind == JsonValueKind.Array && coords.GetArrayLength() >= 2)
+                {
+                    double lng = coords[0].GetDouble();
+                    double lat = coords[1].GetDouble();
+                    return (lat, lng);
+                }
+            }
+
+            // If it's explicitly a LineString: [[lon, lat], ...] → use the first coordinate
+            if (type == "LineString")
+            {
+                if (coords.ValueKind == JsonValueKind.Array &&
+                    coords.GetArrayLength() > 0 &&
+                    coords[0].ValueKind == JsonValueKind.Array)
+                {
+                    var first = coords[0];
+                    if (first.GetArrayLength() >= 2)
+                    {
+                        double lng = first[0].GetDouble();
+                        double lat = first[1].GetDouble();
+                        return (lat, lng);
+                    }
+                }
+            }
+
+            // 🔹 Fallback if "type" is missing:
+            //    - [lon, lat] → treat as Point
+            //    - [[lon, lat], ...] → treat as LineString
+            if (coords.ValueKind == JsonValueKind.Array && coords.GetArrayLength() > 0)
+            {
+                var first = coords[0];
+
+                // [lon, lat] → Point
+                if (first.ValueKind == JsonValueKind.Number && coords.GetArrayLength() >= 2)
+                {
+                    double lng = coords[0].GetDouble();
+                    double lat = coords[1].GetDouble();
+                    return (lat, lng);
+                }
+
+                // [[lon, lat], ...] → LineString
+                if (first.ValueKind == JsonValueKind.Array && first.GetArrayLength() >= 2)
+                {
+                    double lng = first[0].GetDouble();
+                    double lat = first[1].GetDouble();
+                    return (lat, lng);
+                }
+            }
+
+            return (null, null);
+        }
     }
-
 }
 
 
