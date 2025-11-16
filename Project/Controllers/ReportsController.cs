@@ -111,7 +111,7 @@ namespace Gruppe4NLA.Controllers
             ViewBag.RSort = rsort;
             ViewBag.RDir = rdir;
 
-            return View(reports);
+            return View("~/Views/Home/ReportsView.cshtml", reports);
         }
 
 
