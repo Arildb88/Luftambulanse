@@ -120,7 +120,7 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // Konverter høyde til meter hvis brukeren har valgt "feet"
+            // Converts height in meters if user has chosen "feet"
             if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
             {
                 model.NewReport.HeightInMeters *= 0.3048;
@@ -152,7 +152,7 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            // Sett status basert på knapp
+            // Set status based on button
             newReport.Status = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase)
                 ? ReportStatus.Submitted
                 : ReportStatus.Draft;
@@ -164,7 +164,7 @@ namespace Gruppe4NLA.Controllers
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            // 🚀 I stedet for å vise skjemaet igjen — gå til Confirmation View
+            // Instead of showing report form again — go to Confirmation View
             var confirmation = new ConfirmationViewModel
             {
                 Title = newReport.Status == ReportStatus.Submitted
