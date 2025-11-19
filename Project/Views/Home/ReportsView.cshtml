@@ -145,7 +145,7 @@ else
                             User.IsInRole("Caseworker") ||
                             // Pilot: only own drafts
                             (User.IsInRole("Pilot")
-                            && report.Status == Gruppe4NLA.Models.ReportStatus.Draft
+                            && report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft
                             && (report.UserId == myId ||
                             (report.UserId == null && string.Equals(report.SenderName, myEmail, StringComparison.OrdinalIgnoreCase))));
                         }
@@ -164,7 +164,7 @@ else
                             </form>
                         }
 
-                        @if (report.Status == Gruppe4NLA.Models.ReportStatus.Draft)
+                        @if (report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft)
                         {
                             <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
                             <form asp-action="Submit" asp-route-id="@report.Id" method="post" class="d-inline">

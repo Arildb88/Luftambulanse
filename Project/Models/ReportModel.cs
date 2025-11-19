@@ -8,14 +8,16 @@ namespace Gruppe4NLA.Models
 {
     // Holds all information the users send in as a report
 
-    public enum ReportStatus
+    //status for reports
+    public enum ReportStatusCase
     {
         Draft = 0,
-        Submitted = 1
-
-        // Further statuses can be added here
+        Submitted = 1,
+        Assigned = 2,
+        InReview = 3,
+        Completed = 4,
+        Rejected = 5
     }
-        
     public class ReportModel
     {
 
@@ -55,8 +57,6 @@ namespace Gruppe4NLA.Models
         //Workflow status
         public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Draft;
 
-        public ReportStatus Status { get; set; } = ReportStatus.Draft;
-
         //Last update timestamp
         public DateTime? UpdatedAtUtc { get; set; }
 
@@ -82,16 +82,7 @@ namespace Gruppe4NLA.Models
         public List<ReportModel> SubmittedReport { get; set; } = new List<ReportModel>();
     }
 
-    //status for reports
-    public enum ReportStatusCase
-    {
-        Draft = 0,
-        Submitted = 1,
-        Assigned = 2,
-        InReview = 3,
-        Completed = 4,
-        Rejected = 5
-    }
+  
 
 
 }
