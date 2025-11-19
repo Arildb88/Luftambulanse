@@ -2,7 +2,7 @@
 We have made an ASP.NET Core MVC Aplication which is going to be used by Norsk Luftambulanse and Kartverket to collect data about unregistrered obstacles in their navigation map for Helicopters.
 The application allows users to registrer, view and manage information about obstacles in a structured and user friendly way.
 
-We have used .NET 9, Razor Views, Dapper, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql, ) and MariaDB/MySQL for the database.
+We have used .NET 9, Razor Views, Dependency Injection, NuGet packages (Microsoft.EntityFrameworkCore.Design, MicrosoftFrameworkCore.Tools and Pomelo.EntityFrameworkCore.MySql) and MariaDB/MySQL for the database.
 
 We expect the user to already have some technical knowledge and that Docker Desktop, SDK.9 and MariaDB preinstalled on their computer.
 
@@ -27,6 +27,7 @@ dotnet watch run --project project (to start the application and open your web b
 **NEEDSTOBEUPDATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**<br>
 **How to use the application:**<br>
 You are now ready to use the application.<br>
+Our firstpage is the Loginpage, you can either Login with the users made in Program.cs, all users have the same password Test123!
 We will add a login screen where you have to login with a username and password (BankID or similar)<br>
 You are prompted with a view of a map where you can:<br>
 - Zoom in and out
