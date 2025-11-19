@@ -59,8 +59,8 @@ namespace Gruppe4NLA.Controllers
             // ---------------- Sorting Filter ---------------- //
             // Tabs
             var f = (filter ?? "all").ToLowerInvariant();
-            if (f == "submitted") q = q.Where(r => r.Status == ReportStatus.Submitted);
-            else if (f == "drafts") q = q.Where(r => r.Status == ReportStatus.Draft);
+            if (f == "submitted") q = q.Where(r => r.StatusCase == ReportStatusCase.Submitted);
+            else if (f == "drafts") q = q.Where(r => r.StatusCase == ReportStatusCase.Draft);
 
             // Normalize dir
             rdir = (rdir?.ToLower() == "asc") ? "asc" : "desc";
@@ -138,6 +138,8 @@ namespace Gruppe4NLA.Controllers
                 ? (model.NewReport.HeightInMeters ?? 0) / 3.28084
                 : (model.NewReport.HeightInMeters ?? 0);
 
+            var isSubmitted = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase);
+
             var newReport = new ReportModel
             {
                 UserId = model.NewReport.UserId,
@@ -151,13 +153,14 @@ namespace Gruppe4NLA.Controllers
             };
 
             // Set status based on button
-            newReport.Status = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase)
-                ? ReportStatus.Submitted
-                : ReportStatus.Draft;
-
-            newReport.StatusCase = (newReport.Status == ReportStatus.Submitted)
+            newReport.StatusCase = isSubmitted
                 ? ReportStatusCase.Submitted
                 : ReportStatusCase.Draft;
+
+            if (isSubmitted)
+            {
+                newReport.SubmittedAt = DateTime.UtcNow;
+            }
 
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
@@ -165,13 +168,13 @@ namespace Gruppe4NLA.Controllers
             // Instead of showing report form again — go to Confirmation View
             var confirmation = new ConfirmationViewModel
             {
-                Title = newReport.Status == ReportStatus.Submitted
+                Title = isSubmitted
                     ? "Report Submitted"
                     : "Draft Saved",
-                Message = newReport.Status == ReportStatus.Submitted
+                Message = isSubmitted
                     ? "Your report has been submitted successfully."
                     : "Your draft has been saved successfully.",
-                RedirectUrl = newReport.Status == ReportStatus.Submitted
+                RedirectUrl = isSubmitted
                     ? Url.Action("Index", "Home")!
                     : Url.Action("Index", "Reports", new { filter = "drafts" })!
             };
@@ -278,14 +281,15 @@ namespace Gruppe4NLA.Controllers
             var report = await _context.Reports.FindAsync(id);
             if (report == null) return NotFound();
 
-            if (report.Status == ReportStatus.Submitted)
+            // Kun drafts kan redigeres
+            if (report.StatusCase != ReportStatusCase.Draft)
             {
-                if (report.Status != ReportStatus.Draft)
-                    return RedirectToAction(nameof(Details), new { id });
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             return View(report);
         }
+
 
         // === Delete Report feature ===
         [HttpPost]
@@ -323,12 +327,12 @@ namespace Gruppe4NLA.Controllers
 
             // Caseworker can delete Drafts and Submitted
             if (User.IsInRole("Caseworker"))
-                return r.Status == ReportStatus.Draft || r.Status == ReportStatus.Submitted;
+                return r.StatusCase == ReportStatusCase.Draft || r.StatusCase == ReportStatusCase.Submitted;
 
             // (Optional) Pilot: only own Drafts
             var myId = _userManager.GetUserId(User);
             var myName = User?.Identity?.Name; // often email/username
-            if (User.IsInRole("Pilot") && r.Status == ReportStatus.Draft)
+            if (User.IsInRole("Pilot") && r.StatusCase == ReportStatusCase.Draft)
                 return r.UserId == myId ||
                        (r.UserId == null && string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase));
 
@@ -343,7 +347,7 @@ namespace Gruppe4NLA.Controllers
             var report = await _context.Reports.FindAsync(id);
             if (report == null) return NotFound();
 
-            if (report.Status == ReportStatus.Submitted)
+            if (report.StatusCase == ReportStatusCase.Submitted)
             {
                 TempData["Error"] = "Cannot edit a submitted report.";
                 return RedirectToAction(nameof(Index));
@@ -361,24 +365,22 @@ namespace Gruppe4NLA.Controllers
             // Set Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
-                report.Status = ReportStatus.Submitted;
                 report.StatusCase = ReportStatusCase.Submitted;   // <-- add this
                 report.SubmittedAt = DateTime.UtcNow;             // (optional)
             }
             else
             {
-                report.Status = ReportStatus.Draft;
                 report.StatusCase = ReportStatusCase.Draft;       // <-- and this
             }
 
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = report.Status == ReportStatus.Submitted
+            TempData["Message"] = report.StatusCase == ReportStatusCase.Submitted
                 ? "Report submitted."
                 : "Draft updated.";
 
             return RedirectToAction(nameof(Index),
-                new { filter = report.Status == ReportStatus.Draft ? "drafts" : "submitted" });
+                new { filter = report.StatusCase == ReportStatusCase.Draft ? "drafts" : "submitted" });
         }
 
 
@@ -389,13 +391,13 @@ namespace Gruppe4NLA.Controllers
             var report = await _context.Reports.FindAsync(id);
             if (report == null) return NotFound();
 
-            if (report.Status == ReportStatus.Submitted)
+            if (report.StatusCase == ReportStatusCase.Submitted)
             {
                 TempData["Message"] = "Already submitted.";
                 return RedirectToAction(nameof(Index), new { filter = "submitted" });
             }
 
-            report.Status = ReportStatus.Submitted;
+            report.StatusCase = ReportStatusCase.Submitted;
 
             await _context.SaveChangesAsync();
 
@@ -419,7 +421,7 @@ namespace Gruppe4NLA.Controllers
                     ?? _context.Users.Where(u => u.Email == r.SenderName).Select(u => u.Organization).FirstOrDefault(),
                 Type = r.Type.ToString(),
                 DateSent = r.DateSent,
-                Status = r.Status.ToString(),
+                Status = r.StatusCase.ToString(),
                 AssignedTo = r.AssignedToUserId != null
                     ? _context.Users.Where(u => u.Id == r.AssignedToUserId)
                         .Select(u => u.Email ?? u.UserName ?? u.Id).FirstOrDefault()
