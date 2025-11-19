@@ -8825,14 +8825,16 @@ textarea.form-control-lg {
 }
 
 .bg-warning {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
+    --bs-warning-rgb: 255, 193, 7;
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
 }
 
 .bg-danger {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important
 }
+
 
 .bg-light {
   --bs-bg-opacity: 1;

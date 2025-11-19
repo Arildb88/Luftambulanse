@@ -16,6 +16,8 @@
             margin-left: .25rem;
             font-size: .8rem;
         }
+    
+    
 </style>
 
 <h2>Reports Inbox</h2>
@@ -68,6 +70,7 @@
                 <td>@item.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>
                     <span class="badge bg-@(
+                          item.Status == "Draft" ? "warning" :
                           item.Status == "Submitted" ? "secondary" :
                           item.Status == "Assigned" ? "primary" :
                           item.Status == "InReview" ? "warning" :
