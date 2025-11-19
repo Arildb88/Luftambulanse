@@ -57,7 +57,7 @@ namespace Gruppe4NLA.Services
 
             report.AssignedToUserId = null;
             report.AssignedAtUtc = DateTime.UtcNow;
-            report.Status = ReportStatus.Submitted;
+            report.StatusCase = ReportStatusCase.Submitted;
             report.UpdatedAtUtc = DateTime.UtcNow;
 
             if (_db.ReportAssignmentLogs != null)
