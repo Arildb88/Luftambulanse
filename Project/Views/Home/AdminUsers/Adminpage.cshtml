@@ -32,8 +32,7 @@
             var userRoles = await UserManager.GetRolesAsync(user);
             var currentRole = userRoles.FirstOrDefault();
 
-            <tr>
-                <td>@user.UserName</td>
+            <tr>                
                 <td>@user.Email</td>
                 <td>
                     <form asp-action="SetRole" asp-controller="AdminUsers" method="post" style="display:inline;">
