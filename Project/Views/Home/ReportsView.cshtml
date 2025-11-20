@@ -115,6 +115,7 @@ else
                     </a>
                 </th>
                 <th>Actions</th>
+               @*  <th>Review note</th> @*Reject reason *@ @*Hashed out because bad view with ipad for pilots*@
             </tr>
         </thead>
         <tbody>
@@ -174,6 +175,32 @@ else
                             </form>
                         }
                     </td>
+                  @*   Short version of RejectReportReason
+                    <td>
+                        @{
+                            string? note = null;
+
+                            if (report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected &&
+                            !string.IsNullOrWhiteSpace(report.RejectReportReason))
+                            {
+                                note = report.RejectReportReason;
+                            }
+
+                            if (string.IsNullOrEmpty(note))
+                            {
+                                @:—
+                            }
+                            else
+                            {
+                                var maxLen = 15;
+                                var shortNote = note.Length > maxLen
+                                ? note.Substring(0, maxLen) + "..."
+                                : note;
+
+                                @shortNote
+                            }
+                        }
+                    </td> *@
                 </tr>
             }
         </tbody>

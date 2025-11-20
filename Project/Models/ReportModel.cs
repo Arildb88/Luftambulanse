@@ -57,6 +57,9 @@ namespace Gruppe4NLA.Models
         //Workflow status
         public ReportStatusCase StatusCase { get; set; } = ReportStatusCase.Draft;
 
+        //The reason for Rejecting a report
+        public string? RejectReportReason { get; set; }
+
         //Last update timestamp
         public DateTime? UpdatedAtUtc { get; set; }
 
