@@ -32,14 +32,17 @@
                         </span>
                     </a>
 
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                            aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <!-- Inline SVG instead of the span -->
+                        <svg class="toggler-svg" viewBox="0 0 30 30" width="30" height="30">
+                            <path stroke="var(--burger-color)"  stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/>
+                        </svg>
                     </button>
+
 
                     <div class="collapse navbar-collapse" id="mainNavbar">
 
-                        <!-- Left side: darkmode + Menu -->
+                        <!-- Left side: Menu -->
                         <ul class="navbar-nav me-auto align-items-center">
 
                             <!-- Navigation links -->
