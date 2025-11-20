@@ -2,6 +2,7 @@
     --base-color: white;
     --base-variant: white;
     --selected-color: #003261;
+    --red-selected-color: #5e0408;
     --unselected-color: white;
     --text-color: black;
     --secondary-text: grey;
@@ -11,12 +12,16 @@
     --polyline-color: #EA4335;
     --marker-color: #EA4335;
     --warning-color: #EA4335;
+    --heli-color: #0d6efd;
+    --burger-color: #292929;
+    --burger-selected-color: #c7c7c7;
 }
 
 .darkmode {
     --base-color: #080808;
     --base-variant: #1a1a1a;
     --selected-color: #080808;
+    --red-selected-color: #080808;
     --unselected-color: #1a1a1a;
     --text-color: #edf3ff;
     --secondary-text: white;
@@ -24,7 +29,27 @@
     --accent-color: #5f6570;
     --polyline-color: #EA4335;
     --warning-color: #EA4335;
+    --heli-color: white;
+    --burger-color: #bdbdbd;
+    --burger-selected-color: #080808;
 }
+
+.navbar-toggler {
+    border: 2px solid var(--burger-color); 
+    background-color: transparent; 
+    padding: 0.25rem 0.75rem; 
+    border-radius: 0.25rem; 
+}
+
+    .navbar-toggler:active,
+    .navbar-toggler:focus {
+        box-shadow: none;
+        background-color: var(--burger-selected-color);
+        outline: none;
+    }
+
+
+
 .navbar {
     background-color: var(--base-variant); 
     border-bottom: 1px solid var(--accent-color);
@@ -46,6 +71,33 @@
     .navbar .navbar-brand:hover {
         color: var(--accent-color);
     }
+
+/* Increase navbar button size specifically for tablets (iPad width 768–1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .navbar .nav-link {
+        font-size: 1.4rem; /* bigger text */
+        padding: 0.75rem 1.4rem; /* more tap area */
+    }
+
+    .navbar .btn,
+    .navbar button,
+    .navbar .dropdown-toggle {
+        font-size: 1.25rem;
+        padding: 0.75rem 1.25rem;
+    }
+
+    /* Bigger dropdown items */
+    .navbar .dropdown-item {
+        font-size: 1.2rem;
+        padding: 0.75rem 1.25rem;
+    }
+
+    /* Increase the brand/logo tap area */
+    .navbar-brand svg {
+        width: 56px;
+        height: 56px;
+    }
+}
 
 @media (min-width: 768px) {
   html {
@@ -312,6 +364,12 @@ body {
     color: var(--accent-color) !important;
 }
 
+/* Force yellow hamburger icon */
+.navbar-toggler .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='var(--accent-color)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+    filter: none !important; /* remove default Bootstrap filter */
+    background-color: transparent; /* prevent grey background */
+}
 
 /* --------------- Dropdown for users/login top right corner --------------- */
 .dropdown-menu {

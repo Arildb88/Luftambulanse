@@ -96,13 +96,23 @@
     <script>
 
         //CustomElementRegistry Helicopter icon for your location
-        const userIcon = L.icon({
-            iconUrl: '@Url.Content("~/Content/Images/Heli3.png")',
-            iconSize: [40, 40],        // pixel size of the image
-            iconAnchor: [18, 36],      // "tip" of the pin (x,y from top-left)
-            popupAnchor: [0, -30],     // where popups open relative to the anchor
-            tooltipAnchor: [0, -24],   // optional
-            className: 'leaflet-user-icon' // optional CSS hook
+
+        const userIcon = L.divIcon({
+            html: `
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 -960 960 960"
+                     width="40" height="40"
+                     fill="var(--heli-color)">
+                    <path d="M360-440v-240q-100 0-170 70t-70 170h240Z
+                             M520-80H120v-80h400v80Z
+                             M600-200H120q-33 0-56.5-23.5T40-280v-160q0-134
+                             93-227t227-93h240v200h200l40-80h80v280l-320
+                             32v128Z
+                             M760-680H120v-80h640v80Z"/>
+                </svg>
+            `,
+            className: 'leaflet-user-icon',
+            iconSize: [40, 40]
         });
         
         // ---------------- Map init ----------------
@@ -159,7 +169,7 @@
 
         // update button colors
             document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
-                btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? 'green' : 'var(--base-variant)';
+                btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? 'var(--red-selected-color)' : 'var(--unselected-color)';
               });
 
             // leaving polyline mode → clear line + vertices
