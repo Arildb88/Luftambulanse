@@ -14,6 +14,7 @@
     --warning-color: #EA4335;
     --heli-color: #0d6efd;
     --burger-color: #292929;
+    --burger-selected-color: #c7c7c7;
 }
 
 .darkmode {
@@ -30,6 +31,7 @@
     --warning-color: #EA4335;
     --heli-color: white;
     --burger-color: #bdbdbd;
+    --burger-selected-color: #080808;
 }
 
 .navbar-toggler {
@@ -39,12 +41,13 @@
     border-radius: 0.25rem; 
 }
 
-    .navbar-toggler .navbar-toggle {
-        border: 2px solid var(--burger-color);
-        background-color: black;
-        padding: 0.25rem 0.75rem;
-        border-radius: 0.25rem;
+    .navbar-toggler:active,
+    .navbar-toggler:focus {
+        box-shadow: none;
+        background-color: var(--burger-selected-color);
+        outline: none;
     }
+
 
 
 .navbar {
