@@ -85,7 +85,7 @@
                 const latlng = [coord[1], coord[0]];
                 L.circleMarker(latlng, {
                     radius: 4,
-                    fillColor: "var(--base-color)",
+                    fillColor: "var(--warning-color)",
                     color: "#000",
                     weight: 1,
                     fillOpacity: 1
@@ -140,7 +140,7 @@
             // Only applies to lines/polygons
             if (feature.geometry.type === "LineString") {
                 return {
-                    color: "var(--polyline-color)",
+                    color: "var(--warning-color)",
                     weight: 3
                 };
             }
@@ -153,7 +153,7 @@
 
 </script>
 
-<h3>Reports GeoJSON Debug:</h3>
+@*<h3>Reports GeoJSON Debug:</h3>
 <ul>
     @foreach (var report in Model)
     {
@@ -162,4 +162,4 @@
             <pre>@report.GeoJson</pre>
         </li>
     }
-</ul>
+ </ul>*@
