@@ -115,7 +115,7 @@ else
                     </a>
                 </th>
                 <th>Actions</th>
-               @*  <th>Review note</th> @*Reject reason *@ @*Hashed out because bad view with ipad for pilots*@
+                 <th>Review note</th> @*Reject reason *@ @*Hashed out because bad view with ipad for pilots*@
             </tr>
         </thead>
         <tbody>
@@ -175,7 +175,7 @@ else
                             </form>
                         }
                     </td>
-                  @*   Short version of RejectReportReason
+                     @*Short version of RejectReportReason*@
                     <td>
                         @{
                             string? note = null;
@@ -192,7 +192,7 @@ else
                             }
                             else
                             {
-                                var maxLen = 15;
+                                var maxLen = 10;
                                 var shortNote = note.Length > maxLen
                                 ? note.Substring(0, maxLen) + "..."
                                 : note;
@@ -200,7 +200,7 @@ else
                                 @shortNote
                             }
                         }
-                    </td> *@
+                    </td> 
                 </tr>
             }
         </tbody>

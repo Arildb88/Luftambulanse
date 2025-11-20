@@ -629,7 +629,7 @@ namespace Gruppe4NLA.Controllers
                     return RedirectToAction(nameof(Details), new { id });
                 }
 
-                await _assigner.RejectAsync(id, rejectReportReason);  // 👈 send videre til servicen
+                await _assigner.RejectAsync(id, rejectReportReason); 
                 TempData["Ok"] = "Report rejected";
                 return RedirectToAction(nameof(MyQueue));
             }

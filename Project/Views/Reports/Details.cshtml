@@ -56,15 +56,7 @@
                     @Model.StatusCase
                 </span>
             </dd>
-
-            @* Ekstra rad i tabellen ved avslag *@
-            @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected
-                        && !string.IsNullOrWhiteSpace(Model.RejectReportReason))
-            {
-                <dt class="col-sm-3">Rejection reason</dt>
-                <dd class="col-sm-9">@Model.RejectReportReason</dd>
-            }
-
+                       
             @if (!string.IsNullOrEmpty(Model.AssignedToUserId))
             {
                 <dt class="col-sm-3">Assigned To</dt>
@@ -122,12 +114,12 @@
         {
             <div class="alert alert-danger mt-3">
                 This report has been rejected.
-                @if (!string.IsNullOrWhiteSpace(Model.RejectReportReason))
+                 @if (!string.IsNullOrWhiteSpace(Model.RejectReportReason))
                 {
                     <hr />
                     <strong>Reason:</strong>
                     <div>@Model.RejectReportReason</div>
-                }
+                } 
             </div>
         }
 
