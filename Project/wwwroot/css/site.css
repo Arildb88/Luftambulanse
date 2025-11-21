@@ -105,6 +105,10 @@
   }
 }
 
+.obstacle-label {
+    margin-top: 20px;
+}
+
 .formTitle {
     color: var(--text-color)
 }
@@ -128,7 +132,7 @@
 .leaflet-control-layers {
     font-size: 2vh;
     padding: 10px 15px;
-  
+    
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     color: var(--primary-color);
@@ -188,7 +192,7 @@ body {
 .form-group {
     display: flex;
     align-items: center;
-/*    margin-bottom: 5px;*/
+    /*    margin-bottom: 5px;*/
 }
 
     .form-group label {
@@ -211,6 +215,37 @@ body {
             transform: scale(2.5);
             cursor: pointer;
         }
+
+button[name="action"][value="save"] {
+    background-color: #ffc107 !important; /* warm yellow */
+    color: white !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    transition: background-color 0.25s ease;
+    margin-top: 2rem;
+    width: 20vw;
+}
+
+    button[name="action"][value="save"]:hover {
+        background-color: #b4bd11 !important;
+    }
+
+button[name="action"][value="submit"] {
+    background-color: #39b54a !important; /* green */
+    color: white !important;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    margin-top: 2rem;
+    width: 20vw;
+}
+
+    button[name="action"][value="submit"]:hover {
+        background-color: #2a8737 !important;
+    }
 
 .btnSubmit {
     background-color: #198754;
@@ -295,6 +330,7 @@ body {
 
 #map {
     position: relative;
+
 }
 
 
@@ -474,7 +510,8 @@ body {
 /* Outer container */
 .unit-switch {
     display: flex;
-    width: 220px;
+    width: 100%; /* fill the container like your buttons */
+    max-width: 220px; /* optional: same max as buttons */
     height: 42px;
     border: 2px solid var(--accent-color);
     border-radius: 16px;
@@ -497,6 +534,7 @@ body {
         transition: all 0.2s ease;
         user-select: none;
     }
+
 
         /* Hover glow */
         .unit-switch label.switch-option:hover {

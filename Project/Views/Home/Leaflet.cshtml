@@ -22,14 +22,17 @@
     <style>
         html, body {
             height: 100%;
+            width: 100%;
             margin: 0;
         }
 
         #map {
             width: 100%;
-            height: 86vh;
+            height: calc(86vh - 2.5vh); /* shrink map a bit */
+            margin-bottom: 2.5vh;
             position: relative;
         }
+
 
         /* Centered coordinate readout (non-blocking) */
         .coordinate {
@@ -52,9 +55,9 @@
             padding: 0;
             border: none;
             width: 70vw;
-            height: 80vh;
-            max-width: 900px;
-            max-height: 850px;
+            height: 90vh;
+            max-width: 85vw;
+            max-height: 85vh;
             border-radius: 10px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
@@ -81,7 +84,7 @@
     <dialog id="reportDialog">
         <div class="dialog-body">
             <div class="dialog-header">
-                <strong class="formTitle">ADD REPORT</strong>
+                <strong class="formTitle" style="font-size: 3vh">ADD REPORT</strong>
                 <button id="reportClose" class="btnBack" type="button">Close</button>
             </div>
             <iframe id="reportFrame"></iframe>
