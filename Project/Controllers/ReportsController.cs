@@ -244,7 +244,7 @@ namespace Gruppe4NLA.Controllers
                 }
             }
 
-            // ✅ NEW: compute coordinates from GeoJson
+            //  compute coordinates from GeoJson
             var (lat, lng) = GetFirstCoordinateFromGeoJson(report.GeoJson);
             ViewBag.Latitude = lat;
             ViewBag.Longitude = lng;

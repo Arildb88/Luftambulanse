@@ -112,7 +112,7 @@
                                 <a asp-action="Assign" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Assign</a>
                             }
 
-                            if (User.IsInRole("Caseworker"))
+                            @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
                             {
                                 <form asp-action="SelfAssign" asp-route-id="@item.Id" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
