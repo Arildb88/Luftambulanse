@@ -54,7 +54,7 @@
 
 <h2>Full Map</h2>
 
-<div id="map" style="height: 600px;"></div>
+<div id="map" style="height: calc(77vh - 2vh); width: 100%; margin-bottom: 2vh; position: relative;"></div>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -65,13 +65,7 @@
     
     var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-
-    //const svgIconBlue = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
-
-    //const svgIconBlack = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCDAF5">
-    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
-
+       
     var geoData = JSON.parse('@combinedGeoJson'.replace(/&quot;/g, '"')); 
 
         var geoLayer = L.geoJSON(geoData, {
@@ -85,7 +79,7 @@
                 const latlng = [coord[1], coord[0]];
                 L.circleMarker(latlng, {
                     radius: 4,
-                    fillColor: "var(--base-color)",
+                    fillColor: "var(--warning-color)",
                     color: "#000",
                     weight: 1,
                     fillOpacity: 1
@@ -140,7 +134,7 @@
             // Only applies to lines/polygons
             if (feature.geometry.type === "LineString") {
                 return {
-                    color: "var(--polyline-color)",
+                    color: "var(--warning-color)",
                     weight: 3
                 };
             }
@@ -153,7 +147,7 @@
 
 </script>
 
-<h3>Reports GeoJSON Debug:</h3>
+@*<h3>Reports GeoJSON Debug:</h3>
 <ul>
     @foreach (var report in Model)
     {
@@ -162,4 +156,4 @@
             <pre>@report.GeoJson</pre>
         </li>
     }
-</ul>
+</ul>*@
