@@ -6,6 +6,11 @@ We have used .NET 9, Razor Views, Dependency Injection, NuGet packages (Microsof
 
 We expect the user to already have some technical knowledge and that Docker Desktop, SDK.9 and MariaDB preinstalled on their computer.
 
+**Different versions** <br>
+On main project and test project, updates that 
+
+
+
 **Migrations:** <br>
 We have deletet our Migration folder due to a namechange in our DbContext file that resultet in an error with previous migrations. We tried to change the name locally in each file, but the error presisted and we decided to delete our files and start with a clean migration history.
 
@@ -27,8 +32,26 @@ dotnet watch run --project project (to start the application and open your web b
 **NEEDSTOBEUPDATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**<br>
 **How to use the application:**<br>
 You are now ready to use the application.<br>
-Our firstpage is the Loginpage, you can either Login with the users made in Program.cs, all users have the same password Test123!
-We will add a login screen where you have to login with a username and password (BankID or similar)<br>
+Our firstpage is the Loginpage, you can either Login with the users made in Program.cs, all users have the same password Test123! .
+You can also register a new user with your own email/password. In the register page you can select the "Pilot" role to instantly become a Pilot with its authorization and views. If you want to register as a different role you need to leave the field untouched or select "--choose role--" to have "no role". Then a Admin user can changes your role in the system to your specific role (Caseworker, CaseworkerAdm og Admin).<br>
+**Pilot:** <br>
+Your homepage is the map where you can instantly start to use our application.
+The map is interactive with zoom in/out, polyline marker, marker and a compass needle (find my location/tracking).
+You can also switch different maps and activate darkmode.
+Once you place a marker on the map (if you dont place a marker the report will use your map center as long/lat) you can press the Report button to open the report page.
+The report page has pre-filled most of the information we need, but you must choose what kind of obstacle you want to report. The other details are vaulentary, but for best results fill out the form to your best ability.
+You can either save your report as a draft (can edit later) or submit the report into the system for further processing.
+In your Reports page you can actively follow the status on your reports as its processed by caseworkers. If your report is Rejected you will get a message from the Caseworker as to why the report got rejected.
+In the FullMap page you can see all the reports (from all pilots) in the database pinned on the map (to easily see where there might be obstacles thats not in the Pilots navigation map yet)
+The FAQ page includes frequently asked questions and answers.
+If you click on your email (top right corner) you can either log out or go to Manage profile page where you can edit your profile, change password etc.<br>
+**Caseworker:**<br>
+You login and your homepage is the ReportsInbox where you can see all the report in the database.
+All reports have a Status so its easy to see which report you need to assign to yourself. 
+
+
+
+
 You are prompted with a view of a map where you can:<br>
 - Zoom in and out
 - Choose between 4 different map types
