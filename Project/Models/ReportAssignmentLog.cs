@@ -1,6 +1,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Report assignment log model that tracks changes to report assignments
+/// </summary>
 
 namespace Gruppe4NLA.Models
 {

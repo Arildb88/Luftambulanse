@@ -1,22 +1,17 @@
-﻿@* Leaflet.cshtml — map + in-page modal for Add Report *@
-@* Einar, Arild *@
-
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leaflet – Report Obstacles</title>
 
-    <!-- Leaflet CSS -->
+    <!-- Load Leaflet's core CSS from CDN -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin="" />
 
-    <!-- (Optional) your own stylesheet -->
+    <!-- Custom styling for the map page -->
     <link rel="stylesheet" href="map.css">
 
     <style>
@@ -28,45 +23,10 @@
 
         #map {
             width: 100%;
-            height: calc(86vh - 2.5vh); /* shrink map a bit */
+            height: calc(86vh - 2.5vh);
             margin-bottom: 2.5vh;
             position: relative;
         }
-
-
-        /* Centered coordinate readout (non-blocking) */
-        .coordinate {
-            position: absolute;
-            bottom: 1px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--base-color);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font: 12px/1 system-ui, sans-serif;
-            z-index: 1000;
-            pointer-events: none;
-        }
-
-        
-
-        /* Dialog look */
-        dialog#reportDialog {
-            padding: 0;
-            border: none;
-            width: 70vw;
-            height: 90vh;
-            max-width: 85vw;
-            max-height: 85vh;
-            border-radius: 10px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        }
-
-        dialog::backdrop {
-            background: rgba(0,0,0,0.35);
-        }
-                
-
     </style>
 </head>
 
@@ -76,11 +36,11 @@
         <div id="obstacleBox" class="leaflet-control">Report</div>
     </div>
 
-    <!-- Downloaded version of Leaflet; wwwroot/lib/LeafletMap -->
+    <!-- Local (bundled) Leaflet CSS/JS used by the application -->
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
-     
-    <!-- In-page modal that loads the Add Report page -->
+
+    <!-- Modal dialog used to host the "Add Report" form in an iframe -->
     <dialog id="reportDialog">
         <div class="dialog-body">
             <div class="dialog-header">
@@ -91,15 +51,14 @@
         </div>
     </dialog>
 
-    @* // Get Stadia Maps API key from Context.Items *@
+    <!-- Read Stadia Maps API key from server-side Context into a Razor variable -->
     @{
         var stadiaApiKey = Context.Items["StadiaApiKey"] as string;
     }
 
     <script>
 
-        //CustomElementRegistry Helicopter icon for your location
-
+        // Icon used to represent the current user location (helicopter-shaped marker)
         const userIcon = L.divIcon({
             html: `
                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -117,18 +76,18 @@
             className: 'leaflet-user-icon',
             iconSize: [40, 40]
         });
-        
-        // ---------------- Map init ----------------
+
+        // Create the Leaflet map and center it on a default location (Agder area) with a starting zoom level
         window.map = L.map('map', { minZoom: 4 }).setView([58.1638332, 7.9812789], 16);
 
         const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        // Sett API-key as a JS-variabel from Razor
+        // Expose Stadia API key from Razor to JavaScript
         const stadiaApiKey = '@stadiaApiKey';
 
-        // use backticks for template-strings:
+        // Dark themed base map from Stadia Maps (uses template string to insert API key)
         const darkMode = L.tileLayer(
             `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaApiKey}`,
             {
@@ -138,6 +97,7 @@
             }
         );
 
+        // Satellite base map from Stadia Maps (with API key)
         const stadiaSat = L.tileLayer(
             `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
             {
@@ -147,7 +107,7 @@
             }
         );
 
-
+        // Layer control to let the user toggle between OSM, dark theme, and satellite basemaps
         L.control.layers(
                 { 'OSM': osm, 'Darkmode': darkMode, 'SatView': stadiaSat },
             {},
@@ -155,7 +115,7 @@
         ).addTo(map);
 
 
-        // ---------------- Marker placement ----------------
+        // Drawing state: references to current marker, polyline and mode used while placing geometry
         let marker = null;
         let latlngs = [];
         let polyline = null;
@@ -165,52 +125,52 @@
 
         function setMode(mode) {
             if (currentMode === mode) {
-                currentMode = null; // turn off if same mode clicked
+                currentMode = null; // clicking the same mode again turns drawing off
             } else {
                 currentMode = mode;
-            }   
+            }
 
-        // update button colors
+            // Visually highlight the active drawing button and reset others
             document.querySelectorAll('.leaflet-control-custom').forEach(btn => {
                 btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? 'var(--red-selected-color)' : 'var(--unselected-color)';
               });
 
-            // leaving polyline mode → clear line + vertices
-              if (currentMode !== 'polyline') {
+            // When leaving polyline mode, remove the line and its red vertex markers
+            if (currentMode !== 'polyline') {
                 latlngs = [];
                 if (polyline) {
                   map.removeLayer(polyline);
                   polyline = null;
                 }
-                // clear all vertex dots in one go
                 redDotLayer.clearLayers();
                 redDot = [];
               }
-        // reset state when leaving marker mode
+
+            // When leaving marker mode, remove the single marker and clear its state
             if (currentMode !== 'marker') {
                 latlngs = [];
-            if (marker) {
-                map.removeLayer(marker);
-                marker = null;
+                if (marker) {
+                    map.removeLayer(marker);
+                    marker = null;
+                }
             }
         }
-    }
 
-            // --- Map click handling ---
-         map.on('click', (e) => {
+        // Handle clicks on the map depending on the currently active drawing mode
+        map.on('click', (e) => {
             const { lat, lng } = e.latlng;
 
-            // get the css color, since its written in CSS
+            // Read the polyline color from the CSS custom property
             const polyColor = getComputedStyle(document.documentElement)
             .getPropertyValue('--polyline-color')
             .trim();
 
-            // shows your coordinate when you click the map
+            // Show the last clicked coordinate in the readout bar
             const el = document.querySelector('.coordinate');
             if (el) el.textContent = `lat: ${lat.toFixed(6)}, lng: ${lng.toFixed(6)}`;
 
             if (currentMode === 'polyline') {
-              // create / extend the line
+              // First click creates the line, subsequent clicks extend it
               if (!polyline) {
                 latlngs = [e.latlng];
                 polyline = L.polyline(latlngs, { color: polyColor }).addTo(map);
@@ -219,7 +179,7 @@
                 polyline.setLatLngs(latlngs);
               }
 
-             // addEventListener for red dot on every click
+              // Add a small vertex marker (red dot) at each polyline point for visual clarity
               const dot = L.circleMarker(e.latlng, {
                 radius: 4,
                    color: polyColor,
@@ -234,7 +194,7 @@
               if (!marker) {
                 marker = L.marker(e.latlng, { draggable: true }).addTo(map);
 
-                // Updates the cordinate when marker is dragged
+                // Update coordinate readout live while the marker is dragged
                 marker.on('drag', (event) => {
                   const pos = event.target.getLatLng();
                   const el = document.querySelector('.coordinate');
@@ -244,30 +204,31 @@
                 marker.setLatLng(e.latlng);
               }
             }
-            });
+        });
 
-                // --- Polyline button ---
-                const DrawPolylineControl = L.Control.extend({
-                    onAdd: function () {
+        // Custom Leaflet control: button that toggles polyline drawing mode
+        const DrawPolylineControl = L.Control.extend({
+            onAdd: function () {
 
-                        const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
 
-                        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--marker-color)"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
-                        btn.dataset.mode = 'polyline';
-                        btn.style.backgroundColor = 'var(--base-variant)';
-                        btn.style.width = '100px';
-                        btn.style.height = '100px';
-                        btn.style.cursor = 'pointer';
-                        btn.style.padding = '5px';
-                        btn.title = 'Click to start/stop drawing a polyline';
-                        L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
-                                  .on(btn, 'click', (e) => setMode('polyline'));
-                        return btn;
-                    }
-                });
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--marker-color)"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
+                btn.dataset.mode = 'polyline';
+                btn.style.backgroundColor = 'var(--base-variant)';
+                btn.style.width = '100px';
+                btn.style.height = '100px';
+                btn.style.cursor = 'pointer';
+                btn.style.padding = '5px';
+                btn.title = 'Click to start/stop drawing a polyline';
 
-        // --- Marker button ---
+                // Stop the click from affecting the map and switch into polyline mode
+                L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
+                          .on(btn, 'click', (e) => setMode('polyline'));
+                return btn;
+            }
+        });
 
+        // Custom Leaflet control: button that toggles single-marker placement mode
         const DrawMarkerControl = L.Control.extend({
             onAdd: function () {
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
@@ -285,8 +246,8 @@
                 btn.style.cursor = 'pointer';
                 btn.style.padding = '5px';
                 btn.title = 'Click to start/stop placing markers';
-                
 
+                // Prevent map interactions from this click and enable marker mode instead
                 L.DomEvent.on(btn, 'click', L.DomEvent.stopPropagation)
                           .on(btn, 'click', () => setMode('marker'));
 
@@ -295,11 +256,11 @@
         });
 
 
-        // Add the button to the map
+        // Add the custom drawing controls (polyline and marker) to the map UI
         map.addControl(new DrawPolylineControl({ position: 'topleft' }));
         map.addControl(new DrawMarkerControl({ position: 'topleft' }));
-                
-        // ---------------- Geolocation follow ----------------
+
+        // State and helpers for the “follow my location” geolocation feature
         let watchId = null;
         let following = false;
         let userMarker = null;
@@ -308,6 +269,7 @@
         if (map.stopLocate) map.stopLocate();
         map.off('locationfound locationerror');
 
+        // Draw or update the user marker and its accuracy circle on the map
         function renderUserLocation(lat, lng, accuracy) {
             if (!userMarker) {
                 userMarker = L.marker([lat, lng], {
@@ -320,10 +282,10 @@
 
             if (!accuracyCircle) {
                 accuracyCircle = L.circle([lat, lng], {
-                    radius: accuracy, 
-                    color: '#2a83ff', 
+                    radius: accuracy,
+                    color: '#2a83ff',
                     weight: 0.3,
-                    fillColor: '#2a83ff', 
+                    fillColor: '#2a83ff',
                     fillOpacity: 0.1
                 }).addTo(window.map);
             } else {
@@ -331,6 +293,7 @@
             }
         }
 
+        // Callback used when geolocation successfully returns a position
         function onPositionSuccess(position) {
             const { latitude: lat, longitude: lng, accuracy } = position.coords;
             renderUserLocation(lat, lng, accuracy);
@@ -339,6 +302,7 @@
             }
         }
 
+        // Callback used when geolocation fails (e.g. denied, timeout, unavailable)
         function onPositionError(err) {
             const msgs = {
                 1: 'Geolocation permission denied. Enable it in your browser.',
@@ -349,6 +313,7 @@
             setFollowing(false);
         }
 
+        // Start continuous geolocation tracking using navigator.geolocation.watchPosition
         function startWatch() {
             if (!('geolocation' in navigator)) {
                 alert('Your browser does not support geolocation.');
@@ -360,13 +325,14 @@
             }
             console.log('Starting geolocation watch...');
             watchId = navigator.geolocation.watchPosition(onPositionSuccess, onPositionError, {
-                enableHighAccuracy: true, 
-                timeout: 20000, 
+                enableHighAccuracy: true,
+                timeout: 20000,
                 maximumAge: 5000
             });
         }
 
 
+        // Stop continuous geolocation tracking
         function stopWatch() {
             if (watchId !== null) {
                 navigator.geolocation.clearWatch(watchId);
@@ -374,26 +340,28 @@
             }
         }
 
+        // Determine whether the current origin is secure enough to allow geolocation follow
         function isLocalSecure() {
             return window.isSecureContext ||
                 ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
         }
 
+        // Turn following mode on or off and keep UI + geolocation state in sync
         function setFollowing(isOn) {
             following = isOn;
 
             if (isOn) {
                 if (isLocalSecure()) {
-                    // Immediately get current position once on follow press
+                    // Immediately get one current position when follow is activated
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const { latitude: lat, longitude: lng, accuracy } = position.coords;
                             renderUserLocation(lat, lng, accuracy);
 
-                            // Move map to user's location immediately
+                            // Move the map view directly to the user’s position
                             map.setView([lat, lng], Math.max(map.getZoom(), 16), { animate: true });
 
-                            // Then start continuous watch
+                            // Begin watching for further position updates
                             startWatch();
                         },
                         onPositionError,
@@ -412,12 +380,12 @@
 
 
 
-        // Pause following when user interacts
+        // If the user manually drags or zooms the map, automatically stop following
         map.on('dragstart zoomstart', () => {
-            if (following) setFollowing(false); 
+            if (following) setFollowing(false);
         });
 
-        // Leaflet control for toggling follow
+        // Leaflet control that toggles "follow my location" with a button
         const FollowControl = L.Control.extend({
             onAdd: function () {
                 const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
@@ -440,32 +408,33 @@
                 if (!this._btn) return;
                 this._btn.title = isOn ? 'Following (click to pause)' : 'Find me';
                 this._btn.style.background = isOn ? 'var(--selected-color)' : 'var(--unselected-color)';
-                
+
             }
         });
         const followCtrl = new FollowControl({ position: 'topleft' }).addTo(window.map);
 
-        // ---------------- Modal to add Report ----------------
+        // Modal + GeoJSON handling for “Add Report” workflow
 
         const obstacleBox = document.getElementById('obstacleBox');
         const dlg = document.getElementById('reportDialog');
         const frame = document.getElementById('reportFrame');
         const closeBtn = document.getElementById('reportClose');
 
-        // Prevent map panning when clicking the box, but allow our click handler
+        // Make clicks and scrolls on the "Report" box not pan/zoom the map underneath
         L.DomEvent.disableClickPropagation(obstacleBox);
         L.DomEvent.disableScrollPropagation(obstacleBox);
 
-        // Close dialog via button or ESC
+        // Allow the user to close the dialog either via the button or by pressing ESC
         closeBtn.addEventListener('click', () => dlg.close());
         dlg.addEventListener('cancel', () => dlg.close());
 
+        // Build a GeoJSON FeatureCollection from the current drawing state (marker/polyline/map center)
         function currentLatLngForForm() {
             const features = [];
-            // Prefer the user’s placed marker; else use map center
+            // Prefer the user’s placed marker if it exists; otherwise we may fall back to polyline or map center
             if (marker && marker.getLatLng) {
                 const ll = marker.getLatLng();
-                
+
 
                 features.push({
                     type: "Feature",
@@ -475,7 +444,7 @@
                 properties: {}
                 });
             }
-            
+
             if (polyline && polyline.getLatLngs && polyline.getLatLngs().length > 0) {
                 const coords = polyline.getLatLngs().map(p => [
                     parseFloat(p.lng.toFixed(6)),
@@ -501,39 +470,40 @@
                                 properties: {}
                         });
             }
-                
+
             return {
                 type: "FeatureCollection", features};
+        }
+
+        // Determine a representative "first" coordinate from the FeatureCollection for use in the CreatePopUp URL
+        function firstLatLng() {
+            const geoJson = currentLatLngForForm();
+            const firstFeature = geoJson.features[0];
+
+            if (firstFeature.geometry.type === "Point") {
+                const [lng, lat] = firstFeature.geometry.coordinates;
+                return { lat, lng };
+
+            } else if (firstFeature.geometry.type === "LineString") {
+                const [lng, lat] = firstFeature.geometry.coordinates[0];
+                return { lat, lng };
+
+            } else {
+                // Fallback: if geometry type is unknown, use the map center
+                const c = map.getCenter();
+                return { lat: c.lat, lng: c.lng };
             }
 
-                function firstLatLng() {
-                        const geoJson = currentLatLngForForm();
-                        const firstFeature = geoJson.features[0];
+        }
 
-                        if (firstFeature.geometry.type === "Point") {
-                            const [lng, lat] = firstFeature.geometry.coordinates;
-                            return { lat, lng };
-
-                        } else if (firstFeature.geometry.type === "LineString") {
-                            const [lng, lat] = firstFeature.geometry.coordinates[0];
-                            return { lat, lng };
-
-                        } else {
-                        // Default to map center if unknown geometry
-                        const c = map.getCenter();
-                        return { lat: c.lat, lng: c.lng };
-                                }
-
-            }
-
-            obstacleBox.addEventListener('click', (e) => {
+        obstacleBox.addEventListener('click', (e) => {
             e.preventDefault();
 
-            // ---- Build the GeoJSON ----
+            // Serialize the current drawing state to GeoJSON for sending into the report form
             const geoJsonData = currentLatLngForForm();
             const geoJsonString = JSON.stringify(geoJsonData, null, 2); // pretty-print for readability
 
-            // ---- Determine first point for CreatePopUp URL ----
+            // Compute the initial latitude/longitude and dark-mode flag for the CreatePopUp URL
             const { lat, lng } = firstLatLng();
             const isDarkMode = document.body.classList.contains('darkmode');
             const createUrl =
@@ -543,11 +513,11 @@
             console.log("Opening Add Report at:", createUrl);
             console.log("GeoJSON to insert:", geoJsonString);
 
-            // ---- Open the CreatePopUp form inside iframe ----
+            // Load the CreatePopUp form into the iframe and open the dialog
             frame.src = createUrl;
             dlg.showModal();
 
-            // ---- When the form loads inside iframe, insert the GeoJSON ----
+            // Once the iframe has loaded, locate the GeoJSON field and inject our serialized data
             frame.onload = () => {
                 try {
                     const doc = frame.contentDocument || frame.contentWindow.document;
@@ -563,7 +533,8 @@
                 }
             };
         });
-        
+
+
 
     </script>
 </body>

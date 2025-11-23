@@ -171,6 +171,93 @@ body {
   text-align: start;
 }
 
+/* Target the zoom control buttons */
+.leaflet-control-zoom a.leaflet-control-zoom-in,
+.leaflet-control-zoom a.leaflet-control-zoom-out {
+    width: 100px !important; /* default ~26px */
+    height: 100px !important; /* default ~26px */
+    font-size: 48px !important; /* make + and - bigger */
+    line-height: 100px !important; /* vertically center the + / - */
+    Color: var(--text-color) !important;
+    background-color: var(--base-variant) !important;
+}
+
+.leaflet-control-zoom-in {
+    margin-bottom: 5px; /* space between + and - */
+}
+
+#obstacleBox {
+    pointer-events: auto; /* make sure clicks hit the box */
+    z-index: 1001; /* slightly above other controls */
+}
+
+/* --------------- Buttons on  map --------------- */
+/* Floating "Report Obstacle" button */
+#obstacleBox {
+    position: absolute;
+    bottom: 15px; /* distance from bottom */
+    left: 50%; /* horizontal center */
+    transform: translateX(-50%);
+    background: #1976d2;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 16px;
+    cursor: pointer;
+    z-index: 1100;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    user-select: none;
+    transition: background 0.2s, transform 0.15s;
+    width: 98%; /* fixed width for better centering */
+    height: 10%;
+    text-align: center; /* center text inside button */
+    padding: 10px 0;
+    font-size: 5vh;
+    /* Center text */
+    display: flex;
+    align-items: center; /* vertical center */
+    justify-content: center; /* horizontal center */
+    text-align: center;
+}
+
+    #obstacleBox:hover {
+        background: #1565c0;
+        box-sizing: border-box;
+    }
+/* Centered coordinate readout (non-blocking) */
+.coordinate {
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--base-color);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font: 12px/1 system-ui, sans-serif;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+
+
+/* Dialog look */
+dialog#reportDialog {
+    padding: 0;
+    border: none;
+    width: 70vw;
+    height: 90vh;
+    max-width: 85vw;
+    max-height: 85vh;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+dialog::backdrop {
+    background: rgba(0,0,0,0.35);
+}
+
+
+
+
 /* --------------- Place bottom --------------- */
 .footer {
     background-color: var(--base-variant);
@@ -334,60 +421,9 @@ button[name="action"][value="submit"] {
 }
 
 
-/* --------------- Buttons on  map --------------- */
-/* Floating "Report Obstacle" button */
-#obstacleBox {
-    position: absolute;
-    bottom: 15px; /* distance from bottom */
-    left: 50%; /* horizontal center */
-    transform: translateX(-50%);
-    background: #1976d2;
-    color: #fff;
-    font-weight: 600;
-    border-radius: 16px;
-    cursor: pointer;
-    z-index: 1100;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    user-select: none;
-    transition: background 0.2s, transform 0.15s;
-    width: 98%; /* fixed width for better centering */
-    height:10%;
-    text-align: center; /* center text inside button */
-    padding: 10px 0;
 
-    font-size: 5vh;
-    
-    /* Center text */
-    display: flex;
-    align-items: center; /* vertical center */
-    justify-content: center; /* horizontal center */
-    text-align: center;
-}
 
-    #obstacleBox:hover {
-        background: #1565c0;
-        box-sizing: border-box;
-        
-    }
 
-/* Target the zoom control buttons */
-.leaflet-control-zoom a.leaflet-control-zoom-in,
-.leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 100px !important; /* default ~26px */
-    height: 100px !important; /* default ~26px */
-    font-size: 48px !important; /* make + and - bigger */
-    line-height: 100px !important; /* vertically center the + / - */
-    Color: var(--text-color) !important;
-    background-color: var(--base-variant) !important;
-}
-.leaflet-control-zoom-in {
-    margin-bottom: 5px; /* space between + and - */
-}
-
-#obstacleBox {
-    pointer-events: auto; /* make sure clicks hit the box */
-    z-index: 1001; /* slightly above other controls */
-}
 
 /* Make sure to give right color on user-/loginmenu in darkmode*/
 .navbar .nav-link,

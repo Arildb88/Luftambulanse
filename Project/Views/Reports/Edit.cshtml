@@ -6,12 +6,14 @@
 
 <h2>Edit Report</h2>
 
+@* Edit form for an existing report. Uses the Edit action on the current controller *@
 <form asp-action="Edit" method="post">
     @Html.AntiForgeryToken()
+    @* Hidden ID field ensures we know which report is being edited *@
     <input type="hidden" asp-for="Id" />
 
     <style>
-        /* Same style as in CreatePopUp. */
+        /* Layout for each label + input pair, aligned in two columns */
         .form-group {
             margin-bottom: 1rem;
             display: grid;
@@ -20,16 +22,17 @@
             gap: 0.75rem;
         }
 
-        .form-group label {
-            margin: 0;
-        }
+            .form-group label {
+                margin: 0;
+            }
 
+        /* Read-only fields styled as plain text (used for non-editable SenderName) */
         .form-control-plaintext {
             border: 0;
             background: transparent;
         }
 
-        /* connect Edit to same buttonstyle as CreatePopUp */
+        /* Shared row layout for the Save/Submit buttons to match CreatePopUp styling */
         .btnRow {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -39,11 +42,11 @@
 
 
 
-            .btnSubmit:active {
-                transform: translateY(1px);
-            }
+        .btnSubmit:active {
+            transform: translateY(1px);
+        }
 
-        /* Big checkbox as in pop-up */
+        /* Larger checkbox to visually match the popup style for the Lighted flag */
         .checkbox-large {
             transform: scale(1.7);
             margin-left: 8px;
@@ -52,25 +55,28 @@
         }
     </style>
 
+    @* Sender name is shown but cannot be edited by the user *@
     <div class="form-group">
         <label asp-for="SenderName">Sender</label>
         <input asp-for="SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" />
         <span asp-validation-for="SenderName" class="text-danger"></span>
     </div>
-       
+
+    @* GeoJSON field: allows advanced users to inspect or adjust geometry data *@
     <div class="form-group">
         <label asp-for="GeoJson">GeoJSON</label>
         <textarea asp-for="GeoJson" rows="6" class="form-control" style="font-family:monospace;white-space:pre;"></textarea>
         <span asp-validation-for="GeoJson" class="text-danger"></span>
     </div>
 
+    @* Height of the obstacle in meters, bound to the model property *@
     <div class="form-group">
         <label asp-for="HeightInMeters">Height In Meters</label>
         <input asp-for="HeightInMeters" class="form-control" />
         <span asp-validation-for="HeightInMeters" class="text-danger"></span>
     </div>
 
-    <!-- Obstacle Type  -->
+    <!-- Obstacle Type: renders a radio button for every value of DangerTypeEnum -->
     <div class="mb-3">
         <label class="form-label d-block">Obstacle Type</label>
 
@@ -94,19 +100,22 @@
         <span class="text-danger" asp-validation-for="Type"></span>
     </div>
 
-      
+
+    @* Free-text field for extra details about the obstacle/report *@
     <div class="form-group">
         <label asp-for="Details"></label>
         <textarea asp-for="Details" class="form-control"></textarea>
         <span asp-validation-for="Details" class="text-danger"></span>
     </div>
 
+    @* Checkbox indicating whether the obstacle is lighted or not *@
     <div class="form-group">
         <label asp-for="AreLighted">Lighted</label>
         <input asp-for="AreLighted" type="checkbox" class="checkbox-large" />
         <span asp-validation-for="AreLighted" class="text-danger"></span>
     </div>
 
+    @* Two submit buttons: one saves as draft, the other submits for processing *@
     <div class="btnRow">
         <button type="submit" name="action" value="save" class="btnSubmit">Save Draft</button>
         <button type="submit" name="action" value="submit" class="btnSubmit">Submit</button>
@@ -116,14 +125,19 @@
 
 @section Scripts {
     <script>
+        // Toggle visibility of the "Other type" wrapper based on which obstacle type is selected
         function updateOtherVisibility() {
             const wrap = document.getElementById('otherTypeWrapper');
             const isOther = document.getElementById('typeOther')?.checked;
             if (wrap) wrap.classList.toggle('d-none', !isOther);
         }
+
+        // Recalculate visibility whenever the obstacle Type radio changes
         document.querySelectorAll('input[name="Type"]').forEach(r =>
             r.addEventListener('change', updateOtherVisibility)
         );
+
+        // Ensure correct initial state when the page loads (e.g. when editing an existing report)
         updateOtherVisibility();
     </script>
 }
