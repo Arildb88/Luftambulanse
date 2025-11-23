@@ -8,13 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Composition;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Xunit;
 using Assert = Xunit.Assert;
 
 namespace Gruppe4NLA.UnitTests.ControllersTests
@@ -28,34 +22,37 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
         [Fact]
         public async Task Index_ReturnsViewResult_WithModel()
         {
+
+            /// Arrange
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             using var context = new AppDbContext(options);
 
-            // Seed minimal report
-            context.Reports.Add(new ReportModel
+            // Make minimal report data
+            context.Reports.Add(new ReportModel // Ensure at least one report exists
             {
                 Id = 1,
                 Details = "Test Report",
                 DateSent = DateTime.UtcNow,
                 SenderName = "Test Sender",
-                Type = ReportModel.DangerTypeEnum.Other
+                Type = ReportModel.DangerTypeEnum.Other // Assert later checks for this type
             });
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(); // Save changes to the in-memory database
 
             // Mock UserManager
-            var userStore = new Mock<IUserStore<ApplicationUser>>();
+            var userStore = new Mock<IUserStore<ApplicationUser>>(); 
             var userManager = new Mock<UserManager<ApplicationUser>>(
                 userStore.Object, null, null, null, null, null, null, null, null
             );
             userManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
                        .ReturnsAsync(new ApplicationUser { UserName = "testuser" });
-
+            
             // Mock service
             var service = new Mock<IReportAssignmentService>();
 
+            /// Act
             var controller = new ReportsController(context, userManager.Object, service.Object);
 
             // Mock the User and roles
@@ -70,13 +67,16 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
                 HttpContext = new DefaultHttpContext { User = user }
             };
 
+            /// Assert
             // Optionally, mock IsInRole
             userManager.Setup(um => um.IsInRoleAsync(It.IsAny<ApplicationUser>(), "Admin"))
                        .ReturnsAsync(false);
 
             var result = await controller.Index("all", "DateSent", "desc");
             var view = Assert.IsType<ViewResult>(result);
-            Assert.NotNull(view.Model);
+            Assert.NotNull(view.Model); // Ensure model is not null
+            Assert.Equal(ReportModel.DangerTypeEnum.Other, ((List<ReportModel>)view.Model)[0].Type); // Check the type of the first report
+            Assert.IsType<ReportModel>(((List<ReportModel>)view.Model)[0]); // Ensure model contains ReportModel instances
 
 
         }

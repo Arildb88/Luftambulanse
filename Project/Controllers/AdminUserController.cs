@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gruppe4NLA.Controllers
 {
-    [AutoValidateAntiforgeryToken]
-    [Authorize(Roles = "Admin")]
+    [AutoValidateAntiforgeryToken] // Apply to all actions in this controller
+    [Authorize(Roles = "Admin")] // Only Admin role can access any action here
     public class AdminUsersController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; 
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AdminUsersController(UserManager<ApplicationUser> userManager,
@@ -21,6 +21,7 @@ namespace Gruppe4NLA.Controllers
         }
 
         // Loads the view from Views/Home/AdminUsers/Adminpage.cshtml
+        [HttpGet]
         public async Task<IActionResult> Adminpage()
         {
             var users = await _userManager.Users.ToListAsync();
@@ -46,8 +47,6 @@ namespace Gruppe4NLA.Controllers
             // If a role was chosen (not the blank option), add it
             if (!string.IsNullOrWhiteSpace(role))
             {
-                // optional: verify role exists
-                // if (!await _roleManager.RoleExistsAsync(role)) return BadRequest("Role does not exist.");
                 await _userManager.AddToRoleAsync(user, role);
             }
 
@@ -75,14 +74,14 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Adminpage));
             }
 
-            // 1) Admin cant delete himself)
+            // Admin cant delete himself)
             if (currentAdmin.Id == target.Id)
             {
                 TempData["AdminUsersError"] = "You cannot delete yourself.";
                 return RedirectToAction(nameof(Adminpage));
             }
 
-            // 2) Do not delete tha last remaining admin
+            // Do not delete tha last remaining admin
             var isTargetAdmin = await _userManager.IsInRoleAsync(target, "Admin");
             if (isTargetAdmin)
             {
@@ -95,16 +94,16 @@ namespace Gruppe4NLA.Controllers
                 }
             }
 
-            // 3) Do the deletion
+            // Do the deletion
             var result = await _userManager.DeleteAsync(target);
-            if (!result.Succeeded)
+            if (!result.Succeeded) // If deletion failed
             {
                 TempData["AdminUsersError"] = "Error on deletion: " + string.Join("; ", result.Errors.Select(e => e.Description));
-                return RedirectToAction(nameof(Adminpage));
+                return RedirectToAction(nameof(Adminpage)); // Return to admin page
             }
 
             TempData["AdminUsersMessage"] = $"User {target.Email} was deleted.";
-            return RedirectToAction(nameof(Adminpage));
+            return RedirectToAction(nameof(Adminpage)); // Return to admin page
         }
     }
 }
