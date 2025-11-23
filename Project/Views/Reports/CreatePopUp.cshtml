@@ -15,7 +15,7 @@
     @Html.AntiForgeryToken()
 
     <!------------ Sendername + Hidden Lat/long, GJson------------>
-    <div class="form-group"> 
+    <div class="form-group mt-3"> 
         <label asp-for="NewReport.SenderName"><strong>SENDER:</strong></label>
         <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
@@ -29,7 +29,7 @@
     </div>
 
     <!------------ Height + Lighted inline row ------------>
-    <div class="height-light-row">
+    <div class="height-light-row mt-3">
         <div class="unit-switch">
             <input type="radio" id="unitMeters" name="NewReport.HeightUnit" value="meters"
                 @(Model.NewReport.HeightUnit == "meters" ? "checked" : "")>
@@ -71,10 +71,10 @@
 
     </div>
     <span asp-validation-for="NewReport.HeightInMeters" class="text-danger"></span>
-
+    <br>
     <!------------ Obstacle Type cards ------------>
     <div class="mb-3">
-        <label class="form-label d-block"><strong>OBSTACLE TYPE:</strong></label>
+        <label class="form-label d-block obstacle-label"><strong>OBSTACLE TYPE:</strong></label>
         <div class="row row-cols-2 row-cols-md-4 g-3 obstacle-grid">
             <div class="col">
                 <input type="radio" class="btn-check" name="NewReport.Type" id="typeCable"
@@ -138,13 +138,13 @@
 
     <!------------ Removed 'OtherDangerType' field ------------>
     <div class="form-group">
-        <label asp-for="NewReport.Details"><strong>DETAILS:</strong></label>
-        <textarea asp-for="NewReport.Details" class="form-control"></textarea>
+        <label asp-for="NewReport.Details" ><strong>DETAILS:</strong></label>
+        <textarea asp-for="NewReport.Details" class="form-control mt-3"></textarea>
     </div>
 
     <div class="form-group">
-        <button type="submit" name="action" value="save" class="btn btn-success">SAVE DRAFT</button>
-        <button type="submit" name="action" value="submit" class="btn btn-success">SUBMIT</button>
+        <button type="submit" name="action" value="save" class="btn">SAVE DRAFT</button>
+        <button type="submit" name="action" value="submit" class="btn">SUBMIT</button>
     </div>
 </form>
 
@@ -158,6 +158,8 @@
         border-radius: 10px;
         padding: 10px 24px;
         transition: background-color 0.25s ease;
+        margin-top: 2rem;
+        width: 20vw;
     }
 
         /* Hover-effect */
@@ -173,6 +175,8 @@
         border: none;
         border-radius: 10px;
         padding: 10px 24px;
+        margin-top: 2rem;
+        width: 20vw;
     }
 
         button[name="action"][value="submit"]:hover {
