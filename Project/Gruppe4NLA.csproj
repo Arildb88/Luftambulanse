@@ -43,6 +43,10 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties wwwroot_4lib_4bootstrap_4dist_4css_4bootstrap-utilities_1rtl_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

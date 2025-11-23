@@ -1,94 +1,97 @@
 ﻿@model List<Gruppe4NLA.ViewModels.MyQueueItemVM>
-@using Gruppe4NLA.Models
 
 @{
     ViewData["Title"] = "My Queue";
-
-    var qsort = (ViewBag.QSort as string) ?? "AssignedAt";
-    var qdir = (ViewBag.QDir as string) ?? "asc";
-
-    Func<string, string> NextQ = c =>
-        (qsort.Equals(c, StringComparison.OrdinalIgnoreCase) && qdir == "asc") ? "desc" : "asc";
-    Func<string, string> ArrowQ = c =>
-        qsort.Equals(c, StringComparison.OrdinalIgnoreCase) ? (qdir == "asc" ? "▲" : "▼") : "";
-}
-<style>
-    .qsort-link {
-        text-decoration: none;
-        white-space: nowrap;
+    var qsort = ViewBag.QSort ?? "AssignedAt";
+    var qdir = ViewBag.QDir ?? "asc";
+    
+    string ToggleDir(string col)
+    {
+        if (qsort?.ToLower() == col.ToLower())
+            return qdir == "asc" ? "desc" : "asc";
+        return "asc";
     }
+    
+    string SortIcon(string col)
+    {
+        if (qsort?.ToLower() != col.ToLower()) return "";
+        return qdir == "asc" ? "▲" : "▼";
+    }
+}
 
-        .qsort-link .caret {
-            margin-left: .25rem;
-            font-size: .8rem;
-        }
-</style>
+<h2>My Queue</h2>
 
-<h2>My Assigned Reports</h2>
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">
-        <p>You have no reports assigned to you at this time.</p>
-    </div>
+    <p>You have no assigned cases at the moment.</p>
 }
 else
 {
     <table class="table table-striped">
         <thead>
-            <tr>
-                <th>Report ID</th>
-                <th>
-                    <a asp-action="MyQueue" asp-route-qsort="Sender" asp-route-qdir="@NextQ("Sender")" class="qsort-link">
-                        Sender <span class="caret">@ArrowQ("Sender")</span>
-                    </a>
-                </th>
-                <th>
-                    <a asp-action="MyQueue" asp-route-qsort="Organization" asp-route-qdir="@NextQ("Organization")" class="qsort-link">
-                        Organization <span class="caret">@ArrowQ("Organization")</span>
-                    </a>
-                </th>
-                <th>
-                    <a asp-action="MyQueue" asp-route-qsort="Type" asp-route-qdir="@NextQ("Type")" class="qsort-link">
-                        Type <span class="caret">@ArrowQ("Type")</span>
-                    </a>
-                </th>
-                <th>
-                    <a asp-action="MyQueue" asp-route-qsort="DateSent" asp-route-qdir="@NextQ("DateSent")" class="qsort-link">
-                        Date Sent <span class="caret">@ArrowQ("DateSent")</span>
-                    </a>
-                </th>
-                <th>
-                    <a asp-action="MyQueue" asp-route-qsort="AssignedAt" asp-route-qdir="@NextQ("AssignedAt")" class="qsort-link">
-                        Assigned At <span class="caret">@ArrowQ("AssignedAt")</span>
-                    </a>
-                </th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>
+                <a asp-action="MyQueue" asp-route-qsort="Sender" asp-route-qdir="@ToggleDir("Sender")">
+                    Sender @SortIcon("Sender")
+                </a>
+            </th>
+            <th>
+                <a asp-action="MyQueue" asp-route-qsort="Organization" asp-route-qdir="@ToggleDir("Organization")">
+                    Organization @SortIcon("Organization")
+                </a>
+            </th>
+            <th>
+                <a asp-action="MyQueue" asp-route-qsort="Type" asp-route-qdir="@ToggleDir("Type")">
+                    Type @SortIcon("Type")
+                </a>
+            </th>
+            <th>
+                <a asp-action="MyQueue" asp-route-qsort="DateSent" asp-route-qdir="@ToggleDir("DateSent")">
+                    Date Sent @SortIcon("DateSent")
+                </a>
+            </th>
+            <th>Status</th>
+            <th>
+                <a asp-action="MyQueue" asp-route-qsort="AssignedAt" asp-route-qdir="@ToggleDir("AssignedAt")">
+                    Assigned At @SortIcon("AssignedAt")
+                </a>
+            </th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var report in Model)
-            {
-                <tr>
-                    <td>@report.Id</td>
-                    <td>@report.SenderName</td>
-                    <td>@(report.Organization ?? "—")</td>
-                    <td>@report.Type</td>
-                    <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@(report.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm") ?? "N/A")</td>
-                    <td>
-                        <span class="badge bg-@(report.StatusCase == ReportStatusCase.Assigned ? "primary" : "warning")">
-                            @report.StatusCase
-                        </span>
-                    </td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">View Details</a>
-                    </td>
-                </tr>
-            }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.SenderName</td>
+                <td>@(item.Organization ?? "N/A")</td>
+                <td>@item.Type</td>
+                <td>@item.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <span class="badge bg-@(item.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" : "warning")">
+                        @item.StatusCase
+                    </span>
+                </td>
+                <td>@item.AssignedAtUtc?.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 }
 
-<a asp-action="Index" class="btn btn-secondary mt-3">Back to All Reports</a>
+<a asp-action="Inbox" class="btn btn-secondary">Back to Inbox</a>
