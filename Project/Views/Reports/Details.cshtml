@@ -1,4 +1,9 @@
-﻿@model Gruppe4NLA.Models.ReportModel
+﻿@*
+    summary: View for displaying detailed information about a specific report,
+             including options for caseworkers to approve or reject the report.
+*@
+
+@model Gruppe4NLA.Models.ReportModel
 
 @{
     ViewData["Title"] = "Report Details";
@@ -48,7 +53,7 @@
 
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
-                <span class="badge bg-@(
+                <span class="badge bg-@( // Choose badge color based on status
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
@@ -57,7 +62,7 @@
                 </span>
             </dd>
                        
-            @if (!string.IsNullOrEmpty(Model.AssignedToUserId))
+            @if (!string.IsNullOrEmpty(Model.AssignedToUserId)) // Only show if assigned
             {
                 <dt class="col-sm-3">Assigned To</dt>
                 <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
@@ -107,13 +112,13 @@
             </div>
         }
 
-        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed)
+        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed) // Show status messages
         {
             <div class="alert alert-success mt-3">
                 This report has been approved.
             </div>
         }
-        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected)
+        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected) // Show rejection reason
         {
             <div class="alert alert-danger mt-3">
                 This report has been rejected.
@@ -137,18 +142,20 @@
 </div>
 
 <div class="mt-3">
-    @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm"))
+    @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) // Show "Back to My Queue" for caseworkers
     {
         <a asp-action="MyQueue" class="btn btn-secondary">Back to My Queue</a>
     }
     <a asp-action="Index" class="btn btn-secondary">Back to Reports</a>
 </div>
 
-    @section Scripts {
+    @section Scripts { 
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
 
     <script>
+
+        // Initialize Leaflet map with GeoJSON or coordinates
         (function () {
             // GeoJSON (for point OR line)
             const geoJsonRaw = @Html.Raw(Model.GeoJson ?? "null");
@@ -218,9 +225,9 @@
                 return;
             }
 
-            const map = L.map('reportMap');
+            const map = L.map('reportMap'); // No initial center/zoom
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // OSM tiles
                 maxZoom: 19
             }).addTo(map);
 
@@ -257,7 +264,7 @@
                     return [];
                 }
 
-                // 🔹 Now actually get the coordinates
+                // Get all coordinates and display them in the coordList div
                 const coords = extractCoords(geoJsonObject);
 
                 // Only show the list if it's a line (more than one coordinate)

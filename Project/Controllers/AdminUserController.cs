@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gruppe4NLA.Controllers
 {
+    // Ensures all requests validate CSRF tokens automatically
     [AutoValidateAntiforgeryToken]
+    // Restricts access to users with Admin role only
     [Authorize(Roles = "Admin")]
     public class AdminUsersController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; 
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AdminUsersController(UserManager<ApplicationUser> userManager,
@@ -20,46 +22,54 @@ namespace Gruppe4NLA.Controllers
             _roleManager = roleManager;
         }
 
-        // Loads the view from Views/Home/AdminUsers/Adminpage.cshtml
+        /// <summary>
+        /// Displays the admin page with all users and available roles
+        /// </summary>
         public async Task<IActionResult> Adminpage()
         {
+            // Fetch all users from the database
             var users = await _userManager.Users.ToListAsync();
+            
+            // Get all available roles sorted alphabetically for the dropdown
             ViewBag.AllRoles = await _roleManager.Roles
                                  .Select(r => r.Name!)
                                  .OrderBy(n => n)
                                  .ToListAsync();
+            
             return View("~/Views/Home/AdminUsers/Adminpage.cshtml", users);
         }
 
-        // Set exactly ONE role for a user (replaces any existing roles)
+        /// <summary>
+        /// Updates a user's role. Replaces any existing role with the new one (single role per user)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> SetRole(string userId, string role)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null) return NotFound();
 
-            // Remove any existing roles (since you allow only one)
+            // Remove all current roles (enforces single-role policy)
             var current = await _userManager.GetRolesAsync(user);
             if (current.Any())
                 await _userManager.RemoveFromRolesAsync(user, current);
 
-            // If a role was chosen (not the blank option), add it
+            // Assign the new role if one was selected
             if (!string.IsNullOrWhiteSpace(role))
             {
-                // optional: verify role exists
-                // if (!await _roleManager.RoleExistsAsync(role)) return BadRequest("Role does not exist.");
                 await _userManager.AddToRoleAsync(user, role);
             }
 
             return RedirectToAction(nameof(Adminpage));
         }
 
-        // Delete a user with safety checks
+        /// <summary>
+        /// Deletes a user with safety checks to prevent system lockout
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            // Find the target user to delete
+            // Locate the user to be deleted
             var target = await _userManager.FindByIdAsync(userId);
             if (target is null)
             {
@@ -67,7 +77,7 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Adminpage));
             }
 
-            // Get the currently logged in admin user
+            // Identify the currently logged-in admin
             var currentAdmin = await _userManager.GetUserAsync(User);
             if (currentAdmin is null)
             {
@@ -75,14 +85,14 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Adminpage));
             }
 
-            // 1) Admin cant delete himself)
+            // Safety check #1: Prevent self-deletion
             if (currentAdmin.Id == target.Id)
             {
                 TempData["AdminUsersError"] = "You cannot delete yourself.";
                 return RedirectToAction(nameof(Adminpage));
             }
 
-            // 2) Do not delete tha last remaining admin
+            // Safety check #2: Prevent deletion of the last admin (avoid system lockout)
             var isTargetAdmin = await _userManager.IsInRoleAsync(target, "Admin");
             if (isTargetAdmin)
             {
@@ -90,22 +100,21 @@ namespace Gruppe4NLA.Controllers
                 var otherAdminsCount = admins.Count(u => u.Id != target.Id);
                 if (otherAdminsCount == 0)
                 {
-                    TempData["AdminUsersError"] = "Cannot delete the last Admin user.";
+                    TempData["AdminUsersError"] = "Kan ikke slette siste gjenværende admin.";
                     return RedirectToAction(nameof(Adminpage));
                 }
             }
 
-            // 3) Do the deletion
+            // Execute the deletion
             var result = await _userManager.DeleteAsync(target);
-            if (!result.Succeeded)
+            if (!result.Succeeded) // If deletion failed
             {
                 TempData["AdminUsersError"] = "Error on deletion: " + string.Join("; ", result.Errors.Select(e => e.Description));
-                return RedirectToAction(nameof(Adminpage));
+                return RedirectToAction(nameof(Adminpage)); // Return to admin page
             }
 
             TempData["AdminUsersMessage"] = $"User {target.Email} was deleted.";
-            return RedirectToAction(nameof(Adminpage));
+            return RedirectToAction(nameof(Adminpage)); // Return to admin page
         }
     }
 }
-

@@ -1,4 +1,8 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿/*
+This script toggles dark mode for a Leaflet map and the webpage.
+*/
+
+document.addEventListener('DOMContentLoaded', () => {
     const map = window.map;  // Map must be created already
     const themeSwitch = document.getElementById('theme-switch');
 

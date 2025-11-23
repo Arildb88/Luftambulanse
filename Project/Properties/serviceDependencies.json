@@ -1,3 +1,8 @@
+/// <summary>
+/// This file defines the service dependencies for the project.
+/// It specifies the database connections and other external services required by the application.
+/// </summary>
+
 {
   "dependencies": {
     "mssql1": {

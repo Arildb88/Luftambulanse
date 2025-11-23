@@ -1,10 +1,16 @@
 ﻿@using Gruppe4NLA.Areas.Identity.Data
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> UserManager
+
+@* 
+    Summary: View for displaying a list of reports with filtering and sorting options.
+    Users can view, edit, submit, and delete reports based on their roles and report status.
+*@
+
+@inject UserManager<ApplicationUser> UserManager // Inject UserManager to access user information
 @{
-    var me = await UserManager.GetUserAsync(User);
+    var me = await UserManager.GetUserAsync(User); // Get the current logged-in user
     var myId = me?.Id;
-    var myEmail = me?.Email;
+    var myEmail = me?.Email; 
 }
 
 @model List<Gruppe4NLA.Models.ReportModel>
@@ -15,13 +21,13 @@
     var rsort = (ViewBag.RSort as string) ?? "DateSent";
     var rdir = (ViewBag.RDir as string) ?? "desc";
 
-    Func<string, string> NextR = col =>
+    Func<string, string> NextR = col => // Determine the next sort direction for a given column
         (rsort.Equals(col, StringComparison.OrdinalIgnoreCase) && rdir == "asc") ? "desc" : "asc";
 
-    Func<string, string> ArrowR = col =>
+    Func<string, string> ArrowR = col => // Determine the sort arrow for a given column
         rsort.Equals(col, StringComparison.OrdinalIgnoreCase) ? (rdir == "asc" ? "▲" : "▼") : "";
 }
-<style>
+<style> 
     .rsort-link {
         text-decoration: none;
         white-space: nowrap;
@@ -33,8 +39,8 @@
         }
 </style>
 
-<h2>Reports</h2>
 
+<h2>Reports</h2> 
 @if (TempData["Message"] != null)
 {
     <div class="alert alert-success">@TempData["Message"]</div>
@@ -60,11 +66,11 @@
     </a>
 </div>
 
-@if (!Model.Any())
+@if (!Model.Any()) // Check if there are no reports
 {
     <p>No reports found.</p>
 }
-else
+else // If there are reports, display them in a table
 {
     <table class="table table-striped">
         <thead>
@@ -128,19 +134,21 @@ else
                     <td>@report.Type.ToString()</td>
                     <td>@report.DateSent.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>
-                        <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
-                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft ? "warning" :
-                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
-                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
-                                                                         report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
-                            @(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "Approved" :
+                        @* summary: Display the report status with appropriate badge color *@
+                        <span class="badge bg-@(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" : 
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft ? "warning" :
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                                                report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+
+                                              @(report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "Approved" :
                                                 report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected ? "Rejected" :
                                                 report.StatusCase.ToString())
                 </span>
             </td>
             <td>
                 @{
-                            // Who can delete?
+                            // Roles that can delete
                             var canDelete =
                             User.IsInRole("Admin") ||
                             User.IsInRole("CaseworkerAdm") ||
@@ -154,7 +162,7 @@ else
 
                         <a asp-action="Details" asp-route-id="@report.Id" class="btn btn-sm btn-info">Details</a>
 
-                        @if (canDelete)
+                        @if (canDelete) // Show delete button if user has permission
                         {
                             <form asp-action="Delete"
                                   asp-route-id="@report.Id"
@@ -166,7 +174,7 @@ else
                             </form>
                         }
 
-                        @if (report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft)
+                        @if (report.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Draft) // Only show for drafts
                         {
                             <a asp-action="Edit" asp-route-id="@report.Id" class="btn btn-sm btn-warning">Edit</a>
                             <form asp-action="Submit" asp-route-id="@report.Id" method="post" class="d-inline">
@@ -175,6 +183,7 @@ else
                             </form>
                         }
                     </td>
+
                      @*Short version of RejectReportReason*@
                     <td>
                         @{
@@ -207,4 +216,4 @@ else
     </table>
 }
 
-<a asp-action="Create" class="btn btn-primary">Create New Report</a>
+<a asp-action="Map" asp-controller="Home" class="btn btn-primary">Create New Report</a>

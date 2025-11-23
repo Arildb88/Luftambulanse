@@ -2,21 +2,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+/// <summary>
+/// IReportAssignmentService defines the  for assigning reports to users
+/// CaseworkerAdm can Assign, Unassign, Self-Assign, Approve, and Reject reports
+/// Caseworker can Self-Assign reports or get reports assigned to them
+/// </summary>
+
+
 namespace Gruppe4NLA.Services
 {
     // Defines the public contract for report assignment operations
     public interface IReportAssignmentService
     {
-        // Assign a report to a specific user
         Task AssignAsync(int reportId, string toUserId, CancellationToken ct = default);
 
-        // Remove assignment (returns report to unassigned state)
         Task UnassignAsync(int reportId, CancellationToken ct = default); 
         
-        // Self assign cases for caseworker
         Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default);
         
-        // Approve cases
         Task ApproveAsync(int reportId, CancellationToken ct = default);
         
         // Deny cases, with a string reason for rejecting
