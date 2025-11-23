@@ -65,13 +65,7 @@
     
     var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-
-    //const svgIconBlue = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
-
-    //const svgIconBlack = <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#CCDAF5">
-    //<path d="M200-80v-760h640l-80 200 80 200H280v360h-80Z"/></svg>
-
+       
     var geoData = JSON.parse('@combinedGeoJson'.replace(/&quot;/g, '"')); 
 
         var geoLayer = L.geoJSON(geoData, {
@@ -162,4 +156,4 @@
             <pre>@report.GeoJson</pre>
         </li>
     }
- </ul>*@
+</ul>*@

@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 using Gruppe4NLA.DataContext;  // <-- this has AppDbContext
 using Gruppe4NLA.Models;       // ReportModel, ReportStatus, ReportAssignmentLog
@@ -121,6 +122,9 @@ namespace Gruppe4NLA.Services
             report.StatusCase = ReportStatusCase.Completed;
             report.UpdatedAtUtc = DateTime.UtcNow;
 
+            // If this report was previously rejected, clear any old reason
+            report.RejectReportReason = null;
+
             // Log the approval action
             if (_db.ReportAssignmentLogs != null)
             {
@@ -138,7 +142,7 @@ namespace Gruppe4NLA.Services
         }
 
         // Rejects a report and marks it as rejected
-        public async Task RejectAsync(int reportId, CancellationToken ct = default)
+        public async Task RejectAsync(int reportId, string? reason, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
                          ?? throw new KeyNotFoundException("Report not found");
@@ -150,6 +154,7 @@ namespace Gruppe4NLA.Services
 
             report.StatusCase = ReportStatusCase.Rejected;
             report.UpdatedAtUtc = DateTime.UtcNow;
+            report.RejectReportReason = reason;   // 🔹 store the text the caseworker typed in
 
             // Log the rejection action
             if (_db.ReportAssignmentLogs != null)

@@ -48,14 +48,15 @@
 
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
-                <span class="badge bg-@(Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
-                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
-                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
-                                                                                  Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
+                <span class="badge bg-@(
+                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
+                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
+                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
+                      Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed ? "success" : "danger")">
                     @Model.StatusCase
                 </span>
             </dd>
-
+                       
             @if (!string.IsNullOrEmpty(Model.AssignedToUserId))
             {
                 <dt class="col-sm-3">Assigned To</dt>
@@ -75,14 +76,31 @@
 
                 <form asp-action="Approve" asp-route-id="@Model.Id" method="post" style="display:inline;">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to approve this report?')">
+                    <button type="submit" class="btn btn-success"
+                            onclick="return confirm('Are you sure you want to approve this report?')">
                         Approve Report
                     </button>
                 </form>
 
-                <form asp-action="Reject" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                <form asp-action="Reject" asp-route-id="@Model.Id" method="post" class="mt-2">
                     @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this report?')">
+
+                    <div class="mb-2">
+                        <label for="rejectReason" class="form-label"><strong>Reason for rejection</strong></label>
+                        <textarea id="rejectReason"
+                              name="rejectReportReason"
+                              class="form-control"
+                              rows="3"
+                              maxlength="500"
+                              required></textarea>
+                        <small class="text-muted">This text will be visible to the pilot.</small>
+                    </div>
+
+                    <button type="submit"
+                            id="rejectButton"
+                            class="btn btn-danger"
+                            disabled
+                            onclick="return confirm('Are you sure you want to reject this report?');">
                         Reject Report
                     </button>
                 </form>
@@ -99,6 +117,12 @@
         {
             <div class="alert alert-danger mt-3">
                 This report has been rejected.
+                 @if (!string.IsNullOrWhiteSpace(Model.RejectReportReason))
+                {
+                    <hr />
+                    <strong>Reason:</strong>
+                    <div>@Model.RejectReportReason</div>
+                } 
             </div>
         }
 
@@ -255,6 +279,27 @@
                 L.marker([latVal, lngVal]).addTo(map);
             }
         })();
+    </script>
+
+    @* Script to make the Reason button only be pressable when theres text in the reason field*@
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const reasonInput = document.getElementById('rejectReason');
+            const rejectButton = document.getElementById('rejectButton');
+
+            if (!reasonInput || !rejectButton) return;
+
+            function toggleRejectButton() {
+                const hasText = reasonInput.value.trim().length > 0;
+                rejectButton.disabled = !hasText;
+            }
+
+            // Init state
+            toggleRejectButton();
+
+            // Update on typing
+            reasonInput.addEventListener('input', toggleRejectButton);
+        });
     </script>
 }
 

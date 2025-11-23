@@ -614,7 +614,7 @@ namespace Gruppe4NLA.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
-        public async Task<IActionResult> Reject(int id)
+        public async Task<IActionResult> Reject(int id, string rejectReportReason)
         {
             try
             {
@@ -622,7 +622,14 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                await _assigner.RejectAsync(id);
+                // Du kan evt. gjøre den påkrevd server-side også:
+                if (string.IsNullOrWhiteSpace(rejectReportReason))
+                {
+                    TempData["Error"] = "You must provide a reason when rejecting a report.";
+                    return RedirectToAction(nameof(Details), new { id });
+                }
+
+                await _assigner.RejectAsync(id, rejectReportReason); 
                 TempData["Ok"] = "Report rejected";
                 return RedirectToAction(nameof(MyQueue));
             }

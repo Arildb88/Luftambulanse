@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Gruppe4NLA.Services
 {
@@ -18,7 +19,7 @@ namespace Gruppe4NLA.Services
         // Approve cases
         Task ApproveAsync(int reportId, CancellationToken ct = default);
         
-        // Deny cases
-        Task RejectAsync(int reportId, CancellationToken ct = default);
+        // Deny cases, with a string reason for rejecting
+        Task RejectAsync(int reportId, string? reason, CancellationToken ct = default);
     }
 }
