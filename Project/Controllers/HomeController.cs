@@ -1,7 +1,6 @@
 using Gruppe4NLA.Areas.Identity.Data;
 using Gruppe4NLA.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +8,11 @@ using System.Diagnostics;
 
 namespace Gruppe4NLA.Controllers
 {
-    [Authorize] // default: require auth; open specific actions with [AllowAnonymous]
-    public class HomeController : Controller
+    [Authorize] // Default: require auth; open specific actions with [AllowAnonymous]
+    public class HomeController : Controller // Class that inherits from Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; 
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public HomeController(
@@ -32,10 +31,10 @@ namespace Gruppe4NLA.Controllers
 
         // Role-based router for "/"
         [HttpGet]
-        [AllowAnonymous] // allow unauthenticated users to hit this and get redirected to Login
+        [AllowAnonymous] // unauthenticated users allowed
         public IActionResult Index()
         {
-            // Not signed in? -> Identity login with returnUrl back to "/"
+            // Not signed in: go to login
             if (!(User?.Identity?.IsAuthenticated ?? false))
             {
                 var returnUrl = Url.Action(nameof(Index), "Home");
@@ -47,7 +46,6 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToAction(nameof(Adminpage), "Home");
 
             if (User.IsInRole("CaseworkerAdm"))
-                // If you have a dedicated CaseworkerAdmin controller, switch to: RedirectToAction("Index","CaseworkerAdmin");
                 return RedirectToAction("Inbox", "Reports");
 
             if (User.IsInRole("Caseworker"))
@@ -67,29 +65,29 @@ namespace Gruppe4NLA.Controllers
         [AllowAnonymous]
         public IActionResult FAQ() => View();
 
-        // You already use Identity pages — make this forward to the real login
         [AllowAnonymous]
         public IActionResult LogIn() => RedirectToPage("/Account/Login", new { area = "Identity" });
 
+        // Admin user management view
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Adminpage()
         {
             // Load all users and pass them as the model
             var users = await _userManager.Users
-                .OrderBy(u => u.Email)
+                .OrderBy(u => u.Email) // "u" represents each user
                 .ToListAsync();
 
             ViewBag.AllRoles = await _roleManager.Roles
-           .Select(r => r.Name!)
-           .OrderBy(n => n)
-           .ToListAsync();
+           .Select(r => r.Name!) // "r" represents each role
+           .OrderBy(n => n) // "n" represents each role name
+           .ToListAsync(); // List of all role names
 
-            return View("AdminUsers/Adminpage", users);
+            return View("AdminUsers/Adminpage", users); //
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [AllowAnonymous]
-        public IActionResult Error()
+        [AllowAnonymous] // Allow unauthenticated users
+        public IActionResult Error() // Error view
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
