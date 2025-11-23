@@ -120,11 +120,12 @@ namespace Gruppe4NLA.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
         {
-            // Converts height in meters if user has chosen "feet"
-            if (model.NewReport.HeightUnit == "feet" && model.NewReport.HeightInMeters.HasValue)
-            {
-                model.NewReport.HeightInMeters *= 0.3048;
-            }
+            // Convert height to meters for validation
+            model.NewReport.HeightInMeters = MetersFeetConverter.ToMeters(
+                model.NewReport.HeightInMeters,
+                model.NewReport.HeightUnit
+                );
+
 
             if (!ModelState.IsValid)
             {
@@ -133,10 +134,6 @@ namespace Gruppe4NLA.Controllers
                     .ToListAsync();
                 return View(model);
             }
-
-            double heightMeters = model.NewReport.HeightUnit == "feet"
-                ? (model.NewReport.HeightInMeters ?? 0) / 3.28084
-                : (model.NewReport.HeightInMeters ?? 0);
 
             var isSubmitted = string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase);
 
@@ -365,12 +362,12 @@ namespace Gruppe4NLA.Controllers
             // Set Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
-                report.StatusCase = ReportStatusCase.Submitted;   // <-- add this
-                report.SubmittedAt = DateTime.UtcNow;             // (optional)
+                report.StatusCase = ReportStatusCase.Submitted;   
+                report.SubmittedAt = DateTime.UtcNow;             
             }
             else
             {
-                report.StatusCase = ReportStatusCase.Draft;       // <-- and this
+                report.StatusCase = ReportStatusCase.Draft;       
             }
 
             await _context.SaveChangesAsync();

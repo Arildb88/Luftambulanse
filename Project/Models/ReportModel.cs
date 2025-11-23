@@ -1,4 +1,5 @@
 ﻿using Gruppe4NLA.Controllers;
+using Gruppe4NLA.Models.Validation;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,15 +46,15 @@ namespace Gruppe4NLA.Models
         // Additional information about the obstacle
         public string? Details { get; set; }
 
-        // Height of the obstacle in meters (stored in database)
-        // [Range validation commented out but kept for potential future use]
+        // Height of the obstacle in meters
+        [HeightRange]
         public double? HeightInMeters { get; set; }
 
         // Unit preference for display purposes only (not saved to database)
         [NotMapped]
-        public string HeightUnit { get; set; } = "meters"; // Can be "meters" or "feet"
+        public string HeightUnit { get; set; } = "meters"; // "meters" or "feet"
 
-        // Indicates whether the obstacle has lighting (important for aviation safety)
+        // Indicates whether the obstacle has lighting
         public bool AreLighted { get; set; } = false;
 
         // Stores geographic location data in GeoJSON format for mapping
