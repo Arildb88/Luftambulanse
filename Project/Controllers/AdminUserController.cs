@@ -100,7 +100,7 @@ namespace Gruppe4NLA.Controllers
                 var otherAdminsCount = admins.Count(u => u.Id != target.Id);
                 if (otherAdminsCount == 0)
                 {
-                    TempData["AdminUsersError"] = "Cannot delete the last Admin user.";
+                    TempData["AdminUsersError"] = "Kan ikke slette siste gjenværende admin.";
                     return RedirectToAction(nameof(Adminpage));
                 }
             }
