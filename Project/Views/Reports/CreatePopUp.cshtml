@@ -14,14 +14,14 @@
 <form asp-action="CreatePopUp" method="post">
     @Html.AntiForgeryToken()
 
-    <!------------ Sendername + Hidden Lat/long, GJson------------>
+    <!------------ Sendername ------------>
     <div class="form-group mt-3"> 
         <label asp-for="NewReport.SenderName"><strong>SENDER:</strong></label>
         <input asp-for="NewReport.SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" style="user-select: none; color: var(--text-color);" />
         <input type="hidden" asp-for="NewReport.SenderName" />
         <span asp-validation-for="NewReport.SenderName" class="text-danger"></span>
     </div>
-       
+    <!------------ GeoJson ------------>
     <div class="form-group" style="display: none;">
         <label asp-for="NewReport.GeoJson">GeoJSON</label>
         <textarea asp-for="NewReport.GeoJson" rows="6" class="form-control" readonly style="font-family: monospace; white-space: pre;"></textarea>
