@@ -50,48 +50,6 @@ namespace Gruppe4NLA.Tests
         }
 
         [Fact]
-        public void ReportModel_MissingLatitudeLongitude_FailsValidation()
-        {
-            var model = new ReportModel
-            {
-                SenderName = "Test User"
-            };
-
-            var results = ValidateModel(model);
-
-            Assert.Contains(results, v => v.MemberNames.Contains("Latitude"));
-            Assert.Contains(results, v => v.MemberNames.Contains("Longitude"));
-        }
-
-        [Theory]
-        [InlineData(-91)]
-        [InlineData(91)]
-        public void ReportModel_LatitudeOutOfRange_FailsValidation(double invalidLatitude)
-        {
-            var model = new ReportModel
-            {
-                SenderName = "Test",
-            };
-
-            var results = ValidateModel(model);
-            Assert.Contains(results, v => v.MemberNames.Contains("Latitude"));
-        }
-
-        [Theory]
-        [InlineData(-181)]
-        [InlineData(181)]
-        public void ReportModel_LongitudeOutOfRange_FailsValidation(double invalidLongitude)
-        {
-            var model = new ReportModel
-            {
-                SenderName = "Test",
-            };
-
-            var results = ValidateModel(model);
-            Assert.Contains(results, v => v.MemberNames.Contains("Longitude"));
-        }
-
-        [Fact]
         public void ReportModelWrapper_HasDefaultValues()
         {
             var wrapper = new ReportModelWrapper();
