@@ -3,73 +3,83 @@ using Gruppe4NLA.Controllers;
 using Gruppe4NLA.DataContext;
 using Gruppe4NLA.Models;
 using Gruppe4NLA.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using Assert = Xunit.Assert;
 
-namespace Gruppe4NLA.Tests
+namespace Gruppe4NLA.UnitTests.ControllersTests
 {
+
     public class ReportsControllerTests
+
     {
-        
-        // Helper: creates controller with seeded in-memory DB
-        private ReportsController GetControllerWithData(string dbName)
+
+
+        [Fact]
+        public async Task Index_ReturnsViewResult_WithModel()
         {
-            
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: dbName)
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
-            
-            var context = new AppDbContext(options);
 
-            // Clean previous test data (ensures isolation)
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+            using var context = new AppDbContext(options);
 
-            // Seed initial data
-            context.Reports.AddRange(
-                new ReportModel { Id = 1, SenderName = "Alice", DateSent = DateTime.Now.AddDays(-1) },
-                new ReportModel { Id = 2, SenderName = "Bob", DateSent = DateTime.Now }
-            );
-            context.SaveChanges();
+            // Seed minimal report
+            context.Reports.Add(new ReportModel
+            {
+                Id = 1,
+                Details = "Test Report",
+                DateSent = DateTime.UtcNow,
+                SenderName = "Test Sender",
+                Type = ReportModel.DangerTypeEnum.Other
+            });
+            await context.SaveChangesAsync();
 
-            // --- Mock UserManager<ApplicationUser> ---
-            var store = new Mock<IUserStore<ApplicationUser>>();
+            // Mock UserManager
+            var userStore = new Mock<IUserStore<ApplicationUser>>();
             var userManager = new Mock<UserManager<ApplicationUser>>(
-                store.Object,
-                null, null, null, null, null, null, null, null
+                userStore.Object, null, null, null, null, null, null, null, null
             );
+            userManager.Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
+                       .ReturnsAsync(new ApplicationUser { UserName = "testuser" });
 
-            // Default: return a fake user
-            userManager
-                .Setup(um => um.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
-                .ReturnsAsync(new ApplicationUser { Id = "user1", Email = "test@example.com" });
+            // Mock service
+            var service = new Mock<IReportAssignmentService>();
 
-            userManager
-                .Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>()))
-                .Returns("user1");
+            var controller = new ReportsController(context, userManager.Object, service.Object);
 
-            // --- Mock IReportAssignmentService ---
-            var assigner = new Mock<IReportAssignmentService>();
+            // Mock the User and roles
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+            new Claim(ClaimTypes.Name, "testuser")
+            }, "mock"));
 
-            // Provide default no-op Tasks
-            assigner.Setup(a => a.AssignAsync(
-            It.IsAny<int>(),
-            It.IsAny<string>(),
-            It.IsAny<CancellationToken>()
-            )).Returns(Task.CompletedTask);
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
+            };
+
+            // Optionally, mock IsInRole
+            userManager.Setup(um => um.IsInRoleAsync(It.IsAny<ApplicationUser>(), "Admin"))
+                       .ReturnsAsync(false);
+
+            var result = await controller.Index("all", "DateSent", "desc");
+            var view = Assert.IsType<ViewResult>(result);
+            Assert.NotNull(view.Model);
 
 
-
-            return new ReportsController(context, userManager.Object, assigner.Object);
         }
     }
 }
+
