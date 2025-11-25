@@ -20,8 +20,8 @@
 .darkmode {
     --base-color: #080808;
     --base-variant: #1a1a1a;
-    --selected-color: #080808;
-    --red-selected-color: #080808;
+    --selected-color: #071152;
+    --red-selected-color: #6b0707;
     --unselected-color: #1a1a1a;
     --text-color: #edf3ff;
     --secondary-text: white;
@@ -236,27 +236,6 @@ body {
     z-index: 1000;
     pointer-events: none;
 }
-
-
-
-/* Dialog look */
-dialog#reportDialog {
-    padding: 0;
-    border: none;
-    width: 70vw;
-    height: 90vh;
-    max-width: 85vw;
-    max-height: 85vh;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-
-dialog::backdrop {
-    background: rgba(0,0,0,0.35);
-}
-
-
-
 
 /* --------------- Place bottom --------------- */
 .footer {
@@ -742,10 +721,10 @@ button[name="action"][value="submit"] {
 dialog#reportDialog {
     padding: 0;
     border: none;
-    width: 70vw;
-    height: 80vh;
+    width: 80vw;
+    height: 90vh;
     max-width: 900px;
-    max-height: 850px;
+    max-height: 1000px;
     border-radius: 10px;
     box-shadow: 0 8px 24px rgba(0,0,0,.4);
     inset: 50% auto auto 50%;
