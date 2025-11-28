@@ -2,11 +2,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-/// <summary>
-/// IReportAssignmentService defines the  for assigning reports to users
-/// CaseworkerAdm can Assign, Unassign, Self-Assign, Approve, and Reject reports
-/// Caseworker can Self-Assign reports or get reports assigned to them
-/// </summary>
+// IReportAssignmentService defines the  for assigning reports to users
+// CaseworkerAdm can Assign, Unassign, Self-Assign, Approve, and Reject reports
+// Caseworker can Self-Assign reports or get reports assigned to them
 
 
 namespace Gruppe4NLA.Services

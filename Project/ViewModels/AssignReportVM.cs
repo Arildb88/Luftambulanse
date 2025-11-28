@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-///<summary>
-/// ViewModel for assigning a report to a caseworker.
-/// </summary>
+// ViewModel for assigning a report to a caseworker.
 
 namespace Gruppe4NLA.ViewModels 
 {
@@ -14,7 +12,7 @@ namespace Gruppe4NLA.ViewModels
         public string? CurrentAssignee { get; set; }
 
         [Required(ErrorMessage = "Please select a caseworker")]
-        public string? ToUserId { get; set; } // ID of the caseworker to assign the report to
+        public string? ToUserId { get; set; }
 
         public List<SelectListItem> Caseworkers { get; set; } = new(); // List of caseworkers for dropdown selection
     }

@@ -1,10 +1,8 @@
-﻿///<summary> 
-/// ViewModel for displaying confirmation messages to users.
-/// </summary>
+﻿// ViewModel for displaying confirmation messages to users.
 
 namespace Gruppe4NLA.Models
 {
-    public class ConfirmationViewModel // Renamed to ConfirmationViewModel for clarity
+    public class ConfirmationViewModel
     {
         public string Title { get; set; } = ""; 
         public string Message { get; set; } = ""; 
