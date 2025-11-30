@@ -19,7 +19,6 @@ namespace Gruppe4NLA.Services
             _db = db;
         }
 
-        // Assigns a report to a specific user
         public async Task AssignAsync(int reportId, string toUserId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
@@ -47,7 +46,6 @@ namespace Gruppe4NLA.Services
             await _db.SaveChangesAsync(ct);
         }
 
-        // Removes assignment from a report
         public async Task UnassignAsync(int reportId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
@@ -77,7 +75,6 @@ namespace Gruppe4NLA.Services
             await _db.SaveChangesAsync(ct);
         }
        
-        // Allows a caseworker to assign an unassigned report to themselves
         public async Task SelfAssignAsync(int reportId, string userId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
@@ -108,7 +105,6 @@ namespace Gruppe4NLA.Services
             await _db.SaveChangesAsync(ct);
         }
 
-        // Approves a report and marks it as completed
         public async Task ApproveAsync(int reportId, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)
@@ -139,7 +135,6 @@ namespace Gruppe4NLA.Services
             await _db.SaveChangesAsync(ct);
         }
 
-        // Rejects a report and marks it as rejected
         public async Task RejectAsync(int reportId, string? reason, CancellationToken ct = default)
         {
             var report = await _db.Reports.FirstOrDefaultAsync(r => r.Id == reportId, ct)

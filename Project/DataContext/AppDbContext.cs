@@ -9,10 +9,8 @@ namespace Gruppe4NLA.DataContext;
 // It includes DbSet properties for your domain models and configures them in OnModelCreating.
 
 
-// Inherit from IdentityDbContext to include Identity features
 public class AppDbContext : IdentityDbContext<ApplicationUser>
 {
-    // Constructor accepting DbContextOptions
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<ReportModel> Reports { get; set; } = default!;
@@ -22,7 +20,6 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        // Defines primary key for ReportModel and ReportAssignmentLog
         modelBuilder.Entity<ReportModel>().HasKey(x => x.Id); 
         modelBuilder.Entity<ReportAssignmentLog>().HasKey(x => x.Id); 
     }

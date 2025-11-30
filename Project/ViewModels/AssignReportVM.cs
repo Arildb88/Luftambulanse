@@ -14,6 +14,6 @@ namespace Gruppe4NLA.ViewModels
         [Required(ErrorMessage = "Please select a caseworker")]
         public string? ToUserId { get; set; }
 
-        public List<SelectListItem> Caseworkers { get; set; } = new(); // List of caseworkers for dropdown selection
+        public List<SelectListItem> Caseworkers { get; set; } = new(); 
     }
 }

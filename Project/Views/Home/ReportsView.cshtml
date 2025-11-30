@@ -6,9 +6,9 @@
     Users can view, edit, submit, and delete reports based on their roles and report status.
 *@
 
-@inject UserManager<ApplicationUser> UserManager // Inject UserManager to access user information
+@inject UserManager<ApplicationUser> UserManager 
 @{
-    var me = await UserManager.GetUserAsync(User); // Get the current logged-in user
+    var me = await UserManager.GetUserAsync(User); 
     var myId = me?.Id;
     var myEmail = me?.Email; 
 }
@@ -148,7 +148,6 @@ else // If there are reports, display them in a table
             </td>
             <td>
                 @{
-                            // Roles that can delete
                             var canDelete =
                             User.IsInRole("Admin") ||
                             User.IsInRole("CaseworkerAdm") ||

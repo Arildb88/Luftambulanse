@@ -82,7 +82,7 @@
             <td>@(item.AssignedTo ?? "Unassigned")</td>
             <td>
                 <div class="d-flex gap-2 flex-wrap">
-                    <!-- Always show View -->
+                    
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">View</a>
 
                     @{
@@ -104,7 +104,7 @@
                             </form>
                         }
 
-                        @* Assignment actions *@
+                        
                         @if (string.IsNullOrEmpty(item.AssignedTo))
                         {
                             if (User.IsInRole("CaseworkerAdm"))

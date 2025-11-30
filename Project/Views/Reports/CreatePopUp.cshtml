@@ -144,7 +144,6 @@
         <span class="text-danger" asp-validation-for="NewReport.Type"></span>
     </div>
 
-    <!------------ Removed 'OtherDangerType' field ------------>
     <div class="form-group">
         <label asp-for="NewReport.Details" ><strong>DETAILS:</strong></label>
         <textarea asp-for="NewReport.Details" class="form-control mt-3"></textarea>
@@ -221,7 +220,7 @@
         const unitMeters = document.getElementById('unitMeters');
         const unitFeet = document.getElementById('unitFeet');
 
-        function resetInput() { heightInput.value = ''; } // Clear input on unit change
+        function resetInput() { heightInput.value = ''; } 
         function updateValidation() {
             if (unitMeters.checked) {
                 heightInput.placeholder = "Height in meters";
@@ -235,7 +234,6 @@
         unitFeet.addEventListener('change', () => { resetInput(); updateValidation(); });
         updateValidation();
 
-        // Light icon switch
         const lightSwitch = document.getElementById('lightSwitch');
         const lightIcon = document.getElementById('lightIcon');
         function updateLightBulb() {
@@ -254,7 +252,7 @@
         lightSwitch.addEventListener('change', updateLightBulb);
         updateLightBulb();
 
-        function clearReportForm() { // Clear lat, long, geojson fields in iframe ****NB****
+        function clearReportForm() { 
             console.log("?? clearReportForm() called inside iframe");
             const lat = document.querySelector('input[name="NewReport.Latitude"]');
             const lng = document.querySelector('input[name="NewReport.Longitude"]');

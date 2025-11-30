@@ -48,7 +48,6 @@ namespace Gruppe4NLA.Controllers
         {
             IQueryable<ReportModel> q = _context.Reports;
 
-            // Visibility as you had
             if (!(User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker")))
             {
                 var myId = _userManager.GetUserId(User);
@@ -57,12 +56,11 @@ namespace Gruppe4NLA.Controllers
                 q = q.Where(r => r.UserId == myId || (r.UserId == null && r.SenderName == email));
             }
             // ---------------- Sorting Filter ---------------- //
-            // Tabs
+            
             var f = (filter ?? "all").ToLowerInvariant();
             if (f == "submitted") q = q.Where(r => r.StatusCase == ReportStatusCase.Submitted);
             else if (f == "drafts") q = q.Where(r => r.StatusCase == ReportStatusCase.Draft);
 
-            // Normalize dir
             rdir = (rdir?.ToLower() == "asc") ? "asc" : "desc";
 
             // Reports-specific sorting
@@ -115,7 +113,7 @@ namespace Gruppe4NLA.Controllers
         }
 
 
-        // === CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message ===
+        // CreatePopUp (POST) – save/submit from the map popup, stay on same view and show green message
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePopUp(ReportModelWrapper model, string? action)
@@ -152,7 +150,6 @@ namespace Gruppe4NLA.Controllers
                 DateSent = DateTime.Now
             };
 
-            // Set status based on button
             newReport.StatusCase = isSubmitted
                 ? ReportStatusCase.Submitted
                 : ReportStatusCase.Draft;
@@ -165,7 +162,6 @@ namespace Gruppe4NLA.Controllers
             _context.Reports.Add(newReport);
             await _context.SaveChangesAsync();
 
-            // Instead of showing report form again — go to Confirmation View
             var confirmation = new ConfirmationViewModel
             {
                 Title = isSubmitted
@@ -213,8 +209,8 @@ namespace Gruppe4NLA.Controllers
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User), // hidden but used to select which reports you can view
-                    SenderName = user?.Email               // fills in the user's email as sender name
+                    UserId = _userManager.GetUserId(User), 
+                    SenderName = user?.Email               
                 },
                 SubmittedReport = await _context.Reports
                     .OrderByDescending(r => r.DateSent)
@@ -233,18 +229,15 @@ namespace Gruppe4NLA.Controllers
                 return NotFound();
             }
 
-            // Load the assigned user's email if report is assigned
             if (!string.IsNullOrEmpty(report.AssignedToUserId))
             {
                 var assignedUser = await _userManager.FindByIdAsync(report.AssignedToUserId);
                 if (assignedUser != null)
                 {
-                    // Store the email in ViewBag to display in the view
                     ViewBag.AssignedToEmail = assignedUser.Email ?? assignedUser.UserName ?? report.AssignedToUserId;
                 }
             }
 
-            //  compute coordinates from GeoJson
             var (lat, lng) = GetFirstCoordinateFromGeoJson(report.GeoJson);
             ViewBag.Latitude = lat;
             ViewBag.Longitude = lng;
@@ -262,8 +255,8 @@ namespace Gruppe4NLA.Controllers
             {
                 NewReport = new ReportModel
                 {
-                    UserId = _userManager.GetUserId(User), // used to filter "my reports"
-                    SenderName = user?.Email              // set the sender name from the user
+                    UserId = _userManager.GetUserId(User), 
+                    SenderName = user?.Email              
                    
                 },
                 SubmittedReport = await _context.Reports
@@ -274,14 +267,13 @@ namespace Gruppe4NLA.Controllers
             return View("Create", vm);
         }
 
-        // === Draft feature ===
+        // Draft feature
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             var report = await _context.Reports.FindAsync(id);
             if (report == null) return NotFound();
 
-            // Kun drafts kan redigeres
             if (report.StatusCase != ReportStatusCase.Draft)
             {
                 return RedirectToAction(nameof(Details), new { id });
@@ -291,10 +283,9 @@ namespace Gruppe4NLA.Controllers
         }
 
 
-        // === Delete Report feature ===
+        // Delete Report feature
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // [Authorize] // optional; your CanDelete() guards it anyway
         public async Task<IActionResult> Delete(int id, string? returnUrl)
         {
             var report = await _context.Reports.FindAsync(id);
@@ -307,11 +298,9 @@ namespace Gruppe4NLA.Controllers
 
             TempData["Ok"] = "Report deleted.";
 
-            // If caller gave us a safe local URL, go back there; else pick a sensible page
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
-            // Fallback: Admins/caseworkers usually came from Inbox; pilots from Index
             if (User.IsInRole("Admin") || User.IsInRole("CaseworkerAdm") || User.IsInRole("Caseworker"))
                 return RedirectToAction(nameof(Inbox));
 
@@ -329,9 +318,9 @@ namespace Gruppe4NLA.Controllers
             if (User.IsInRole("Caseworker"))
                 return r.StatusCase == ReportStatusCase.Draft || r.StatusCase == ReportStatusCase.Submitted;
 
-            // (Optional) Pilot: only own Drafts
+            // Pilot: only own Drafts
             var myId = _userManager.GetUserId(User);
-            var myName = User?.Identity?.Name; // often email/username
+            var myName = User?.Identity?.Name; 
             if (User.IsInRole("Pilot") && r.StatusCase == ReportStatusCase.Draft)
                 return r.UserId == myId ||
                        (r.UserId == null && string.Equals(r.SenderName, myName, StringComparison.OrdinalIgnoreCase));
@@ -355,22 +344,20 @@ namespace Gruppe4NLA.Controllers
 
             if (!ModelState.IsValid) return View(updated);
 
-            // Update editable fields
             report.GeoJson = updated.GeoJson;
             report.Type = updated.Type;
             report.Details = updated.Details;
             report.HeightInMeters = updated.HeightInMeters;
             report.AreLighted = updated.AreLighted;
 
-            // Set Status from button
             if (string.Equals(action, "submit", StringComparison.OrdinalIgnoreCase))
             {
-                report.StatusCase = ReportStatusCase.Submitted;   // <-- add this
-                report.SubmittedAt = DateTime.UtcNow;             // (optional)
+                report.StatusCase = ReportStatusCase.Submitted;   
+                report.SubmittedAt = DateTime.UtcNow;             
             }
             else
             {
-                report.StatusCase = ReportStatusCase.Draft;       // <-- and this
+                report.StatusCase = ReportStatusCase.Draft;       
             }
 
             await _context.SaveChangesAsync();
@@ -411,7 +398,6 @@ namespace Gruppe4NLA.Controllers
         {
             idir = (idir?.ToLower() == "asc") ? "asc" : "desc";
 
-            // Project once to the VM
             var q = _context.Reports.Select(r => new ReportListItemVM
             {
                 Id = r.Id,
@@ -465,9 +451,9 @@ namespace Gruppe4NLA.Controllers
                     // ASC: Unassigned (null) first, then assigned alphabetically
                     // DESC: Assigned alphabetically, Unassigned last
                     q = (idir == "asc")
-                        ? q.OrderByDescending(x => x.AssignedTo == null)   // true first → nulls first
+                        ? q.OrderByDescending(x => x.AssignedTo == null)   
                              .ThenBy(x => x.AssignedTo)
-                        : q.OrderBy(x => x.AssignedTo == null)             // false first → assigned first
+                        : q.OrderBy(x => x.AssignedTo == null)             
                              .ThenByDescending(x => x.AssignedTo);
                     break;
 
@@ -490,7 +476,6 @@ namespace Gruppe4NLA.Controllers
             var report = await _context.Reports.FirstOrDefaultAsync(r => r.Id == id);
             if (report == null) return NotFound();
 
-            // Load users who have the "Caseworker" role
             var caseworkers = await _context.Users
                 .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
                 .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r.Name })
@@ -514,7 +499,6 @@ namespace Gruppe4NLA.Controllers
             return View(vm);
         }
 
-        // Perform the assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -522,7 +506,6 @@ namespace Gruppe4NLA.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // Repopulate caseworker list if validation fails
                 var caseworkers = await _context.Users
                     .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { u, ur })
                     .Join(_context.Roles, x => x.ur.RoleId, r => r.Id, (x, r) => new { x.u, r.Name })
@@ -544,7 +527,6 @@ namespace Gruppe4NLA.Controllers
             return RedirectToAction(nameof(Inbox));
         }
 
-        // Remove assignment
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "CaseworkerAdm")]
@@ -556,7 +538,6 @@ namespace Gruppe4NLA.Controllers
             return RedirectToAction(nameof(Inbox));
         }
 
-        // Caseworker self-assigns an unassigned report
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
@@ -583,7 +564,6 @@ namespace Gruppe4NLA.Controllers
             }
         }
 
-        // Caseworker approves a report
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
@@ -610,7 +590,6 @@ namespace Gruppe4NLA.Controllers
             }
         }
 
-        // Caseworker rejects a report
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
@@ -622,7 +601,6 @@ namespace Gruppe4NLA.Controllers
                 if (userId == null)
                     return Unauthorized();
 
-                // Du kan evt. gjøre den påkrevd server-side også:
                 if (string.IsNullOrWhiteSpace(rejectReportReason))
                 {
                     TempData["Error"] = "You must provide a reason when rejecting a report.";
@@ -644,7 +622,6 @@ namespace Gruppe4NLA.Controllers
             }
         }
 
-        // Caseworker's personal queue: what is assigned to me and in progress
         [Authorize(Roles = "Caseworker,CaseworkerAdm")]
         [HttpGet("/MyQueue", Name = "MyQueueRoute")]
         public async Task<IActionResult> MyQueue(string qsort = "AssignedAt", string qdir = "asc")
@@ -697,7 +674,7 @@ namespace Gruppe4NLA.Controllers
                 case "assignedat":
                 default:
                     q = qdir == "asc"
-                        ? q.OrderBy(x => x.AssignedAtUtc ?? DateTime.MaxValue)   // nulls last
+                        ? q.OrderBy(x => x.AssignedAtUtc ?? DateTime.MaxValue)   
                         : q.OrderByDescending(x => x.AssignedAtUtc ?? DateTime.MinValue);
                     break;
             }
@@ -715,7 +692,6 @@ namespace Gruppe4NLA.Controllers
                                         .Where(r => !string.IsNullOrEmpty(r.GeoJson))
                                         .ToListAsync();
 
-            // ToListAsync() never returns null, so this is effectively just "reports"
             return View(reports);
         }
 

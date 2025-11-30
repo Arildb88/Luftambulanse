@@ -53,7 +53,7 @@
 
             <dt class="col-sm-3">Status</dt>
             <dd class="col-sm-9">
-                <span class="badge bg-@( // Choose badge color based on status
+                <span class="badge bg-@( 
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Submitted ? "secondary" :
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Assigned ? "primary" :
                       Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.InReview ? "warning" :
@@ -62,7 +62,7 @@
                 </span>
             </dd>
                        
-            @if (!string.IsNullOrEmpty(Model.AssignedToUserId)) // Only show if assigned
+            @if (!string.IsNullOrEmpty(Model.AssignedToUserId)) 
             {
                 <dt class="col-sm-3">Assigned To</dt>
                 <dd class="col-sm-9">@(ViewBag.AssignedToEmail ?? Model.AssignedToUserId)</dd>
@@ -112,13 +112,13 @@
             </div>
         }
 
-        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed) // Show status messages
+        @if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Completed) 
         {
             <div class="alert alert-success mt-3">
                 This report has been approved.
             </div>
         }
-        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected) // Show rejection reason
+        else if (Model.StatusCase == Gruppe4NLA.Models.ReportStatusCase.Rejected) 
         {
             <div class="alert alert-danger mt-3">
                 This report has been rejected.
@@ -136,13 +136,13 @@
         <h5>Location Map</h5>
         <div id="reportMap" style="height:400px;"></div>
 
-        <!-- 🔹 All coordinates (for lines) will be rendered here -->
+        <!--  All coordinates (for lines) will be rendered here -->
         <div id="coordList" class="mt-3"></div>
     </div>
 </div>
 
 <div class="mt-3">
-    @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) // Show "Back to My Queue" for caseworkers
+    @if (User.IsInRole("Caseworker") || User.IsInRole("CaseworkerAdm")) 
     {
         <a asp-action="MyQueue" class="btn btn-secondary">Back to My Queue</a>
     }
@@ -157,11 +157,9 @@
 
         // Initialize Leaflet map with GeoJSON or coordinates
         (function () {
-            // GeoJSON (for point OR line)
             const geoJsonRaw = @Html.Raw(Model.GeoJson ?? "null");
             let geoJsonObject = geoJsonRaw;
 
-            // If GeoJSON is stored as a string, parse it into an object
             if (typeof geoJsonRaw === "string") {
                 try {
                     geoJsonObject = JSON.parse(geoJsonRaw);
@@ -170,20 +168,17 @@
                 }
             }
 
-            // Normalize geometry.type like in FullMap (Point vs LineString)
             function ensureGeometryType(geom) {
                 if (!geom) return;
-                if (geom.type) return; // already has type
+                if (geom.type) return; 
 
                 const coords = geom.coordinates;
                 if (!Array.isArray(coords) || coords.length === 0) return;
 
-                // [[lon, lat], ...] → LineString
                 if (Array.isArray(coords[0])) {
                     geom.type = "LineString";
                 }
                 else {
-                    // [lon, lat] → Point
                     geom.type = "Point";
                 }
             }
@@ -191,7 +186,6 @@
             function normalizeGeoJson(geo) {
                 if (!geo) return null;
 
-                // FeatureCollection
                 if (geo.type === "FeatureCollection" && Array.isArray(geo.features)) {
                     geo.features.forEach(f => {
                         if (f && f.geometry) {
@@ -201,33 +195,29 @@
                     return geo;
                 }
 
-                // Single Feature
                 if (geo.type === "Feature" && geo.geometry) {
                     ensureGeometryType(geo.geometry);
                     return geo;
                 }
 
-                // Raw geometry
                 ensureGeometryType(geo);
                 return geo;
             }
 
             geoJsonObject = normalizeGeoJson(geoJsonObject);
 
-            // Lat/Lng from ViewBag (fallback)
             const haveLat = @((ViewBag.Latitude != null) ? "true" : "false");
             const haveLng = @((ViewBag.Longitude != null) ? "true" : "false");
             const latVal = @((ViewBag.Latitude ?? 0.0).ToString(System.Globalization.CultureInfo.InvariantCulture));
             const lngVal = @((ViewBag.Longitude ?? 0.0).ToString(System.Globalization.CultureInfo.InvariantCulture));
 
-            // If we have neither GeoJSON nor coordinates, nothing to show
             if (!geoJsonObject && !(haveLat && haveLng)) {
                 return;
             }
 
-            const map = L.map('reportMap'); // No initial center/zoom
+            const map = L.map('reportMap'); 
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { // OSM tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
                 maxZoom: 19
             }).addTo(map);
 
@@ -267,7 +257,6 @@
                 // Get all coordinates and display them in the coordList div
                 const coords = extractCoords(geoJsonObject);
 
-                // Only show the list if it's a line (more than one coordinate)
                 const coordDiv = document.getElementById('coordList');
                 if (coordDiv && coords.length > 1) {
                     let html = '<h6>All coordinates in line</h6><ol class="mb-0 small">';
@@ -281,7 +270,7 @@
                 }
 
             } else if (haveLat && haveLng) {
-                // Fallback: just a single marker
+                
                 map.setView([latVal, lngVal], 14);
                 L.marker([latVal, lngVal]).addTo(map);
             }
@@ -301,10 +290,8 @@
                 rejectButton.disabled = !hasText;
             }
 
-            // Init state
             toggleRejectButton();
 
-            // Update on typing
             reasonInput.addEventListener('input', toggleRejectButton);
         });
     </script>
