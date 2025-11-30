@@ -10,7 +10,6 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServ
 // Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Retrieves the Stadia Maps API key from appsettings.json
 var stadiaApiKey = builder.Configuration["ApiKeys:StadiaMaps"];
 
 // Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods for MVC controllers Post/Put/Patch/Delete)
@@ -19,7 +18,6 @@ builder.Services.AddControllersWithViews(o =>
     o.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 });
 
-// Allows access to login/register pages without being logged in
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AllowAnonymousToAreaPage("Identity", "/Account/Login");
@@ -35,30 +33,25 @@ builder.WebHost.ConfigureKestrel(options =>
     options.AddServerHeader = false;
 });
 
-// Builds/connects the webapplication to our database using appsettings.json "OurDbConnection", new MariaDbServerversion (to make it work in our study group (specified version, no update conflicts from different versions in our group)
 builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("OurDbConnection"), 
     new MariaDbServerVersion(new Version(11, 8, 3)),
     
     MySqlOptions => MySqlOptions.EnableRetryOnFailure()
     ));
 
-// AddsRoles, EntityFramework, and makes requireconfirmed account set to false, in a live published version this would be set to true
 builder.Services
     .AddDefaultIdentity<ApplicationUser>(o => o.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
 
-// Delegation business logic (used by CaseworkerAdmin to assign/unassign reports)
 builder.Services.AddScoped<IReportAssignmentService, ReportAssignmentService>();
 
-// Adds Authorizations to our project. Users need to login to use our application
 builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build();
     
-    // Delegation policy: only users with the CaseworkerAdm role can assign/unassign reports
     options.AddPolicy("CanAssignReports", p => p.RequireRole("CaseworkerAdm"));
 });
 
@@ -73,7 +66,6 @@ builder.Services.ConfigureApplicationCookie(o =>
 // Builds the app
 var app = builder.Build();
 
-//Make the Stadia Maps API key available throughout the application
 app.Use(async (context, next) =>
 {
     var config = context.RequestServices.GetRequiredService<IConfiguration>();
@@ -104,15 +96,14 @@ app.Use(async (context, next) =>
              "https://tile.openstreetmap.org " +
              "https://*.tile.openstreetmap.org " +
              "https://tiles.stadiamaps.com " +
-             "https://*.stadiamaps.com " + // 🟢 viktig!
+             "https://*.stadiamaps.com " + 
              "https://*.google.com; " +
-         "connect-src 'self' https://tiles.stadiamaps.com https://*.stadiamaps.com; " + // 🟢 viktig!
+         "connect-src 'self' https://tiles.stadiamaps.com https://*.stadiamaps.com; " + 
          "font-src 'self' data:; " +
          "frame-src 'self'; " +
          "frame-ancestors 'self'; " +
          "base-uri 'self'; form-action 'self'";
 
-    // Add other headers as needed
     await next();
 });
 
@@ -124,13 +115,11 @@ using (var scope = app.Services.CreateScope())
     var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
     var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
-    // Defines the roles in our project
     string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
     foreach (var role in roles)
         if (!await roleMgr.RoleExistsAsync(role))
             await roleMgr.CreateAsync(new IdentityRole(role));
 
-    // Demo users to try to login to our application, pilot users have different organizations
     async Task EnsureUserInRole(string email, string password, string role, string organization = null)
     {
         var user = await userMgr.FindByEmailAsync(email);
@@ -148,7 +137,6 @@ using (var scope = app.Services.CreateScope())
         }
         else
         {
-            // UPDATE organization for existing user if provided and different/missing
             if (!string.IsNullOrWhiteSpace(organization) && user.Organization != organization)
             {
                 user.Organization = organization;
@@ -185,7 +173,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Needed to load local leaflet map
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -196,20 +183,16 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
-// Sets the default route pattern for controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Sets the route pattern for areas (like Identity)
 app.MapControllerRoute(
     name: "Areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
 
-// Needed for Razor Pages-routing
 app.MapRazorPages();
 
-// Runs the app with the configurations above
 app.Run();
