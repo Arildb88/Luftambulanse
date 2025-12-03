@@ -19,25 +19,22 @@
             {
                 var f = feature.AsObject();
 
-                // Ensure properties exist
                 var props = f["properties"] as JsonObject ?? new JsonObject();
                 props["Type"] = report.Type?.ToString();
                 props["ReportID"] = report.Id;
                 f["properties"] = props;
 
-                // Ensure geometry type exists
                 var geom = f["geometry"]?.AsObject();
                 if (geom != null && !geom.ContainsKey("type"))
                 {
-                    // If coordinates is a single point -> Point, else LineString
                     var coords = geom["coordinates"];
                     if (coords is JsonArray arr && arr.Count > 0)
                     {
-                        if (arr[0] is JsonValue) // simple [lon, lat] -> Point
+                        if (arr[0] is JsonValue) 
                         {
                             geom["type"] = "Point";
                         }
-                        else // nested [[lon, lat], ...] -> LineString
+                        else 
                         {
                             geom["type"] = "LineString";
                         }
@@ -63,7 +60,7 @@
     
     const stadiaApiKey = '@stadiaApiKey';
     
-    var map = L.map('map').setView([60, 10], 5); // approximate center of Norway
+    var map = L.map('map').setView([60, 10], 5); 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
        
     var geoData = JSON.parse('@combinedGeoJson'.replace(/&quot;/g, '"')); 
@@ -131,7 +128,7 @@
         });
     },
         style: function(feature) {
-            // Only applies to lines/polygons
+            
             if (feature.geometry.type === "LineString") {
                 return {
                     color: "var(--warning-color)",
@@ -142,7 +139,6 @@
         }
     }).addTo(map);
 
-    // Fit map to all features
     map.fitBounds(geoLayer.getBounds());
 
 </script>

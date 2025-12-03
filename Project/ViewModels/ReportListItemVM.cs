@@ -1,8 +1,6 @@
 using System;
 
-///<summary>
-/// ViewModel representing a report item in a list.
-/// </summary>
+// ViewModel representing a report item in a list.
 
 namespace Gruppe4NLA.ViewModels
 {

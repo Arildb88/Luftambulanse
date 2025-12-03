@@ -84,7 +84,6 @@
 
         const stadiaApiKey = '@stadiaApiKey';
 
-        // Dark themed base map from Stadia Maps (uses template string to insert API key)
         const darkMode = L.tileLayer(
             `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaApiKey}`,
             {
@@ -94,7 +93,6 @@
             }
         );
 
-        // Satellite base map from Stadia Maps (with API key)
         const stadiaSat = L.tileLayer(
             `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
             {
@@ -415,7 +413,6 @@
         L.DomEvent.disableClickPropagation(obstacleBox);
         L.DomEvent.disableScrollPropagation(obstacleBox);
 
-        // Allow the user to close the dialog either via the button or by pressing ESC
         closeBtn.addEventListener('click', () => dlg.close());
         dlg.addEventListener('cancel', () => dlg.close());
 

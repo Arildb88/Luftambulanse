@@ -31,10 +31,10 @@
     </thead>
 
     <tbody>
-        @foreach (var user in Model) // Model is IEnumerable<ApplicationUser>
+        @foreach (var user in Model) 
         {
-            var userRoles = await UserManager.GetRolesAsync(user); // Get roles for the user
-            var currentRole = userRoles.FirstOrDefault(); // Assuming single role per user
+            var userRoles = await UserManager.GetRolesAsync(user); 
+            var currentRole = userRoles.FirstOrDefault(); 
             <tr>
                 <td>@user.Email</td>
                 <td>
@@ -43,10 +43,10 @@
                         <input type="hidden" name="userId" value="@user.Id" />
                         <select name="role" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option value="">(no role)</option>
-                            @foreach (var r in (IEnumerable<string>)ViewBag.AllRoles) // ViewBag.AllRoles contains all available roles
+                            @foreach (var r in (IEnumerable<string>)ViewBag.AllRoles) 
                             {
-                                var isSelected = string.Equals(r, currentRole, StringComparison.OrdinalIgnoreCase); // Check if this role is the user's current role
-                                <option value="@r" selected="@(isSelected ? "selected" : null)">@r</option> // Mark as selected if it matches the current role
+                                var isSelected = string.Equals(r, currentRole, StringComparison.OrdinalIgnoreCase); 
+                                <option value="@r" selected="@(isSelected ? "selected" : null)">@r</option> 
                             }
                         </select>
                     </form>

@@ -29,7 +29,6 @@
                     const reportFrame = parentDoc.getElementById("reportFrame");
                     const dialog = parentDoc.getElementById("reportDialog");
 
-                    //  empty form in the frame
                     if (reportFrame?.contentWindow?.clearReportForm) {
                         console.log("🧹 clearReportForm() from Confirmation");
                         reportFrame.contentWindow.clearReportForm();
@@ -38,7 +37,7 @@
                     // clear map-objects (marker/polyline/red dots)
                     const mapWindow = window.parent; // Leaflet.cshtml runs in parent
                     if (mapWindow && mapWindow.map) {
-                        console.log("🗑️ Clearing map objects...");
+                        console.log(" Clearing map objects...");
                         if (mapWindow.marker) {
                             mapWindow.map.removeLayer(mapWindow.marker);
                             mapWindow.marker = null;
@@ -56,11 +55,11 @@
                     //  clsoe dialoge
                     if (dialog) {
                         dialog.close();
-                        console.log("✅ Dialog closed.");
+                        console.log(" Dialog closed.");
                     }
 
                 } catch (err) {
-                    console.error("❌ Error in Confirmation OK handler:", err);
+                    console.error(" Error in Confirmation OK handler:", err);
                 }
             });
         </script>

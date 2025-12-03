@@ -8,8 +8,8 @@ using System.Diagnostics;
 
 namespace Gruppe4NLA.Controllers
 {
-    [Authorize] // Default: require auth; open specific actions with [AllowAnonymous]
-    public class HomeController : Controller // Class that inherits from Controller
+    [Authorize] 
+    public class HomeController : Controller 
     {
         private readonly ILogger<HomeController> _logger;
         private readonly UserManager<ApplicationUser> _userManager; 
@@ -29,9 +29,8 @@ namespace Gruppe4NLA.Controllers
         [Authorize(Roles = "Pilot")]
         public IActionResult Leaflet() => View();
 
-        // Role-based router for "/"
         [HttpGet]
-        [AllowAnonymous] // unauthenticated users allowed
+        [AllowAnonymous] 
         public IActionResult Index()
         {
             // Not signed in: go to login
@@ -41,7 +40,6 @@ namespace Gruppe4NLA.Controllers
                 return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl });
             }
 
-            // Signed in: route by role (priority order)
             if (User.IsInRole("Admin"))
                 return RedirectToAction(nameof(Adminpage), "Home");
 
@@ -54,7 +52,6 @@ namespace Gruppe4NLA.Controllers
             if (User.IsInRole("Pilot"))
                 return RedirectToAction(nameof(Leaflet), "Home");
 
-            // No mapped role
             return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
         }
 
@@ -68,26 +65,24 @@ namespace Gruppe4NLA.Controllers
         [AllowAnonymous]
         public IActionResult LogIn() => RedirectToPage("/Account/Login", new { area = "Identity" });
 
-        // Admin user management view
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Adminpage()
         {
-            // Load all users and pass them as the model
             var users = await _userManager.Users
-                .OrderBy(u => u.Email) // "u" represents each user
+                .OrderBy(u => u.Email)
                 .ToListAsync();
 
             ViewBag.AllRoles = await _roleManager.Roles
-           .Select(r => r.Name!) // "r" represents each role
-           .OrderBy(n => n) // "n" represents each role name
-           .ToListAsync(); // List of all role names
+           .Select(r => r.Name!) 
+           .OrderBy(n => n) 
+           .ToListAsync(); 
 
-            return View("AdminUsers/Adminpage", users); //
+            return View("AdminUsers/Adminpage", users); 
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [AllowAnonymous] // Allow unauthenticated users
-        public IActionResult Error() // Error view
+        [AllowAnonymous] 
+        public IActionResult Error() 
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

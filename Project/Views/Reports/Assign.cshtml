@@ -3,10 +3,8 @@
     ViewData["Title"] = "Assign Report";
 }
 
-@* Page heading showing which report is being assigned *@
 <h2>Assign Report #@Model.ReportId</h2>
 
-@* Display current assignee if the report is already assigned to someone *@
 @if (Model.CurrentAssignee != null)
 {
     <div class="alert alert-info">
@@ -14,13 +12,10 @@
     </div>
 }
 
-@* Form for assigning the report to a caseworker *@
 <form asp-action="Assign" method="post">
     
-    @* CSRF token for security *@
     @Html.AntiForgeryToken()
     
-    @* Hidden field to pass the report ID with form submission *@
     <input type="hidden" asp-for="ReportId" />
     
     @* Dropdown for selecting which caseworker to assign the report to *@
@@ -32,14 +27,12 @@
         <span asp-validation-for="ToUserId" class="text-danger"></span>
     </div>
     
-    @* Action buttons: submit the assignment or cancel *@
     <div class="mt-3">
         <button type="submit" class="btn btn-primary">Assign Report</button>
         <a asp-action="Inbox" class="btn btn-secondary">Cancel</a>
     </div>
 </form>
 
-@* Client-side validation scripts for real-time form validation *@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
