@@ -1,4 +1,5 @@
 ﻿using Gruppe4NLA.Controllers;
+using Gruppe4NLA.Models.Validation;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -36,11 +37,12 @@ namespace Gruppe4NLA.Models
 
         public string? Details { get; set; }
 
+        [HeightRange]
         public double? HeightInMeters { get; set; }
 
         // Unit preference for display purposes only (not saved to database)
         [NotMapped]
-        public string HeightUnit { get; set; } = "meters"; // Can be "meters" or "feet"
+        public string HeightUnit { get; set; } = "meters"; // "meters" or "feet"
 
         public bool AreLighted { get; set; } = false;
 

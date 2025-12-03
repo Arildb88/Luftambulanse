@@ -40,7 +40,6 @@
     <link rel="stylesheet" href="~/lib/LeafletMap/leaflet.css" />
     <script src="~/lib/LeafletMap/leaflet.js"></script>
 
-    <!-- Modal dialog used to host the "Add Report" form in an iframe -->
     <dialog id="reportDialog">
         <div class="dialog-body">
             <div class="dialog-header">
@@ -83,7 +82,6 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        // Expose Stadia API key from Razor to JavaScript
         const stadiaApiKey = '@stadiaApiKey';
 
         const darkMode = L.tileLayer(
@@ -122,7 +120,7 @@
 
         function setMode(mode) {
             if (currentMode === mode) {
-                currentMode = null; // clicking the same mode again turns drawing off
+                currentMode = null; 
             } else {
                 currentMode = mode;
             }
@@ -132,7 +130,6 @@
                 btn.style.backgroundColor = (btn.dataset.mode === currentMode) ? 'var(--red-selected-color)' : 'var(--unselected-color)';
               });
 
-            // When leaving polyline mode, remove the line and its red vertex markers
             if (currentMode !== 'polyline') {
                 latlngs = [];
                 if (polyline) {
@@ -143,7 +140,6 @@
                 redDot = [];
               }
 
-            // When leaving marker mode, remove the single marker and clear its state
             if (currentMode !== 'marker') {
                 latlngs = [];
                 if (marker) {
@@ -160,7 +156,6 @@
             .getPropertyValue('--polyline-color')
             .trim();
 
-            // Show the last clicked coordinate in the readout bar
             const el = document.querySelector('.coordinate');
             if (el) el.textContent = `lat: ${lat.toFixed(6)}, lng: ${lng.toFixed(6)}`;
 
@@ -189,7 +184,6 @@
               if (!marker) {
                 marker = L.marker(e.latlng, { draggable: true }).addTo(map);
 
-                // Update coordinate readout live while the marker is dragged
                 marker.on('drag', (event) => {
                   const pos = event.target.getLatLng();
                   const el = document.querySelector('.coordinate');
