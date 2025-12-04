@@ -1,58 +1,57 @@
-﻿using Gruppe4NLA.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using Gruppe4NLA.Models;
 using Gruppe4NLA.Models.Validation;
-using System.ComponentModel.DataAnnotations;
 using Xunit;
 using Assert = Xunit.Assert;
 
-// Xunit testing for Validation Attribute --> HeightRangeAttribute
 namespace Gruppe4NLA.UnitTests.Validation
 {
     public class HeightRangeAttributeTests
     {
         private readonly HeightRangeAttribute _attribute = new HeightRangeAttribute();
 
-        // Helper to run validation like ASP.NET Core does
+        // Helper without unit (default to meters)
         private ValidationResult? Validate(object? value)
+            => ValidateWithUnit(value, "meters");
+
+        // Helper with unit
+        private ValidationResult? ValidateWithUnit(object? value, string unit)
         {
-            var context = new ValidationContext(new object());
-            return _attribute.GetValidationResult(value, context);
+            var model = new ReportModel
+            {
+                HeightInMeters = value == null ? (double?)null : Convert.ToDouble(value),
+                HeightUnit = unit
+            };
+
+            var context = new ValidationContext(model)
+            {
+                MemberName = nameof(ReportModel.HeightInMeters)
+            };
+
+            // Dette simulerer det MVC gjør: sender property-verdien + hele modellen
+            return _attribute.GetValidationResult(model.HeightInMeters, context);
         }
 
-        // -------------------------
-        // VALID CASES
-        // -------------------------
-
+        // Valid values
         [Theory]
         [InlineData(0)]
         [InlineData(250)]
         [InlineData(500)]
         public void HeightRange_ValidValues_Pass(double input)
         {
-            // ARRANGE done in helper
-
-            // ACT
             var result = Validate(input);
-
-            // ASSERT
             Assert.Equal(ValidationResult.Success, result);
         }
 
         [Fact]
         public void HeightRange_NullValue_Passes()
         {
-            // ARRANGE
-
-            // ACT
             var result = Validate(null);
-
-            // ASSERT
             Assert.Equal(ValidationResult.Success, result);
         }
 
-        // -------------------------
-        // INVALID CASES
-        // -------------------------
 
+        // Invalid values
         [Theory]
         [InlineData(-1)]
         [InlineData(-10)]
@@ -60,14 +59,21 @@ namespace Gruppe4NLA.UnitTests.Validation
         [InlineData(700)]
         public void HeightRange_InvalidValues_Fail(double input)
         {
-            // ARRANGE
-
-            // ACT
             var result = Validate(input);
 
-            // ASSERT
             Assert.NotNull(result);
             Assert.Contains("Height must be between 0 and 500", result!.ErrorMessage);
+        }
+
+        // Feet unit tests
+
+        [Theory]
+        [InlineData(10.0)]   
+        [InlineData(100.0)]  
+        public void HeightRange_FeetValues_WithinRange_Pass(double feetInput)
+        {
+            var result = ValidateWithUnit(feetInput, "feet");
+            Assert.Equal(ValidationResult.Success, result);
         }
     }
 }
