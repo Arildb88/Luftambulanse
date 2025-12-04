@@ -21,6 +21,7 @@ The system has different roles that restrict or gives privileges, these can be a
 6. [Project Structure](#project-structure)
 7. [Security Features](#security-features)
 8. [Testing](#testing)
+    - [Peer to Peer testing]("how-to-run-tests)
 9. [Team](#team)
 10. [Additional Notes](#additional-notes)
 ---
@@ -183,6 +184,9 @@ Implemented security:
 * Security testing: unauthorized access attempts, validation.
 * Usability testing: pilot user feedback (from Q&A and peer to peer testing).
 * Query tests: SQL script and queries to test data validity.
+
+### Peer to peer testing
+The group has had multiple family members and friends test our solution to evaluate whether the application is easy to understand and use. Based on this feedback, we have made several UI improvements with a strong focus on accessibility and a self-explanatory user interface. The results from our testers show that they are able to use the application (as a Pilot user) without needing much guidance.
 
 **How To Run Tests** <br>
 When in current directory (your/path/luftambulanse), run the command: <br>
