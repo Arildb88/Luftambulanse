@@ -132,11 +132,20 @@
 .leaflet-control-layers {
     font-size: 2vh;
     padding: 10px 15px;
-    
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     color: var(--primary-color);
     background-color: var(--primary-color);
+}
+
+@media (max-width: 550px) {
+    .leaflet-control-layers {
+        font-size: 1.5vh
+    }
+
+        .leaflet-control-layers label {
+            font-size: 1vh
+        }
 }
 
     /* The text next to each checkbox/radio */
@@ -180,6 +189,13 @@ body {
     line-height: 100px !important; /* vertically center the + / - */
     Color: var(--text-color) !important;
     background-color: var(--base-variant) !important;
+    padding: 0px !important;
+    border: none !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 .leaflet-control-zoom-in {
@@ -618,6 +634,88 @@ button[name="action"][value="submit"] {
 /* Hide "On"-icon as standard*/
 .icon-on {
     display: none;
+}
+
+/*Default size for button*/
+.follow-btn {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+/*Button size change*/
+@media (max-width: 550px) {
+    .follow-btn {
+        width: 50px !important;
+        height: 50px !important;
+    }
+    .follow-btn svg {
+        width: 30px !important;
+        height: 30px !important;
+    }
+}
+
+/*Default size for follow button*/
+.marker-btn {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+/*Button size change*/
+@media (max-width: 550px) {
+    .marker-btn {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+        .marker-btn svg {
+            width: 30px !important;
+            height: 30px !important;
+        }
+}
+
+.line-btn {
+    width: 100px !important;
+    height: 100px !important;
+}
+
+/*Button size change*/
+@media (max-width: 550px) {
+    .line-btn {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+        .line-btn svg {
+            width: 30px !important;
+            height: 30px !important;
+        }
+}
+
+.leaflet-control-zoom a.leaflet-control-zoom-in,
+.leaflet-control-zoom a.leaflet-control-zoom-out {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 48px !important;
+    line-height: 100px !important; /* vertically center the + / - */
+}
+
+/*Button size change*/
+@media (max-width: 550px) {
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 40px !important;
+        line-height: 70px !important; /* vertically center the + / - */
+    }
+
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 36px !important;
+        line-height: 50px !important; /* vertically center the + / - */
+    }
 }
 
 /* When checkbox are pressed (checked), switch icon*/

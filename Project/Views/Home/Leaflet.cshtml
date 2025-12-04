@@ -199,7 +199,7 @@
         const DrawPolylineControl = L.Control.extend({
             onAdd: function () {
 
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom line-btn');
 
                 btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--marker-color)"><path d="M760-80q-50 0-85-35t-35-85q0-14 3-27t9-25L252-652q-12 6-25 9t-27 3q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l400 400q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35Z"/></svg>';
                 btn.dataset.mode = 'polyline';
@@ -220,7 +220,7 @@
         // Custom Leaflet control: button that toggles single-marker placement mode
         const DrawMarkerControl = L.Control.extend({
             onAdd: function () {
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom marker-btn');
 
                 btn.innerHTML = `
                             <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--marker-color)">
@@ -377,7 +377,9 @@
         // Leaflet control that toggles "follow my location" with a button
         const FollowControl = L.Control.extend({
             onAdd: function () {
-                const btn = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+
+                const btn = L.DomUtil.create('button','leaflet-bar leaflet-control leaflet-control-custom follow-btn');
+
                 btn.title = 'Find me';
                 btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="var(--blueBtn-color)"><path d="m300-300 280-80 80-280-280 80-80 280Zm180-120q-25 0-42.5-17.5T420-480q0-25 17.5-42.5T480-540q25 0 42.5 17.5T540-480q0 25-17.5 42.5T480-420Zm0 340q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>';
 
