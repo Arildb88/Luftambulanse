@@ -550,7 +550,9 @@ button[name="action"][value="submit"] {
 
 /* ===== Obstacle option cards ===== */
 .obstacle-grid {
-    margin-top: .25rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 per row */
+    gap: 12px; /* space between squares */
 }
 
 .obstacle-card {
@@ -559,7 +561,7 @@ button[name="action"][value="submit"] {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 140px; /* make them big */
+    height: 10rem; /* make them big */
     border-radius: 16px; /* rounded rectangle */
     border: 2px solid var(--accent-color);
     background: var(--base-variant);
