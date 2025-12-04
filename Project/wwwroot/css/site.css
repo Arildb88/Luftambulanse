@@ -132,11 +132,32 @@
 .leaflet-control-layers {
     font-size: 2vh;
     padding: 10px 15px;
-    
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     color: var(--primary-color);
     background-color: var(--primary-color);
+}
+
+/*button switch map for tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .leaflet-control-layers {
+        font-size: 1.5vh;
+    }
+
+        .leaflet-control-layers label {
+            font-size: 1vh;
+        }
+}
+
+/*button switch map for phone*/
+@media (max-aspect-ratio: 10/19) {
+    .leaflet-control-layers {
+        font-size: 1vh
+    }
+
+        .leaflet-control-layers label {
+            font-size: 0.5vh;
+        }
 }
 
     /* The text next to each checkbox/radio */
@@ -145,11 +166,30 @@
         font-weight: 500;
     }
 
+    
 .leaflet-control-layers input[type="checkbox"],
 .leaflet-control-layers input[type="radio"] {
         width: 3vh;
         height: 3vh;
     }
+
+/*tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .leaflet-control-layers input[type="radio"],
+    .leaflet-control-layers input[type="checkbox"] {
+        width: 2.5vh;
+        height: 2.5vh;
+    }
+}
+
+/*phone*/
+@media (max-aspect-ratio: 10/19) {
+    .leaflet-control-layers input[type="checkbox"],
+    .leaflet-control-layers input[type="radio"] {
+        width: 2vh;
+        height: 2vh;
+    }
+}
 
 html {
   position: relative;
@@ -171,15 +211,85 @@ body {
   text-align: start;
 }
 
-/* Target the zoom control buttons */
+/* Zoom in and out buttons */
 .leaflet-control-zoom a.leaflet-control-zoom-in,
 .leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 100px !important; /* default ~26px */
-    height: 100px !important; /* default ~26px */
-    font-size: 48px !important; /* make + and - bigger */
-    line-height: 100px !important; /* vertically center the + / - */
-    Color: var(--text-color) !important;
-    background-color: var(--base-variant) !important;
+        width: 4rem !important;
+        height: 4rem !important;
+        font-size: 2rem !important;
+        line-height: 4rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 0.5rem !important;
+        margin: 0px !important; /* spacing between + and - */
+        background-color: var(--base-variant) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+    }
+
+/*zoom button for map on tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 7rem !important; 
+        height: 7rem !important;
+        font-size: 3.5rem !important;
+        line-height: 7rem !important;
+    }
+}
+
+/*zoom button for map on phone*/
+@media (max-aspect-ratio: 10/19) { 
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 3rem !important; 
+        height: 3rem !important;
+        font-size: 1.5rem !important;
+        line-height: 3rem !important;
+    }
+}
+
+/*buttons for map*/
+.line-btn,
+.marker-btn,
+.follow-btn {
+    width: 4rem !important;
+    height: 4rem !important;
+}
+
+/*buttons for map on tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .line-btn,
+    .marker-btn,
+    .follow-btn {
+        width: 7rem !important;
+        height: 7rem !important;
+    }
+        .line-btn svg,
+        .marker-btn svg,
+        .follow-btn svg {
+            width: 3.5rem !important;
+            height: 3.5rem !important;
+        }
+}
+
+/*buttons for map on phone*/
+@media (max-aspect-ratio: 10/19) {
+    .line-btn,
+    .marker-btn,
+    .follow-btn {
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+
+        .line-btn svg,
+        .marker-btn svg,
+        .follow-btn svg {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+        }
 }
 
 .leaflet-control-zoom-in {
@@ -398,11 +508,6 @@ button[name="action"][value="submit"] {
     position: relative;
 
 }
-
-
-
-
-
 
 /* Make sure to give right color on user-/loginmenu in darkmode*/
 .navbar .nav-link,
