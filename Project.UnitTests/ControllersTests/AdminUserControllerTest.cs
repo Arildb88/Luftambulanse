@@ -31,61 +31,8 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
             );
         }
 
-        //// TEST 1 — Adminpage(): It must return the correct view + users + roles
-        //[Fact]
-        //public async Task Adminpage_ReturnsViewWithUsersAndRoles()
-        //{
-        //    // Arrange: fake users and roles for the controller to load
-        //    var users = new List<ApplicationUser>
-        //    {
-        //        new ApplicationUser { Id = "1", UserName = "user1" },
-        //        new ApplicationUser { Id = "2", UserName = "user2" }
-        //    };
 
-        //    var roles = new List<IdentityRole>
-        //    {
-        //        new IdentityRole("Admin"),
-        //        new IdentityRole("Caseworker")
-        //    };
-
-        //    var userManagerMock = CreateUserManagerMock();
-        //    var roleManagerMock = CreateRoleManagerMock();
-
-        //    // Make .Users and .Roles return our fake lists
-        //    userManagerMock.SetupGet(um => um.Users)
-        //                   .Returns(users.AsQueryable());
-
-        //    roleManagerMock.SetupGet(rm => rm.Roles)
-        //                   .Returns(roles.AsQueryable());
-
-        //    // Controller instance
-        //    var controller = new AdminUsersController(
-        //        userManagerMock.Object,
-        //        roleManagerMock.Object
-        //    );
-
-        //    // Needed so TempData works without a real Http request
-        //    var httpContext = new DefaultHttpContext();
-        //    controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-
-        //    // Act: call the Adminpage action
-        //    var result = await controller.Adminpage();
-
-        //    // Assert: correct view is returned
-        //    var viewResult = Assert.IsType<ViewResult>(result);
-        //    Assert.Equal("~/Views/Home/AdminUsers/Adminpage.cshtml", viewResult.ViewName);
-
-        //    // Assert: model contains all users
-        //    var model = Assert.IsAssignableFrom<IEnumerable<ApplicationUser>>(viewResult.Model);
-        //    Assert.Equal(2, model.Count());
-
-        //    // Assert: ViewBag contains alphabetically sorted roles
-        //    var allRoles = Assert.IsAssignableFrom<List<string>>(controller.ViewBag.AllRoles);
-        //    Assert.Equal(new[] { "Admin", "Caseworker" }, allRoles);
-        //}
-
-
-        // TEST 2 — SetRole(): old roles removed, new role added, redirect OK
+        // TEST 1 — SetRole(): old roles removed, new role added, redirect OK
         [Fact]
         public async Task SetRole_ReplacesExistingRoles_AndRedirects()
         {
@@ -125,7 +72,7 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
             userManagerMock.Verify(m => m.AddToRoleAsync(user, newRole), Times.Once);
         }
 
-        // TEST 3 — DeleteUser(): user cannot delete themselves
+        // TEST 2 — DeleteUser(): user cannot delete themselves
         [Fact]
         public async Task DeleteUser_WhenCurrentAdminEqualsTarget_SetsErrorAndDoesNotDelete()
         {
@@ -164,7 +111,7 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
             userManagerMock.Verify(m => m.DeleteAsync(It.IsAny<ApplicationUser>()), Times.Never);
         }
 
-        // TEST 4 — DeleteUser(): cannot delete the last admin
+        // TEST 3 — DeleteUser(): cannot delete the last admin
         [Fact]
         public async Task DeleteUser_LastAdmin_CannotBeDeleted()
         {
