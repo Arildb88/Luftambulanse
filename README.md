@@ -207,4 +207,9 @@ When in current directory (your/path/luftambulanse), run the command: <br>
 **Migrations** <br>
 We have deleted our Migration folder due to a namechange in our DbContext file that resultet in an error with previous migrations. We tried to change the name locally in each file, but the error persisted and we decided to delete our files and start with a clean migration history.
 
+**Use of AI** <br>
+In our project the group have used ChatGPT 5.0 and 4.0 (free version) to go over our code and help us when the code won't build or if we need inspiration for what code we need for our solution.
+
+**Referance for building the map as our main view**
+In our project we have used different Youtube videoes for referances to get inspiration for our project. Among the videoes we found this channel very helpful: https://www.youtube.com/@geodev
 
