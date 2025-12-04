@@ -13,10 +13,10 @@ namespace Gruppe4NLA.UnitTests.ServicesTests
     public class MetersFeetConverterTests
     {
         [Theory]
-        [InlineData(10, "feet", 3.048)]
-        [InlineData(100, "feet", 30.48)]
-        [InlineData(10, "meters", 10)]
-        [InlineData(0, "feet", 0)]
+        [InlineData(10.0, "feet", 3.048)]
+        [InlineData(100.0, "feet", 30.48)]
+        [InlineData(10.0, "meters", 10.0)]
+        [InlineData(0.0, "feet", 0.0)]
         [InlineData(null, "feet", null)]
         public void ToMeters_ConvertsCorrectly(double? input, string unit, double? expected)
         {
