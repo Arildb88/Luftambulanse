@@ -181,21 +181,86 @@ body {
 }
 
 /* Target the zoom control buttons */
+/* Zoom buttons container */
+
+/* Zoom in and out buttons */
 .leaflet-control-zoom a.leaflet-control-zoom-in,
 .leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 100px !important; /* default ~26px */
-    height: 100px !important; /* default ~26px */
-    font-size: 48px !important; /* make + and - bigger */
-    line-height: 100px !important; /* vertically center the + / - */
-    Color: var(--text-color) !important;
-    background-color: var(--base-variant) !important;
-    padding: 0px !important;
-    border: none !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+        width: 4rem !important;
+        height: 4rem !important;
+        font-size: 2rem !important;
+        line-height: 4rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 0.5rem !important;
+        margin: 0px !important; /* spacing between + and - */
+        background-color: var(--base-variant) !important;
+        color: var(--text-color) !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+    }
+
+/*tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 7rem !important; 
+        height: 7rem !important;
+        font-size: 3.5rem !important;
+        line-height: 7rem !important;
+    }
+}
+
+/*phone*/
+@media (max-aspect-ratio: 10/19) { 
+    .leaflet-control-zoom a.leaflet-control-zoom-in,
+    .leaflet-control-zoom a.leaflet-control-zoom-out {
+        width: 3rem !important; 
+        height: 3rem !important;
+        font-size: 1.5rem !important;
+        line-height: 3rem !important;
+    }
+}
+
+.line-btn,
+.marker-btn,
+.follow-btn {
+    width: 4rem !important;
+    height: 4rem !important;
+}
+
+/*tablet*/
+@media (min-aspect-ratio: 10/19) and (max-aspect-ratio: 4/3) {
+    .line-btn,
+    .marker-btn,
+    .follow-btn {
+        width: 7rem !important;
+        height: 7rem !important;
+    }
+        .line-btn svg,
+        .marker-btn svg,
+        .follow-btn svg {
+            width: 3.5rem !important;
+            height: 3.5rem !important;
+        }
+}
+
+/*phone*/
+@media (max-aspect-ratio: 10/19) {
+    .line-btn,
+    .marker-btn,
+    .follow-btn {
+        width: 3rem !important;
+        height: 3rem !important;
+    }
+
+        .line-btn svg,
+        .marker-btn svg,
+        .follow-btn svg {
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+        }
 }
 
 .leaflet-control-zoom-in {
@@ -415,11 +480,6 @@ button[name="action"][value="submit"] {
 
 }
 
-
-
-
-
-
 /* Make sure to give right color on user-/loginmenu in darkmode*/
 .navbar .nav-link,
 .navbar .dropdown-toggle {
@@ -634,88 +694,6 @@ button[name="action"][value="submit"] {
 /* Hide "On"-icon as standard*/
 .icon-on {
     display: none;
-}
-
-/*Default size for button*/
-.follow-btn {
-    width: 100px !important;
-    height: 100px !important;
-}
-
-/*Button size change*/
-@media (max-width: 550px) {
-    .follow-btn {
-        width: 50px !important;
-        height: 50px !important;
-    }
-    .follow-btn svg {
-        width: 30px !important;
-        height: 30px !important;
-    }
-}
-
-/*Default size for follow button*/
-.marker-btn {
-    width: 100px !important;
-    height: 100px !important;
-}
-
-/*Button size change*/
-@media (max-width: 550px) {
-    .marker-btn {
-        width: 50px !important;
-        height: 50px !important;
-    }
-
-        .marker-btn svg {
-            width: 30px !important;
-            height: 30px !important;
-        }
-}
-
-.line-btn {
-    width: 100px !important;
-    height: 100px !important;
-}
-
-/*Button size change*/
-@media (max-width: 550px) {
-    .line-btn {
-        width: 50px !important;
-        height: 50px !important;
-    }
-
-        .line-btn svg {
-            width: 30px !important;
-            height: 30px !important;
-        }
-}
-
-.leaflet-control-zoom a.leaflet-control-zoom-in,
-.leaflet-control-zoom a.leaflet-control-zoom-out {
-    width: 100px !important;
-    height: 100px !important;
-    font-size: 48px !important;
-    line-height: 100px !important; /* vertically center the + / - */
-}
-
-/*Button size change*/
-@media (max-width: 550px) {
-    .leaflet-control-zoom a.leaflet-control-zoom-in,
-    .leaflet-control-zoom a.leaflet-control-zoom-out {
-        width: 70px !important;
-        height: 70px !important;
-        font-size: 40px !important;
-        line-height: 70px !important; /* vertically center the + / - */
-    }
-
-    .leaflet-control-zoom a.leaflet-control-zoom-in,
-    .leaflet-control-zoom a.leaflet-control-zoom-out {
-        width: 50px !important;
-        height: 50px !important;
-        font-size: 36px !important;
-        line-height: 50px !important; /* vertically center the + / - */
-    }
 }
 
 /* When checkbox are pressed (checked), switch icon*/
