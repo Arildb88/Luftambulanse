@@ -21,6 +21,7 @@ The system has different roles that restrict or gives privileges, these can be a
 6. [Project Structure](#project-structure)
 7. [Security Features](#security-features)
 8. [Testing](#testing)
+    - [Peer to Peer testing]("how-to-run-tests)
 9. [Team](#team)
 10. [Additional Notes](#additional-notes)
 ---
@@ -47,6 +48,9 @@ Enter the command: <br>
 
 
 ## How to Use the Application
+**YouTube Tutorial**
+[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=swtrMSogWfU)
+
 When launching the application, the first page displayed is the **Login** page.
 
 ### Login Options
@@ -184,6 +188,9 @@ Implemented security:
 * Usability testing: pilot user feedback (from Q&A and peer to peer testing).
 * Query tests: SQL script and queries to test data validity.
 
+### Peer to peer testing
+The group has had multiple family members and friends test our solution to evaluate whether the application is easy to understand and use. Based on this feedback, we have made several UI improvements with a strong focus on accessibility and a self-explanatory user interface. The results from our testers show that they are able to use the application (as a Pilot user) without needing much guidance.
+
 **How To Run Tests** <br>
 When in current directory (your/path/luftambulanse), run the command: <br>
 ```dotnet test``` <br>
@@ -203,4 +210,9 @@ When in current directory (your/path/luftambulanse), run the command: <br>
 **Migrations** <br>
 We have deleted our Migration folder due to a namechange in our DbContext file that resultet in an error with previous migrations. We tried to change the name locally in each file, but the error persisted and we decided to delete our files and start with a clean migration history.
 
+**Use of AI** <br>
+In our project the group have used ChatGPT 5.0 and 4.0 (free version) to go over our code and help us when the code won't build or if we need inspiration for what code we need for our solution.
+
+**Referance for building the map as our main view**
+In our project we have used different Youtube videoes for referances to get inspiration for our project. Among the videoes we found this channel very helpful: https://www.youtube.com/@geodev
 
