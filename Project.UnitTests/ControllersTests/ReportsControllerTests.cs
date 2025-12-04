@@ -13,16 +13,11 @@ using Assert = Xunit.Assert;
 
 namespace Gruppe4NLA.UnitTests.ControllersTests
 {
-
     public class ReportsControllerTests
-
     {
-
-
         [Fact]
         public async Task Index_ReturnsViewResult_WithModel()
         {
-
             /// Arrange
             var options = new DbContextOptionsBuilder<AppDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -77,8 +72,6 @@ namespace Gruppe4NLA.UnitTests.ControllersTests
             Assert.NotNull(view.Model); // Ensure model is not null
             Assert.Equal(ReportModel.DangerTypeEnum.Other, ((List<ReportModel>)view.Model)[0].Type); // Check the type of the first report
             Assert.IsType<ReportModel>(((List<ReportModel>)view.Model)[0]); // Ensure model contains ReportModel instances
-
-
         }
     }
 }

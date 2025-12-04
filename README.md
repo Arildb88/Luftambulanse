@@ -48,6 +48,9 @@ Enter the command: <br>
 
 
 ## How to Use the Application
+**YouTube Tutorial**
+[![Watch the video](https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)](https://www.youtube.com/watch?v=swtrMSogWfU)
+
 When launching the application, the first page displayed is the **Login** page.
 
 ### Login Options

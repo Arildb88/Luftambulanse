@@ -5,7 +5,7 @@ using Xunit;
 using Assert = Xunit.Assert;
 
 namespace Gruppe4NLA.UnitTests.Validation
-{
+{   
     public class HeightRangeAttributeTests
     {
         private readonly HeightRangeAttribute _attribute = new HeightRangeAttribute();

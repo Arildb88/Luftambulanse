@@ -6,8 +6,6 @@ using Xunit;
 using Assert = Xunit.Assert;
 
 // Xunit testing for Model --> ReportModel
-// Revision needed later.
-
 namespace Gruppe4NLA.Tests
 {
     public class ReportModelTests
@@ -30,6 +28,9 @@ namespace Gruppe4NLA.Tests
                 SenderName = "Test",
                 Type = ReportModel.DangerTypeEnum.Cable,
                 DateSent = DateTime.Now,
+                HeightInMeters = 50.0,
+                HeightUnit = "meters",
+                AreLighted = true,
                 Details = "Kran: 30 Meter",
             };
 
