@@ -28,7 +28,13 @@ The system has different roles that restrict or gives privileges, these can be a
 
 ## How to get started Windows/MacOS
 **Expectations:** Some prior technical knowledge. <br> 
-**Requirements:** Preinstall Docker Desktop, SDK.9 and MariaDB on their computer. <br>
+**Requirements:** Preinstall Docker Desktop, SDK.9, EFCore CLI and MariaDB on their computer. <br>
+* Docker Desktop: https://docs.docker.com/get-started/introduction/get-docker-desktop/ 
+* SDK.9: https://dotnet.microsoft.com/en-us/download/dotnet/9.0 
+* EFCore CLI instrall: 
+    * Write the following commang in your choosen terminal: Powershell, Git Bash, Terminal etc.
+     ```dotnet tool install --global dotnet-ef --version 8.0.22```
+
 
 Clone the repository: <br>
 1. Open your terminal or command prompt (Git Bash, Powershell, Terminal etc.) <br>
@@ -45,7 +51,10 @@ Enter the command: <br>
 ```dotnet watch run --project project``` (to start the application and open your web browser with the project launched) <br>
 6. To run the tests enter the command:<br> 
 ```dotnet test``` <br>
-
+7. If the build fails try:
+```docker compose down --rmi -v```
+```docker compose up -d```
+```dotnet ef database update --project project```
 
 ## How to Use the Application
 **YouTube Tutorial**

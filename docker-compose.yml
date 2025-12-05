@@ -1,4 +1,4 @@
-version: '3.8'
+
 
 services:
   mariadb:
@@ -15,7 +15,7 @@ services:
       - mariadb_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d
     healthcheck:           
-       test: ["CMD", "mariadb-admin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MARIADB_ROOT_PASSWORD}"]
+       test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -uroot -p$${MARIADB_ROOT_PASSWORD} || exit 1"]
        interval: 5s
        timeout: 3s
        retries: 20
@@ -30,7 +30,6 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
-      - "8081:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__OurDbConnection=Server=mariadb;Database=obstaclereports;User=admin;Password=9991;SslMode=None;

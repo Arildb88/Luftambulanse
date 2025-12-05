@@ -14,11 +14,9 @@
 @* Edit form for an existing report. Uses the Edit action on the current controller *@
 <form asp-action="Edit" method="post">
     @Html.AntiForgeryToken()
-    @* Hidden ID field ensures we know which report is being edited *@
     <input type="hidden" asp-for="Id" />
 
     <style>
-        /* Layout for each label + input pair, aligned in two columns */
         .form-group {
             margin-bottom: 1rem;
             display: grid;
@@ -31,14 +29,12 @@
                 margin: 0;
             }
 
-        /* Read-only fields styled as plain text (used for non-editable SenderName) */
         .form-control-plaintext {
             border: 0;
             background: transparent;
             color: var(--color-text)
         }
 
-        /* Shared row layout for the Save/Submit buttons to match CreatePopUp styling */
         .btnRow {
             display: flex;
             grid-template-columns: 1fr 1fr;
@@ -54,7 +50,6 @@
             transform: translateY(1px);
         }
 
-        /* Larger checkbox to visually match the popup style for the Lighted flag */
         .checkbox-large {
             transform: scale(1.7);
             margin-left: 8px;
@@ -63,7 +58,6 @@
         }
     </style>
 
-    @* Sender name is shown but cannot be edited by the user *@
     <div class="form-group">
         <label asp-for="SenderName" class="fw-bold">Sender</label>
         <input asp-for="SenderName" class="form-control-plaintext" readonly tabindex="-1" onfocus="this.blur()" />
@@ -77,16 +71,13 @@
               style="display:none;"></textarea>
     <span asp-validation-for="GeoJson" class="text-danger"></span>
 
-
     <!-- Leaflet map for this report -->
     <hr />
     <h5>Location Map</h5>
     <div id="reportMap" style="height:400px;"></div>
 
-    <!-- 🔹 All coordinates (for lines) will be rendered here -->
     <div id="coordList" class="mt-3"></div>
 
-    @* Height of the obstacle in meters, bound to the model property *@
     <div class="form-group">
         <label asp-for="HeightInMeters" class="fw-bold">Height In Meters</label>
         <input asp-for="HeightInMeters" class="form-control" />
@@ -117,22 +108,18 @@
         <span class="text-danger" asp-validation-for="Type"></span>
     </div>
 
-
-    @* Free-text field for extra details about the obstacle/report *@
     <div class="form-group">
         <label asp-for="Details" class="fw-bold"></label>
         <textarea asp-for="Details" class="form-control"></textarea>
         <span asp-validation-for="Details" class="text-danger"></span>
     </div>
 
-    @* Checkbox indicating whether the obstacle is lighted or not *@
     <div class="form-group">
         <label asp-for="AreLighted" class="fw-bold">Lighted </label>
         <input asp-for="AreLighted" type="checkbox" class="checkbox-large form-check-input" />
         <span asp-validation-for="AreLighted" class="text-danger"></span>
     </div>
 
-    @* Two submit buttons: one saves as draft, the other submits for processing *@
     <div class="btnRow">
         <button type="submit" name="action" value="save" class="btnSubmit">Save Draft</button>
         <button type="submit" name="action" value="submit" class="btnSubmit">Submit</button>
@@ -157,23 +144,26 @@
             r.addEventListener('change', updateOtherVisibility)
         );
 
-        // Ensure correct initial state when the page loads (e.g. when editing an existing report)
         updateOtherVisibility();
-
     </script>
 
     <script>
         (function () {
+            // Read initial GeoJSON from the hidden textarea (bound to the model)
+            const geoJsonField = document.getElementById("GeoJsonField");
+            const raw = geoJsonField && geoJsonField.value ? geoJsonField.value : null;
+            let geoJsonObject = null;
 
-            // --- Parse GeoJSON from the model ---
-            const geoJsonRaw = @Html.Raw(Model.GeoJson ?? "null");
-            let geoJsonObject = geoJsonRaw;
-
-            if (typeof geoJsonRaw === "string") {
-                try { geoJsonObject = JSON.parse(geoJsonRaw); }
-                catch { geoJsonObject = null; }
+            if (raw && raw.trim() !== "") {
+                try {
+                    geoJsonObject = JSON.parse(raw);
+                } catch (e) {
+                    console.error("Failed to parse GeoJson from hidden field", e);
+                    geoJsonObject = null;
+                }
             }
 
+            // Utility: infer geometry type if missing
             function ensureGeometryType(geom) {
                 if (!geom) return;
                 if (geom.type) return;
@@ -182,6 +172,7 @@
                 geom.type = Array.isArray(c[0]) ? "LineString" : "Point";
             }
 
+            // Normalize different GeoJSON shapes into something we can work with
             function normalizeGeoJson(g) {
                 if (!g) return null;
 
@@ -199,7 +190,7 @@
 
             geoJsonObject = normalizeGeoJson(geoJsonObject);
 
-            // --- Helper: get point coords from GeoJSON (if any) ---
+            // Helper: get point coordinates from GeoJSON (if any)
             function getPointCoords(geo) {
                 if (!geo) return null;
 
@@ -222,14 +213,13 @@
 
             let pointCoords = getPointCoords(geoJsonObject); // [lng, lat] or null
 
-            // --- Create map ---
+            // Create Leaflet map
             const map = L.map('reportMap');
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-            const geoJsonField = document.getElementById("GeoJsonField");
             let marker = null;
 
-            // --- Helper: save point to GeoJSON + hidden field ---
+            // Save point geometry back into GeoJSON and into the hidden field
             function savePointToGeoJson(lat, lng) {
                 const lngLat = [lng, lat];
 
@@ -267,9 +257,8 @@
                 }
             }
 
-            // --- Render geometry on map ---
+            // Render existing geometry (if any)
             if (geoJsonObject) {
-                // If we have non-point geometries (e.g. lines), show them via GeoJSON
                 const layer = L.geoJSON(geoJsonObject, {
                     // If there is a Point feature, create a draggable marker for it
                     pointToLayer: function (feature, latlng) {
@@ -278,6 +267,7 @@
                             const pos = e.target.getLatLng();
                             savePointToGeoJson(pos.lat, pos.lng);
                         });
+
                         // Sync GeoJSON on initial load
                         savePointToGeoJson(latlng.lat, latlng.lng);
                         return marker;
@@ -315,12 +305,12 @@
                         html += `<li>Lat: ${c.lat.toFixed(6)}, Lng: ${c.lng.toFixed(6)}</li>`;
                     });
                     html += "</ol>";
-                    document.getElementById("coordList").innerHTML = html;
+                    const listEl = document.getElementById("coordList");
+                    if (listEl) listEl.innerHTML = html;
                 }
 
             } else if (pointCoords) {
-                // No full GeoJSON, but we had point coords only – unlikely in your case,
-                // but keep for safety:
+                // Only a single point
                 const [lng, lat] = pointCoords;
                 marker = L.marker([lat, lng], { draggable: true }).addTo(map);
                 map.setView([lat, lng], 14);
@@ -333,8 +323,7 @@
                 savePointToGeoJson(lat, lng);
 
             } else {
-                // No GeoJSON at all → nothing to show
-                // (you could optionally set a default center here)
+                // No GeoJSON at all -> show world view
                 map.setView([0, 0], 1);
             }
         })();
