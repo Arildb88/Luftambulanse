@@ -71,7 +71,6 @@
               style="display:none;"></textarea>
     <span asp-validation-for="GeoJson" class="text-danger"></span>
 
-
     <!-- Leaflet map for this report -->
     <hr />
     <h5>Location Map</h5>
@@ -108,7 +107,6 @@
 
         <span class="text-danger" asp-validation-for="Type"></span>
     </div>
-
 
     <div class="form-group">
         <label asp-for="Details" class="fw-bold"></label>
@@ -147,22 +145,25 @@
         );
 
         updateOtherVisibility();
-
     </script>
 
     <script>
         (function () {
-
-            // --- Hent GeoJSON fra det skjulte feltet i stedet for @Html.Raw ---
+            // Read initial GeoJSON from the hidden textarea (bound to the model)
             const geoJsonField = document.getElementById("GeoJsonField");
-            const geoJsonRaw = geoJsonField && geoJsonField.value ? geoJsonField.value : null;
+            const raw = geoJsonField && geoJsonField.value ? geoJsonField.value : null;
             let geoJsonObject = null;
 
-            if (geoJsonRaw) {
-                try { geoJsonObject = JSON.parse(geoJsonRaw); }
-                catch { geoJsonObject = null; }
+            if (raw && raw.trim() !== "") {
+                try {
+                    geoJsonObject = JSON.parse(raw);
+                } catch (e) {
+                    console.error("Failed to parse GeoJson from hidden field", e);
+                    geoJsonObject = null;
+                }
             }
 
+            // Utility: infer geometry type if missing
             function ensureGeometryType(geom) {
                 if (!geom) return;
                 if (geom.type) return;
@@ -171,6 +172,7 @@
                 geom.type = Array.isArray(c[0]) ? "LineString" : "Point";
             }
 
+            // Normalize different GeoJSON shapes into something we can work with
             function normalizeGeoJson(g) {
                 if (!g) return null;
 
@@ -188,36 +190,36 @@
 
             geoJsonObject = normalizeGeoJson(geoJsonObject);
 
-            // --- Helper: get point coords from GeoJSON  ---
+            // Helper: get point coordinates from GeoJSON (if any)
             function getPointCoords(geo) {
                 if (!geo) return null;
 
                 if (geo.type === "FeatureCollection" && Array.isArray(geo.features)) {
                     const f = geo.features.find(ff => ff.geometry && ff.geometry.type === "Point");
-                    if (f) return f.geometry.coordinates; 
+                    if (f) return f.geometry.coordinates; // [lng, lat]
                     return null;
                 }
 
                 if (geo.type === "Feature" && geo.geometry?.type === "Point") {
-                    return geo.geometry.coordinates; 
+                    return geo.geometry.coordinates; // [lng, lat]
                 }
 
                 if (geo.type === "Point") {
-                    return geo.coordinates; 
+                    return geo.coordinates; // [lng, lat]
                 }
 
                 return null;
             }
 
-            let pointCoords = getPointCoords(geoJsonObject); 
+            let pointCoords = getPointCoords(geoJsonObject); // [lng, lat] or null
 
-            // --- Create map ---
+            // Create Leaflet map
             const map = L.map('reportMap');
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
             let marker = null;
 
-            // --- Helper: save point to GeoJSON + hidden field ---
+            // Save point geometry back into GeoJSON and into the hidden field
             function savePointToGeoJson(lat, lng) {
                 const lngLat = [lng, lat];
 
@@ -255,9 +257,8 @@
                 }
             }
 
-            // --- Render geometry on map ---
+            // Render existing geometry (if any)
             if (geoJsonObject) {
-
                 const layer = L.geoJSON(geoJsonObject, {
                     // If there is a Point feature, create a draggable marker for it
                     pointToLayer: function (feature, latlng) {
@@ -266,7 +267,8 @@
                             const pos = e.target.getLatLng();
                             savePointToGeoJson(pos.lat, pos.lng);
                         });
-                        
+
+                        // Sync GeoJSON on initial load
                         savePointToGeoJson(latlng.lat, latlng.lng);
                         return marker;
                     }
@@ -303,11 +305,12 @@
                         html += `<li>Lat: ${c.lat.toFixed(6)}, Lng: ${c.lng.toFixed(6)}</li>`;
                     });
                     html += "</ol>";
-                    document.getElementById("coordList").innerHTML = html;
+                    const listEl = document.getElementById("coordList");
+                    if (listEl) listEl.innerHTML = html;
                 }
 
             } else if (pointCoords) {
-                // No full GeoJSON, but we had point coords only – unlikely but keep for safety
+                // Only a single point
                 const [lng, lat] = pointCoords;
                 marker = L.marker([lat, lng], { draggable: true }).addTo(map);
                 map.setView([lat, lng], 14);
@@ -320,7 +323,7 @@
                 savePointToGeoJson(lat, lng);
 
             } else {
-                // No GeoJSON at all → nothing to show
+                // No GeoJSON at all -> show world view
                 map.setView([0, 0], 1);
             }
         })();
