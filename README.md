@@ -51,7 +51,10 @@ Enter the command: <br>
 ```dotnet watch run --project project``` (to start the application and open your web browser with the project launched) <br>
 6. To run the tests enter the command:<br> 
 ```dotnet test``` <br>
-
+7. If the build fails try:
+```docker compose down --rmi -v```
+```docker compose up -d```
+```dotnet ef database update --project project```
 
 ## How to Use the Application
 **YouTube Tutorial**
