@@ -110,59 +110,71 @@ app.Use(async (context, next) =>
 // Create roles and demo users
 using (var scope = app.Services.CreateScope())
 {
-    var sp = scope.ServiceProvider;
-
-    var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
-    var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
-
-    string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
-    foreach (var role in roles)
-        if (!await roleMgr.RoleExistsAsync(role))
-            await roleMgr.CreateAsync(new IdentityRole(role));
-
-    async Task EnsureUserInRole(string email, string password, string role, string organization = null)
+    try
     {
-        var user = await userMgr.FindByEmailAsync(email);
-        if (user is null)
+        var sp = scope.ServiceProvider;
+
+        var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
+
+        string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
+        foreach (var role in roles)
         {
-            user = new ApplicationUser
+            if (!await roleMgr.RoleExistsAsync(role))
             {
-                UserName = email,
-                Email = email,
-                Organization = organization
-            };
-            var create = await userMgr.CreateAsync(user, password);
-            if (!create.Succeeded)
-                throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
-        }
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(organization) && user.Organization != organization)
-            {
-                user.Organization = organization;
-                await userMgr.UpdateAsync(user);
+                await roleMgr.CreateAsync(new IdentityRole(role));
             }
         }
 
-        if (!await userMgr.IsInRoleAsync(user, role))
-            await userMgr.AddToRoleAsync(user, role);
+        async Task EnsureUserInRole(string email, string password, string role, string organization = null)
+        {
+            var user = await userMgr.FindByEmailAsync(email);
+            if (user is null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    Organization = organization
+                };
+                var create = await userMgr.CreateAsync(user, password);
+                if (!create.Succeeded)
+                    throw new Exception(string.Join(", ", create.Errors.Select(e => e.Description)));
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(organization) && user.Organization != organization)
+                {
+                    user.Organization = organization;
+                    await userMgr.UpdateAsync(user);
+                }
+            }
+
+            if (!await userMgr.IsInRoleAsync(user, role))
+                await userMgr.AddToRoleAsync(user, role);
+        }
+
+        await EnsureUserInRole("admin@test.com", "Test123!", "Admin");
+        await EnsureUserInRole("admin1@test.com", "Test123!", "Admin");
+
+        await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker");
+        await EnsureUserInRole("caseworker1@test.com", "Test123!", "Caseworker");
+        await EnsureUserInRole("caseworker2@test.com", "Test123!", "Caseworker");
+
+        await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm");
+        await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm");
+        await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm");
+
+        await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot", "AvdNord");
+        await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "AvdSørØst");
+        await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "AvdSørVest");
+        await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "AvdSør");
     }
-
-    await EnsureUserInRole("admin@test.com", "Test123!", "Admin");      // Admin user, password Test123!
-    await EnsureUserInRole("admin1@test.com", "Test123!", "Admin");      // Admin user, password Test123!
-
-    await EnsureUserInRole("caseworker@test.com", "Test123!", "Caseworker"); // Caseworker user, password Test123!
-    await EnsureUserInRole("caseworker1@test.com", "Test123!", "Caseworker"); // Caseworker user, password Test123!
-    await EnsureUserInRole("caseworker2@test.com", "Test123!", "Caseworker"); // Caseworker user, password Test123!
-
-    await EnsureUserInRole("caseworkeradm@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user, password Test123!
-    await EnsureUserInRole("caseworkeradm1@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user, password Test123!
-    await EnsureUserInRole("caseworkeradm2@test.com", "Test123!", "CaseworkerAdm"); // CaseworkerAdmin user, password Test123!
-
-    await EnsureUserInRole("pilot@test.com", "Test123!", "Pilot", "AvdNord");      // Pilot user, password Test123!
-    await EnsureUserInRole("pilot1@test.com", "Test123!", "Pilot", "AvdSørØst");      // Pilot user, password Test123!
-    await EnsureUserInRole("pilot2@test.com", "Test123!", "Pilot", "AvdSørVest");      // Pilot user, password Test123!
-    await EnsureUserInRole("pilot3@test.com", "Test123!", "Pilot", "AvdSør");      // Pilot user, password Test123!
+    catch (Exception ex)
+    {
+        // Hindrer at hele appen dør hvis seeding feiler
+        Console.WriteLine($"Role/user seeding failed: {ex.Message}");
+    }
 }
 
 // Configure the HTTP request pipeline.
