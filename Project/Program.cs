@@ -172,7 +172,7 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        // Hindrer at hele appen dør hvis seeding feiler
+        // Makes sure the webapp doesn't stop if AspRoles doesnt exist, in regards of migrations
         Console.WriteLine($"Role/user seeding failed: {ex.Message}");
     }
 }
