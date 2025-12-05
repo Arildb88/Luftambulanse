@@ -52,9 +52,10 @@ Enter the command: <br>
 6. To run the tests enter the command:<br> 
 ```dotnet test``` <br>
 7. If the build fails try:
-```docker compose down --rmi -v```
-```docker compose up -d```
-```dotnet ef database update --project project```
+```docker compose down --rmi -v```<br>
+```docker compose up -d```<br>
+```dotnet ef database update --project project```<br>
+Or try to reset the containers in the Docker Desktop program (this often solves login issues)
 
 ## How to Use the Application
 **YouTube Tutorial**
