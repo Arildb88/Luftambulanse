@@ -68,6 +68,23 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.ForwardedHeaders =
         ForwardedHeaders.XForwardedFor |
         ForwardedHeaders.XForwardedProto;
+
+    // Only trust one hop out - the reverse proxy sitting directly in front of this
+    // container. Without this, ForwardLimit defaults to 1 anyway, but we set it
+    // explicitly so a client can't smuggle extra X-Forwarded-For entries past the proxy.
+    options.ForwardLimit = 1;
+
+    // The default KnownProxies/KnownNetworks only trusts loopback. On the NAS the
+    // reverse proxy is a separate container/process reachable over the docker network,
+    // not loopback, so those defaults would silently make the middleware ignore the
+    // forwarded headers instead of erroring - the bug is invisible until you notice
+    // https redirects/client IPs are wrong. Clearing them trusts whatever sent the
+    // headers, which is fine ONLY because the container port is reachable exclusively
+    // through the WireGuard tunnel to Oracle, not exposed directly to the internet.
+    // If that changes, or the tunnel's source IP/subnet is known and stable, prefer
+    // pinning KnownProxies/KnownNetworks to it instead of clearing them.
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
 });
 
 // Builds the app
@@ -128,9 +145,19 @@ using (var scope = app.Services.CreateScope())
         string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
         foreach (var role in roles)
         {
-            if (!await roleMgr.RoleExistsAsync(role))
+            // Roles are looked up by their normalized (upper-case) name, so a role seeded with
+            // different casing is still "found" here - but the sign-in cookie then carries the
+            // stored casing, and IsInRole / [Authorize(Roles=...)] compare ordinally. Repair it.
+            var existing = await roleMgr.FindByNameAsync(role);
+            if (existing is null)
             {
                 await roleMgr.CreateAsync(new IdentityRole(role));
+            }
+            else if (!string.Equals(existing.Name, role, StringComparison.Ordinal))
+            {
+                Console.WriteLine($"Fixing role casing: '{existing.Name}' -> '{role}'.");
+                existing.Name = role;
+                await roleMgr.UpdateAsync(existing);
             }
         }
 
