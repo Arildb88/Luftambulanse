@@ -125,7 +125,7 @@ using (var scope = app.Services.CreateScope())
         var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
         var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
-        string[] roles = { "ADMIN", "CASEWORKER", "CASEWORKERADM", "PILOT" };
+        string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
         foreach (var role in roles)
         {
             if (!await roleMgr.RoleExistsAsync(role))
