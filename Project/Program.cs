@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServerVersion
+using Microsoft.AspNetCore.HttpOverrides;
+
 
 // Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
@@ -61,8 +63,17 @@ builder.Services.ConfigureApplicationCookie(o =>
     o.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+});
+
 // Builds the app
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 // Content security policy CSP
 app.Use(async (context, next) =>
@@ -117,7 +128,7 @@ using (var scope = app.Services.CreateScope())
             }
         }
 
-        async Task EnsureUserInRole(string email, string password, string role, string organization = null)
+        async Task EnsureUserInRole(string email, string password, string role, string? organization = null)
         {
             var user = await userMgr.FindByEmailAsync(email);
             if (user is null)
@@ -172,19 +183,19 @@ using (var scope = app.Services.CreateScope())
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days.
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
+
 app.UseStaticFiles();
+
 app.UseRouting();
 
 app.MapStaticAssets();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseHttpsRedirection();
 
 app.MapControllerRoute(
     name: "default",
