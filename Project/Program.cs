@@ -10,8 +10,6 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure; // Needed for MariaDbServ
 // Starts the web application builder
 var builder = WebApplication.CreateBuilder(args);
 
-var stadiaApiKey = builder.Configuration["ApiKeys:StadiaMaps"];
-
 // Add services to the container (adds Antiforgery token validation globally to all unsafe HTTP methods for MVC controllers Post/Put/Patch/Delete)
 builder.Services.AddControllersWithViews(o =>
 {
@@ -66,14 +64,6 @@ builder.Services.ConfigureApplicationCookie(o =>
 // Builds the app
 var app = builder.Build();
 
-app.Use(async (context, next) =>
-{
-    var config = context.RequestServices.GetRequiredService<IConfiguration>();
-    context.Items["StadiaApiKey"] = config["ApiKeys:StadiaMaps"];
-    await next();
-});
-
-
 // Content security policy CSP
 app.Use(async (context, next) =>
 {
@@ -95,10 +85,11 @@ app.Use(async (context, next) =>
          "img-src 'self' data: blob: " +
              "https://tile.openstreetmap.org " +
              "https://*.tile.openstreetmap.org " +
-             "https://tiles.stadiamaps.com " +
-             "https://*.stadiamaps.com " + 
+             "https://*.basemaps.cartocdn.com " +
+             "https://server.arcgisonline.com " +
+             "https://*.arcgisonline.com " +
              "https://*.google.com; " +
-         "connect-src 'self' https://tiles.stadiamaps.com https://*.stadiamaps.com; " + 
+         "connect-src 'self' https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.arcgisonline.com; " + 
          "font-src 'self' data:; " +
          "frame-src 'self'; " +
          "frame-ancestors 'self'; " +

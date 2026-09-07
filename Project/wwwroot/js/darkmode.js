@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.darkLayer = L.tileLayer(
-        `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
+        'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
         {
             minZoom: 0,
             maxZoom: 20,
-            attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
         }
     );
 

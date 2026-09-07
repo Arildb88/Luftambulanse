@@ -50,10 +50,6 @@
         </div>
     </dialog>
 
-    @{
-        var stadiaApiKey = Context.Items["StadiaApiKey"] as string;
-    }
-
     <script>
 
         // Icon used to represent the current user location (helicopter-shaped marker)
@@ -82,29 +78,27 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        const stadiaApiKey = '@stadiaApiKey';
-
         const darkMode = L.tileLayer(
-            `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?api_key=${stadiaApiKey}`,
+            'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
             {
                 minZoom: 0,
                 maxZoom: 20,
-                attribution: '&copy; Stadia Maps & OpenMapTiles & OpenStreetMap'
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
             }
         );
 
-        const stadiaSat = L.tileLayer(
-            `https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg?api_key=${stadiaApiKey}`,
+        const satellite = L.tileLayer(
+            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
             {
                 minZoom: 0,
-                maxZoom: 20,
-                attribution: '&copy; Stadia Maps, Maxar, OpenStreetMap contributors'
+                maxZoom: 19,
+                attribution: 'Tiles &copy; Esri'
             }
         );
 
         // Layer control to let the user toggle between OSM, dark theme, and satellite basemaps
         L.control.layers(
-                { 'OSM': osm, 'Darkmode': darkMode, 'SatView': stadiaSat },
+                { 'OSM': osm, 'Darkmode': darkMode, 'SatView': satellite },
             {},
             { collapsed: false }
         ).addTo(map);
