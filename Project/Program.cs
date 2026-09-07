@@ -73,6 +73,12 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 // Builds the app
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
+
 app.UseForwardedHeaders();
 
 // Content security policy CSP
@@ -119,7 +125,7 @@ using (var scope = app.Services.CreateScope())
         var userMgr = sp.GetRequiredService<UserManager<ApplicationUser>>();
         var roleMgr = sp.GetRequiredService<RoleManager<IdentityRole>>();
 
-        string[] roles = { "Admin", "Caseworker", "CaseworkerAdm", "Pilot" };
+        string[] roles = { "ADMIN", "CASEWORKER", "CASEWORKERADM", "PILOT" };
         foreach (var role in roles)
         {
             if (!await roleMgr.RoleExistsAsync(role))
@@ -186,8 +192,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseForwardedHeaders();
-
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -208,5 +212,8 @@ app.MapControllerRoute(
 );
 
 app.MapRazorPages();
+
+
+
 
 app.Run();
