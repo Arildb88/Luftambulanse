@@ -86,11 +86,10 @@ app.Use(async (context, next) =>
          "img-src 'self' data: blob: " +
              "https://tile.openstreetmap.org " +
              "https://*.tile.openstreetmap.org " +
-             "https://*.basemaps.cartocdn.com " +
              "https://server.arcgisonline.com " +
              "https://*.arcgisonline.com " +
              "https://*.google.com; " +
-         "connect-src 'self' https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.arcgisonline.com; " + 
+         "connect-src 'self' https://server.arcgisonline.com https://*.arcgisonline.com; " + 
          "font-src 'self' data:; " +
          "frame-src 'self'; " +
          "frame-ancestors 'self'; " +

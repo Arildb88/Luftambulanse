@@ -27,6 +27,10 @@
             margin-bottom: 4vh;
             position: relative;
         }
+
+        .leaflet-layer.map-tiles-dark {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
     </style>
 </head>
 
@@ -78,14 +82,10 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(window.map);
 
-        const darkMode = L.tileLayer(
-            'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-            {
-                minZoom: 0,
-                maxZoom: 20,
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-            }
-        );
+        const darkMode = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            className: 'map-tiles-dark'
+        });
 
         const satellite = L.tileLayer(
             'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',

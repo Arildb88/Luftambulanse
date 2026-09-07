@@ -509,6 +509,11 @@ button[name="action"][value="submit"] {
 
 }
 
+/* Dark basemap without a tile-provider API key: invert OSM tiles */
+.leaflet-layer.map-tiles-dark {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 /* Make sure to give right color on user-/loginmenu in darkmode*/
 .navbar .nav-link,
 .navbar .dropdown-toggle {
